@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 015ddd0cfb8b7ee449920b61d26c3e9d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 279705d78db976546957b09b60ba25fd, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -215,7 +215,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1606003123743808781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09b20098dcabc984da757e37c2bfef3d, type: 3}
+  m_Script: {fileID: 11500000, guid: 75b89aa67f87bc14290de5978ac148ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animatorTrigger: isOn
@@ -284,8 +284,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 015ddd0cfb8b7ee449920b61d26c3e9d, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 279705d78db976546957b09b60ba25fd, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -293,4 +293,4 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 11.1
