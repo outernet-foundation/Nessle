@@ -22,14 +22,125 @@ namespace Nessle
         public static Control<T> Control<T>(string identifier, T props, params Type[] components)
             => new Control<T>(identifier, props, components);
 
+        public class TextStyleProps : IDisposable
+        {
+            public ValueObservable<TMP_FontAsset> font { get; } = new ValueObservable<TMP_FontAsset>();
+            public ValueObservable<TMP_Style> textStyle { get; } = new ValueObservable<TMP_Style>();
+            public ValueObservable<TMP_StyleSheet> styleSheet { get; } = new ValueObservable<TMP_StyleSheet>();
+            public ValueObservable<Color> color { get; } = new ValueObservable<Color>();
+            public ValueObservable<FontStyles> fontStyle { get; } = new ValueObservable<FontStyles>();
+            public ValueObservable<float> fontSize { get; } = new ValueObservable<float>();
+            public ValueObservable<FontWeight> fontWeight { get; } = new ValueObservable<FontWeight>();
+            public ValueObservable<bool> enableAutoSizing { get; } = new ValueObservable<bool>();
+            public ValueObservable<float> fontSizeMin { get; } = new ValueObservable<float>();
+            public ValueObservable<float> fontSizeMax { get; } = new ValueObservable<float>();
+            public ValueObservable<HorizontalAlignmentOptions> horizontalAlignment { get; } = new ValueObservable<HorizontalAlignmentOptions>();
+            public ValueObservable<VerticalAlignmentOptions> verticalAlignment { get; } = new ValueObservable<VerticalAlignmentOptions>();
+            public ValueObservable<float> characterSpacing { get; } = new ValueObservable<float>();
+            public ValueObservable<float> wordSpacing { get; } = new ValueObservable<float>();
+            public ValueObservable<float> lineSpacing { get; } = new ValueObservable<float>();
+            public ValueObservable<float> lineSpacingAdjustment { get; } = new ValueObservable<float>();
+            public ValueObservable<float> paragraphSpacing { get; } = new ValueObservable<float>();
+            public ValueObservable<float> characterWidthAdjustment { get; } = new ValueObservable<float>();
+            public ValueObservable<TextWrappingModes> textWrappingMode { get; } = new ValueObservable<TextWrappingModes>();
+            public ValueObservable<TextOverflowModes> overflowMode { get; } = new ValueObservable<TextOverflowModes>();
+            public ValueObservable<TextureMappingOptions> horizontalMapping { get; } = new ValueObservable<TextureMappingOptions>();
+            public ValueObservable<TextureMappingOptions> verticalMapping { get; } = new ValueObservable<TextureMappingOptions>();
+
+            public void Dispose()
+            {
+                font.Dispose();
+                textStyle.Dispose();
+                styleSheet.Dispose();
+                color.Dispose();
+                fontStyle.Dispose();
+                fontSize.Dispose();
+                fontWeight.Dispose();
+                enableAutoSizing.Dispose();
+                fontSizeMin.Dispose();
+                fontSizeMax.Dispose();
+                horizontalAlignment.Dispose();
+                verticalAlignment.Dispose();
+                characterSpacing.Dispose();
+                wordSpacing.Dispose();
+                lineSpacing.Dispose();
+                lineSpacingAdjustment.Dispose();
+                paragraphSpacing.Dispose();
+                characterWidthAdjustment.Dispose();
+                textWrappingMode.Dispose();
+                overflowMode.Dispose();
+                horizontalMapping.Dispose();
+                verticalMapping.Dispose();
+            }
+        }
+
         public class TextProps : IDisposable
         {
             public ValueObservable<string> text { get; } = new ValueObservable<string>();
+            public TextStyleProps style { get; } = new TextStyleProps();
 
             public void Dispose()
             {
                 text.Dispose();
+                style.Dispose();
             }
+        }
+
+        private static void CopyFromText(TextStyleProps props, TMP_Text text)
+        {
+            props.font.From(text.font);
+            props.textStyle.From(text.textStyle);
+            props.styleSheet.From(text.styleSheet);
+            props.color.From(text.color);
+            props.fontStyle.From(text.fontStyle);
+            props.fontSize.From(text.fontSize);
+            props.fontWeight.From(text.fontWeight);
+            props.enableAutoSizing.From(text.enableAutoSizing);
+            props.fontSizeMin.From(text.fontSizeMin);
+            props.fontSizeMax.From(text.fontSizeMax);
+            props.horizontalAlignment.From(text.horizontalAlignment);
+            props.verticalAlignment.From(text.verticalAlignment);
+            props.characterSpacing.From(text.characterSpacing);
+            props.wordSpacing.From(text.wordSpacing);
+            props.lineSpacing.From(text.lineSpacing);
+            props.lineSpacingAdjustment.From(text.lineSpacingAdjustment);
+            props.paragraphSpacing.From(text.paragraphSpacing);
+            props.characterWidthAdjustment.From(text.characterWidthAdjustment);
+            props.textWrappingMode.From(text.textWrappingMode);
+            props.overflowMode.From(text.overflowMode);
+            props.horizontalMapping.From(text.horizontalMapping);
+            props.verticalMapping.From(text.verticalMapping);
+        }
+
+        private static IDisposable BindTextStyle(TextStyleProps props, TMP_Text text, bool copyFromText = false)
+        {
+            if (copyFromText)
+                CopyFromText(props, text);
+
+            return new ComposedDisposable(
+                props.font.Subscribe(x => text.font = x.currentValue),
+                props.textStyle.Subscribe(x => text.textStyle = x.currentValue),
+                props.styleSheet.Subscribe(x => text.styleSheet = x.currentValue),
+                props.color.Subscribe(x => text.color = x.currentValue),
+                props.fontStyle.Subscribe(x => text.fontStyle = x.currentValue),
+                props.fontSize.Subscribe(x => text.fontSize = x.currentValue),
+                props.fontWeight.Subscribe(x => text.fontWeight = x.currentValue),
+                props.enableAutoSizing.Subscribe(x => text.enableAutoSizing = x.currentValue),
+                props.fontSizeMin.Subscribe(x => text.fontSizeMin = x.currentValue),
+                props.fontSizeMax.Subscribe(x => text.fontSizeMax = x.currentValue),
+                props.horizontalAlignment.Subscribe(x => text.horizontalAlignment = x.currentValue),
+                props.verticalAlignment.Subscribe(x => text.verticalAlignment = x.currentValue),
+                props.characterSpacing.Subscribe(x => text.characterSpacing = x.currentValue),
+                props.wordSpacing.Subscribe(x => text.wordSpacing = x.currentValue),
+                props.lineSpacing.Subscribe(x => text.lineSpacing = x.currentValue),
+                props.lineSpacingAdjustment.Subscribe(x => text.lineSpacingAdjustment = x.currentValue),
+                props.paragraphSpacing.Subscribe(x => text.paragraphSpacing = x.currentValue),
+                props.characterWidthAdjustment.Subscribe(x => text.characterWidthAdjustment = x.currentValue),
+                props.textWrappingMode.Subscribe(x => text.textWrappingMode = x.currentValue),
+                props.overflowMode.Subscribe(x => text.overflowMode = x.currentValue),
+                props.horizontalMapping.Subscribe(x => text.horizontalMapping = x.currentValue),
+                props.verticalMapping.Subscribe(x => text.verticalMapping = x.currentValue)
+            );
         }
 
         public static Control<TextProps> Text(string identifier = "text", TextProps props = default, TextMeshProUGUI prefab = default, Action<Control<TextProps>> setup = default)
@@ -37,8 +148,11 @@ namespace Nessle
             var text = UnityEngine.Object.Instantiate(prefab == null ? primitives.text : prefab);
             var control = new Control<TextProps>(identifier, props ?? new TextProps(), text.gameObject);
 
+            CopyFromText(props.style, text);
+
             control.AddBinding(
-                control.props.text.Subscribe(x => text.text = x.currentValue)
+                control.props.text.Subscribe(x => text.text = x.currentValue),
+                BindTextStyle(control.props.style, text, true)
             );
 
             setup?.Invoke(control);
@@ -168,7 +282,9 @@ namespace Nessle
         public class InputFieldProps : IDisposable
         {
             public ValueObservable<string> inputText { get; } = new ValueObservable<string>();
+            public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
             public ValueObservable<string> placeholderText { get; } = new ValueObservable<string>();
+            public TextStyleProps placeholderTextStyle { get; } = new TextStyleProps();
             public ValueObservable<TMP_ContentType> contentType { get; } = new ValueObservable<TMP_ContentType>();
             public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
             public ValueObservable<TMP_LineType> lineType { get; } = new ValueObservable<TMP_LineType>();
@@ -179,7 +295,9 @@ namespace Nessle
             public void Dispose()
             {
                 inputText.Dispose();
+                inputTextStyle.Dispose();
                 placeholderText.Dispose();
+                placeholderTextStyle.Dispose();
                 contentType.Dispose();
                 readOnly.Dispose();
                 lineType.Dispose();
@@ -202,11 +320,7 @@ namespace Nessle
 
             control.AddBinding(
                 control.props.inputText.Subscribe(x => inputField.text = x.currentValue),
-                control.props.placeholderText.Subscribe(x =>
-                {
-                    if (inputField.placeholder is TextMeshProUGUI placeholder)
-                        placeholder.text = x.currentValue;
-                }),
+                BindTextStyle(control.props.inputTextStyle, inputField.textComponent, true),
                 control.props.contentType.Subscribe(x => inputField.contentType = x.currentValue),
                 control.props.readOnly.Subscribe(x => inputField.readOnly = x.currentValue),
                 control.props.lineType.Subscribe(x => inputField.lineType = x.currentValue),
@@ -214,20 +328,32 @@ namespace Nessle
                 control.props.interactable.Subscribe(x => inputField.interactable = x.currentValue)
             );
 
+            if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
+            {
+                control.AddBinding(
+                    control.props.placeholderText.Subscribe(x => placeholder.text = x.currentValue),
+                    BindTextStyle(control.props.placeholderTextStyle, placeholder, true)
+                );
+            }
+
             return control;
         }
 
         public class FloatFieldProps : IDisposable
         {
             public ValueObservable<float> value { get; } = new ValueObservable<float>();
+            public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
             public ValueObservable<string> placeholderText { get; } = new ValueObservable<string>();
+            public TextStyleProps placeholderTextStyle { get; } = new TextStyleProps();
             public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
 
             public void Dispose()
             {
                 value.Dispose();
+                inputTextStyle.Dispose();
                 placeholderText.Dispose();
+                placeholderTextStyle.Dispose();
                 readOnly.Dispose();
                 interactable.Dispose();
             }
@@ -245,14 +371,18 @@ namespace Nessle
 
             control.AddBinding(
                 control.props.value.Subscribe(x => inputField.text = x.currentValue.ToString()),
-                control.props.placeholderText.Subscribe(x =>
-                {
-                    if (inputField.placeholder is TextMeshProUGUI placeholder)
-                        placeholder.text = x.currentValue;
-                }),
+                BindTextStyle(control.props.inputTextStyle, inputField.textComponent, true),
                 control.props.readOnly.Subscribe(x => inputField.readOnly = x.currentValue),
                 control.props.interactable.Subscribe(x => inputField.interactable = x.currentValue)
             );
+
+            if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
+            {
+                control.AddBinding(
+                    control.props.placeholderText.Subscribe(x => placeholder.text = x.currentValue),
+                    BindTextStyle(control.props.placeholderTextStyle, placeholder, true)
+                );
+            }
 
             return control;
         }
@@ -260,14 +390,18 @@ namespace Nessle
         public class IntFieldProps : IDisposable
         {
             public ValueObservable<int> value { get; } = new ValueObservable<int>();
+            public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
             public ValueObservable<string> placeholderText { get; } = new ValueObservable<string>();
+            public TextStyleProps placeholderTextStyle { get; } = new TextStyleProps();
             public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
 
             public void Dispose()
             {
                 value.Dispose();
+                inputTextStyle.Dispose();
                 placeholderText.Dispose();
+                placeholderTextStyle.Dispose();
                 readOnly.Dispose();
                 interactable.Dispose();
             }
@@ -285,14 +419,18 @@ namespace Nessle
 
             control.AddBinding(
                 control.props.value.Subscribe(x => inputField.text = x.currentValue.ToString()),
-                control.props.placeholderText.Subscribe(x =>
-                {
-                    if (inputField.placeholder is TextMeshProUGUI placeholder)
-                        placeholder.text = x.currentValue;
-                }),
+                BindTextStyle(control.props.inputTextStyle, inputField.textComponent, true),
                 control.props.readOnly.Subscribe(x => inputField.readOnly = x.currentValue),
                 control.props.interactable.Subscribe(x => inputField.interactable = x.currentValue)
             );
+
+            if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
+            {
+                control.AddBinding(
+                    control.props.placeholderText.Subscribe(x => placeholder.text = x.currentValue),
+                    BindTextStyle(control.props.placeholderTextStyle, placeholder, true)
+                );
+            }
 
             return control;
         }
@@ -383,12 +521,17 @@ namespace Nessle
             public ListObservable<string> options { get; } = new ListObservable<string>();
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
 
+            public TextStyleProps captionTextStyle { get; } = new TextStyleProps();
+            public TextStyleProps itemTextStyle { get; } = new TextStyleProps();
+
             public void Dispose()
             {
                 value.Dispose();
                 allowMultiselect.Dispose();
                 options.Dispose();
                 interactable.Dispose();
+                captionTextStyle.Dispose();
+                itemTextStyle.Dispose();
             }
         }
 
@@ -401,7 +544,9 @@ namespace Nessle
                 control.props.value.Subscribe(x => dropdown.value = x.currentValue),
                 control.props.allowMultiselect.Subscribe(x => dropdown.MultiSelect = x.currentValue),
                 control.props.options.Subscribe(_ => dropdown.options = control.props.options.Select(x => new TMP_Dropdown.OptionData() { text = x }).ToList()),
-                control.props.interactable.Subscribe(x => dropdown.interactable = x.currentValue)
+                control.props.interactable.Subscribe(x => dropdown.interactable = x.currentValue),
+                BindTextStyle(control.props.captionTextStyle, dropdown.captionText, true),
+                BindTextStyle(control.props.itemTextStyle, dropdown.itemText, true)
             );
 
             return control;
