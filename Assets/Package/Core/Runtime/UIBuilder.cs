@@ -14,6 +14,8 @@ namespace Nessle
 {
     public static class UIBuilder
     {
+        public static UIPrimitiveSet primitives { get; set; }
+
         public static Control Control(string identifier, params Type[] components)
             => new Control(identifier, components);
 
@@ -32,7 +34,7 @@ namespace Nessle
 
         public static Control<TextProps> Text(string identifier = "text", TextProps props = default, TextMeshProUGUI prefab = default, Action<Control<TextProps>> setup = default)
         {
-            var text = UnityEngine.Object.Instantiate(prefab == null ? UIResources.Text : prefab);
+            var text = UnityEngine.Object.Instantiate(prefab == null ? primitives.text : prefab);
             var control = new Control<TextProps>(identifier, props ?? new TextProps(), text.gameObject);
 
             control.AddBinding(
@@ -83,7 +85,7 @@ namespace Nessle
 
         public static Control<ButtonProps> Button(string identifier = "button", ButtonProps props = default, Button prefab = default, Action<IControl<ButtonProps>> setup = default)
         {
-            var button = UnityEngine.Object.Instantiate(prefab == null ? UIResources.Button : prefab);
+            var button = UnityEngine.Object.Instantiate(prefab == null ? primitives.button : prefab);
             var control = new Control<ButtonProps>(identifier, props ?? new ButtonProps(), button.gameObject);
 
             button.onClick.AddListener(() => control.props.onClick.value?.Invoke());
@@ -123,7 +125,7 @@ namespace Nessle
 
         public static Control<LayoutProps> HorizontalLayout(string identifier = "horizontalLayout.layout", LayoutProps props = default, HorizontalLayoutGroup prefab = default)
         {
-            var layout = UnityEngine.Object.Instantiate(prefab == null ? UIResources.HorizontalLayout : prefab);
+            var layout = UnityEngine.Object.Instantiate(prefab == null ? primitives.horizontalLayout : prefab);
             var control = new Control<LayoutProps>(identifier, props ?? new LayoutProps(), layout.gameObject);
 
             control.AddBinding(
@@ -144,7 +146,7 @@ namespace Nessle
 
         public static Control<LayoutProps> VerticalLayout(string identifier = "verticalLayout.layout", LayoutProps props = default, VerticalLayoutGroup prefab = default)
         {
-            var layout = UnityEngine.Object.Instantiate(prefab == null ? UIResources.VerticalLayout : prefab);
+            var layout = UnityEngine.Object.Instantiate(prefab == null ? primitives.verticalLayout : prefab);
             var control = new Control<LayoutProps>(identifier, props ?? new LayoutProps(), layout.gameObject);
 
             control.AddBinding(
@@ -189,7 +191,7 @@ namespace Nessle
 
         public static Control<InputFieldProps> InputField(string identifier = "inputField", InputFieldProps props = default, TMP_InputField prefab = default)
         {
-            var inputField = UnityEngine.Object.Instantiate(prefab == null ? UIResources.InputField : prefab);
+            var inputField = UnityEngine.Object.Instantiate(prefab == null ? primitives.inputField : prefab);
             var control = new Control<InputFieldProps>(identifier, props ?? new InputFieldProps(), inputField.gameObject);
 
             inputField.enabled = false;
@@ -233,7 +235,7 @@ namespace Nessle
 
         public static Control<FloatFieldProps> FloatField(string identifier = "floatField", FloatFieldProps props = default, TMP_InputField prefab = default)
         {
-            var inputField = UnityEngine.Object.Instantiate(prefab == null ? UIResources.InputField : prefab);
+            var inputField = UnityEngine.Object.Instantiate(prefab == null ? primitives.inputField : prefab);
             var control = new Control<FloatFieldProps>(identifier, props ?? new FloatFieldProps(), inputField.gameObject);
 
             inputField.enabled = false;
@@ -273,7 +275,7 @@ namespace Nessle
 
         public static Control<IntFieldProps> IntField(string identifier = "intField", IntFieldProps props = default, TMP_InputField prefab = default)
         {
-            var inputField = UnityEngine.Object.Instantiate(prefab == null ? UIResources.InputField : prefab);
+            var inputField = UnityEngine.Object.Instantiate(prefab == null ? primitives.inputField : prefab);
             var control = new Control<IntFieldProps>(identifier, props ?? new IntFieldProps(), inputField.gameObject);
 
             inputField.enabled = false;
@@ -316,7 +318,7 @@ namespace Nessle
 
         public static Control<ScrollbarProps> Scrollbar(string identifier = "scrollbar", ScrollbarProps props = default, Scrollbar prefab = default)
         {
-            var scrollbar = UnityEngine.Object.Instantiate(prefab == null ? UIResources.Scrollbar : prefab);
+            var scrollbar = UnityEngine.Object.Instantiate(prefab == null ? primitives.scrollbar : prefab);
             var control = new Control<ScrollbarProps>(identifier, props ?? new ScrollbarProps(), scrollbar.gameObject);
 
             scrollbar.onValueChanged.AddListener(x => control.props.value.From(x));
@@ -352,7 +354,7 @@ namespace Nessle
 
         public static Control<ScrollRectProps> ScrollRect(string identifier = "scrollRect", ScrollRectProps props = default, ScrollRect prefab = default, Action<IControl<ScrollRectProps>> setup = default)
         {
-            var scrollRect = UnityEngine.Object.Instantiate(prefab == null ? UIResources.ScrollRect : prefab);
+            var scrollRect = UnityEngine.Object.Instantiate(prefab == null ? primitives.scrollRect : prefab);
             var control = new Control<ScrollRectProps>(identifier, props ?? new ScrollRectProps(), scrollRect.gameObject);
 
             scrollRect.onValueChanged.AddListener(x => control.props.value.From(x));
@@ -392,7 +394,7 @@ namespace Nessle
 
         public static Control<DropdownProps> Dropdown(string identifier = "dropdown", DropdownProps props = default, TMP_Dropdown prefab = default)
         {
-            var dropdown = UnityEngine.Object.Instantiate(prefab == null ? UIResources.Dropdown : prefab);
+            var dropdown = UnityEngine.Object.Instantiate(prefab == null ? primitives.dropdown : prefab);
             var control = new Control<DropdownProps>(identifier, props ?? new DropdownProps(), dropdown.gameObject);
 
             control.AddBinding(
@@ -417,7 +419,7 @@ namespace Nessle
 
         public static Control<ToggleProps> Toggle(string identifier = "toggle", ToggleProps props = default, Toggle prefab = default)
         {
-            var toggle = UnityEngine.Object.Instantiate(prefab == null ? UIResources.Toggle : prefab);
+            var toggle = UnityEngine.Object.Instantiate(prefab == null ? primitives.toggle : prefab);
             var control = new Control<ToggleProps>(identifier, props ?? new ToggleProps(), toggle.gameObject);
 
             toggle.onValueChanged.AddListener(x => control.props.isOn.From(x));
@@ -447,7 +449,7 @@ namespace Nessle
 
         public static Control<SliderProps> Slider(string identifier = "slider", SliderProps props = default, Slider prefab = default)
         {
-            var slider = UnityEngine.Object.Instantiate(prefab == null ? UIResources.Slider : prefab);
+            var slider = UnityEngine.Object.Instantiate(prefab == null ? primitives.slider : prefab);
             var control = new Control<SliderProps>(identifier, props ?? new SliderProps(), slider.gameObject);
 
             slider.onValueChanged.AddListener(x => control.props.value.From(x));

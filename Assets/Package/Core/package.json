@@ -10,5 +10,12 @@
   },
   "dependencies": {
     "com.fofx.observething": "1.0.0"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "UI Primitives",
+      "description": "Contains sample UI primitives",
+      "path": "Samples~/UI Primitives"
+    }
+  ]
 }
