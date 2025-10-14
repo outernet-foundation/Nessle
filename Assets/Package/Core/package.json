@@ -1,0 +1,14 @@
+{
+  "name": "com.fofx.nessle",
+  "version": "1.0.0",
+  "displayName": "Nessle",
+  "description": "Declarative UI Framework for Unity.",
+  "unity": "6000.0",
+  "author": {
+    "name": "Elliot Pjecha",
+    "email": "epjecha@gmail.com"
+  },
+  "dependencies": {
+    "com.fofx.observething": "1.0.0"
+  }
+}

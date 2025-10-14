@@ -1,0 +1,15 @@
+{
+  "name": "com.fofx.nessle.statefulextensions",
+  "version": "1.0.0",
+  "displayName": "Nessle - Stateful Extensions",
+  "description": "Extension methods for using Stateful with Nessle.",
+  "unity": "6000.0",
+  "author": {
+    "name": "Elliot Pjecha",
+    "email": "epjecha@gmail.com"
+  },
+  "dependencies": {
+    "com.fofx.stateful": "1.0.0",
+    "com.fofx.observething.statefulextensions": "1.0.0"
+  }
+}
