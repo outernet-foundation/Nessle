@@ -148,8 +148,6 @@ namespace Nessle
             var text = UnityEngine.Object.Instantiate(prefab == null ? primitives.text : prefab);
             var control = new Control<TextProps>(identifier, props ?? new TextProps(), text.gameObject);
 
-            CopyFromText(props.style, text);
-
             control.AddBinding(
                 control.props.text.Subscribe(x => text.text = x.currentValue),
                 BindTextStyle(control.props.style, text, true)
@@ -281,10 +279,8 @@ namespace Nessle
 
         public class InputFieldProps : IDisposable
         {
-            public ValueObservable<string> inputText { get; } = new ValueObservable<string>();
-            public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
-            public ValueObservable<string> placeholderText { get; } = new ValueObservable<string>();
-            public TextStyleProps placeholderTextStyle { get; } = new TextStyleProps();
+            public TextProps inputText { get; } = new TextProps();
+            public TextProps placeholderText { get; } = new TextProps();
             public ValueObservable<TMP_ContentType> contentType { get; } = new ValueObservable<TMP_ContentType>();
             public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
             public ValueObservable<TMP_LineType> lineType { get; } = new ValueObservable<TMP_LineType>();
@@ -295,9 +291,7 @@ namespace Nessle
             public void Dispose()
             {
                 inputText.Dispose();
-                inputTextStyle.Dispose();
                 placeholderText.Dispose();
-                placeholderTextStyle.Dispose();
                 contentType.Dispose();
                 readOnly.Dispose();
                 lineType.Dispose();
@@ -315,12 +309,12 @@ namespace Nessle
             inputField.enabled = false;
             inputField.enabled = true;
 
-            inputField.onValueChanged.AddListener(x => control.props.inputText.From(x));
+            inputField.onValueChanged.AddListener(x => control.props.inputText.text.From(x));
             inputField.onEndEdit.AddListener(x => control.props.onEndEdit.value?.Invoke(x));
 
             control.AddBinding(
-                control.props.inputText.Subscribe(x => inputField.text = x.currentValue),
-                BindTextStyle(control.props.inputTextStyle, inputField.textComponent, true),
+                control.props.inputText.text.Subscribe(x => inputField.text = x.currentValue),
+                BindTextStyle(control.props.inputText.style, inputField.textComponent, true),
                 control.props.contentType.Subscribe(x => inputField.contentType = x.currentValue),
                 control.props.readOnly.Subscribe(x => inputField.readOnly = x.currentValue),
                 control.props.lineType.Subscribe(x => inputField.lineType = x.currentValue),
@@ -331,8 +325,8 @@ namespace Nessle
             if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
             {
                 control.AddBinding(
-                    control.props.placeholderText.Subscribe(x => placeholder.text = x.currentValue),
-                    BindTextStyle(control.props.placeholderTextStyle, placeholder, true)
+                    control.props.placeholderText.text.Subscribe(x => placeholder.text = x.currentValue),
+                    BindTextStyle(control.props.placeholderText.style, placeholder, true)
                 );
             }
 
@@ -343,8 +337,7 @@ namespace Nessle
         {
             public ValueObservable<float> value { get; } = new ValueObservable<float>();
             public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
-            public ValueObservable<string> placeholderText { get; } = new ValueObservable<string>();
-            public TextStyleProps placeholderTextStyle { get; } = new TextStyleProps();
+            public TextProps placeholderText { get; } = new TextProps();
             public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
 
@@ -353,7 +346,6 @@ namespace Nessle
                 value.Dispose();
                 inputTextStyle.Dispose();
                 placeholderText.Dispose();
-                placeholderTextStyle.Dispose();
                 readOnly.Dispose();
                 interactable.Dispose();
             }
@@ -379,8 +371,8 @@ namespace Nessle
             if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
             {
                 control.AddBinding(
-                    control.props.placeholderText.Subscribe(x => placeholder.text = x.currentValue),
-                    BindTextStyle(control.props.placeholderTextStyle, placeholder, true)
+                    control.props.placeholderText.text.Subscribe(x => placeholder.text = x.currentValue),
+                    BindTextStyle(control.props.placeholderText.style, placeholder, true)
                 );
             }
 
@@ -391,8 +383,7 @@ namespace Nessle
         {
             public ValueObservable<int> value { get; } = new ValueObservable<int>();
             public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
-            public ValueObservable<string> placeholderText { get; } = new ValueObservable<string>();
-            public TextStyleProps placeholderTextStyle { get; } = new TextStyleProps();
+            public TextProps placeholderText { get; } = new TextProps();
             public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
 
@@ -401,7 +392,6 @@ namespace Nessle
                 value.Dispose();
                 inputTextStyle.Dispose();
                 placeholderText.Dispose();
-                placeholderTextStyle.Dispose();
                 readOnly.Dispose();
                 interactable.Dispose();
             }
@@ -427,8 +417,8 @@ namespace Nessle
             if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
             {
                 control.AddBinding(
-                    control.props.placeholderText.Subscribe(x => placeholder.text = x.currentValue),
-                    BindTextStyle(control.props.placeholderTextStyle, placeholder, true)
+                    control.props.placeholderText.text.Subscribe(x => placeholder.text = x.currentValue),
+                    BindTextStyle(control.props.placeholderText.style, placeholder, true)
                 );
             }
 
