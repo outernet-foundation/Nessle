@@ -12,7 +12,7 @@ using SliderDirection = UnityEngine.UI.Slider.Direction;
 
 namespace Nessle
 {
-    public static class UIBuilder
+    public static partial class UIBuilder
     {
         public static UIPrimitiveSet primitives { get; set; }
 
