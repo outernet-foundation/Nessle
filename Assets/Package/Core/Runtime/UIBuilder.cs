@@ -530,6 +530,8 @@ namespace Nessle
             var dropdown = UnityEngine.Object.Instantiate(prefab == null ? primitives.dropdown : prefab);
             var control = new Control<DropdownProps>(identifier, props ?? new DropdownProps(), dropdown.gameObject);
 
+            dropdown.onValueChanged.AddListener(x => control.props.value.From(x));
+
             control.AddBinding(
                 control.props.value.Subscribe(x => dropdown.value = x.currentValue),
                 control.props.allowMultiselect.Subscribe(x => dropdown.MultiSelect = x.currentValue),
