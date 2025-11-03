@@ -546,6 +546,7 @@ namespace Nessle
 
         public class ToggleProps : IDisposable
         {
+            public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
             public ValueObservable<bool> isOn { get; } = new ValueObservable<bool>();
 
             public void Dispose()
@@ -561,7 +562,10 @@ namespace Nessle
 
             toggle.onValueChanged.AddListener(x => control.props.isOn.From(x));
 
-            control.AddBinding(control.props.isOn.Subscribe(x => toggle.isOn = x.currentValue));
+            control.AddBinding(
+                control.props.isOn.Subscribe(x => toggle.isOn = x.currentValue),
+                control.props.interactable.Subscribe(x => toggle.interactable = x.currentValue)
+            );
 
             return control;
         }
