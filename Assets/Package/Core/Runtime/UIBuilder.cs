@@ -551,6 +551,7 @@ namespace Nessle
 
             public void Dispose()
             {
+                interactable.Dispose();
                 isOn.Dispose();
             }
         }
