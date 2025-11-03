@@ -9,6 +9,7 @@ using TMP_ContentType = TMPro.TMP_InputField.ContentType;
 using TMP_LineType = TMPro.TMP_InputField.LineType;
 using ScrollbarDirection = UnityEngine.UI.Scrollbar.Direction;
 using SliderDirection = UnityEngine.UI.Slider.Direction;
+using NUnit.Framework.Internal;
 
 namespace Nessle
 {
@@ -544,10 +545,12 @@ namespace Nessle
             return control;
         }
 
-        public class ToggleProps : IDisposable
+        public class ToggleProps : IDisposable, IValueProps<bool>
         {
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
             public ValueObservable<bool> isOn { get; } = new ValueObservable<bool>();
+
+            ValueObservable<bool> IValueProps<bool>.value => isOn;
 
             public void Dispose()
             {
@@ -556,20 +559,27 @@ namespace Nessle
             }
         }
 
-        public static Control<ToggleProps> Toggle(string identifier = "toggle", ToggleProps props = default, Toggle prefab = default)
+        public static IControl<Test.ToggleProps> Toggle(string identifier = "toggle", Test.ToggleProps props = default, Test.ToggleControl prefab = default)
         {
-            var toggle = UnityEngine.Object.Instantiate(prefab == null ? primitives.toggle : prefab);
-            var control = new Control<ToggleProps>(identifier, props ?? new ToggleProps(), toggle.gameObject);
-
-            toggle.onValueChanged.AddListener(x => control.props.isOn.From(x));
-
-            control.AddBinding(
-                control.props.isOn.Subscribe(x => toggle.isOn = x.currentValue),
-                control.props.interactable.Subscribe(x => toggle.interactable = x.currentValue)
-            );
-
-            return control;
+            var toggle = UnityEngine.Object.Instantiate(prefab == null ? default : prefab);
+            toggle.Initialize(identifier, props);
+            return toggle;
         }
+
+        // public static Control<ToggleProps> Toggle(string identifier = "toggle", ToggleProps props = default, Toggle prefab = default)
+        // {
+        //     var toggle = UnityEngine.Object.Instantiate(prefab == null ? primitives.toggle : prefab);
+        //     var control = new Control<ToggleProps>(identifier, props ?? new ToggleProps(), toggle.gameObject);
+
+        //     toggle.onValueChanged.AddListener(x => control.props.isOn.From(x));
+
+        //     control.AddBinding(
+        //         control.props.isOn.Subscribe(x => toggle.isOn = x.currentValue),
+        //         control.props.interactable.Subscribe(x => toggle.interactable = x.currentValue)
+        //     );
+
+        //     return control;
+        // }
 
         public class SliderProps : IDisposable
         {

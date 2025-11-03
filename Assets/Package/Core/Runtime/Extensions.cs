@@ -6,6 +6,11 @@ using static Nessle.UIBuilder;
 
 namespace Nessle
 {
+    public interface IValueProps<T>
+    {
+        ValueObservable<T> value { get; }
+    }
+
     public static class Extensions
     {
         public static void LabelFrom<T>(this T control, IValueObservable<string> label)
@@ -53,6 +58,24 @@ namespace Nessle
             control.AddBinding(
                 bindTo.Subscribe(x => value.From(toValue(x.currentValue))),
                 value.Subscribe(x => bindTo.From(toSource(x.currentValue)))
+            );
+        }
+
+        public static void BindValue<TProps, TValue>(this IControl<TProps> control, ValueObservable<TValue> bindTo)
+            where TProps : IValueProps<TValue>
+        {
+            control.AddBinding(
+                bindTo.Subscribe(x => value.From(x.currentValue)),
+                control.props.value.Subscribe(x => bindTo.From(x.currentValue))
+            );
+        }
+
+        public static void BindValue<TProps, TValue, TSource>(this IControl<TProps> control, ValueObservable<TSource> bindTo, Func<TValue, TSource> toSource, Func<TSource, TValue> toValue)
+            where TProps : IValueProps<TValue>
+        {
+            control.AddBinding(
+                bindTo.Subscribe(x => value.From(toValue(x.currentValue))),
+                control.props.value.Subscribe(x => bindTo.From(toSource(x.currentValue)))
             );
         }
     }
