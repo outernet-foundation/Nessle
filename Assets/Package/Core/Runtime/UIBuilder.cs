@@ -493,7 +493,7 @@ namespace Nessle
                 control.props.vertical.Subscribe(x => scrollRect.vertical = x.currentValue),
                 control.props.content.Subscribe(x =>
                 {
-                    x.currentValue.SetParent(control);
+                    x.currentValue.parent.From(control);
                     x.currentValue.transform.SetParent(scrollRect.viewport, false);
                     scrollRect.content = x.currentValue.transform;
                     x.currentValue.SetPivot(new Vector2(0, 1));

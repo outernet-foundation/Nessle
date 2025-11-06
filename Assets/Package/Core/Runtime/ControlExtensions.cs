@@ -18,38 +18,13 @@ namespace Nessle
         }
 
         public static void Children<T>(this T control, params IControl[] children)
-            where T : IControl => control.Children((IEnumerable<IControl>)children);
+            where T : IControl => control.children.From(children);
 
         public static void Children<T>(this T control, IEnumerable<IControl> children)
-            where T : IControl
-        {
-            if (children == null)
-                return;
+            where T : IControl => control.children.From(children);
 
-            foreach (var child in children)
-                child.SetParent(control);
-        }
-
-        public static void Children<TParent>(this TParent control, IListObservable<IControl> children)
-            where TParent : IControl
-        {
-            control.AddBinding(children.Subscribe(
-                args =>
-                {
-                    switch (args.operationType)
-                    {
-                        case OpType.Add:
-                            args.element.SetParent(control);
-                            args.element.SetSiblingIndex(args.index);
-                            break;
-
-                        case OpType.Remove:
-                            args.element.SetParent(null);
-                            break;
-                    }
-                }
-            ));
-        }
+        public static void Children<T>(this T control, IListObservable<IControl> children)
+            where T : IControl => control.children.From(children);
 
         public static IControlWithMetadata<TData> WithMetadata<TData>(this IControl control, TData data)
             => new ControlWithMetadata<TData>(control, data);
@@ -402,7 +377,16 @@ namespace Nessle
         public static void SiblingIndex<T>(this T control, int index)
             where T : IControl
         {
-            control.SetSiblingIndex(index);
+            if (control.parent.value == null)
+                return;
+
+            var currIndex = control.parent.value.children.IndexOf(control);
+
+            if (currIndex == index)
+                return;
+
+            control.children.RemoveAt(currIndex);
+            control.children.Insert(index, control);
         }
 
         public static void OnHoverEntered<T>(this T control, Action<PointerEventData> onHoverEntered)
@@ -468,7 +452,7 @@ namespace Nessle
         public static void Columns<T>(this T control, float spacing, params IControl[] controls)
             where T : IControl
         {
-            control.Children(controls);
+            control.children.From(controls);
             float step = 1f / controls.Length;
             for (int i = 0; i < controls.Length; i++)
             {

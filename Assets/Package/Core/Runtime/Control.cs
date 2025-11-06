@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using ObserveThing;
 using UnityEngine;
@@ -7,26 +8,19 @@ namespace Nessle
 {
     public interface IControl : IDisposable
     {
-        IControl parent { get; }
-        int childCount { get; }
         string identifier { get; }
         string identifierFull { get; }
         GameObject gameObject { get; }
         RectTransform transform { get; }
 
+        ValueObservable<IControl> parent { get; }
+        ListObservable<IControl> children { get; }
         IValueObservable<Rect> rect { get; }
-
-        IControl GetChild(int index);
 
         void AddBinding(IDisposable binding);
         void AddBinding(params IDisposable[] bindings);
         void RemoveBinding(IDisposable binding);
         void RemoveBinding(params IDisposable[] bindings);
-
-        void SetParent(IControl control);
-        void AddChild(IControl control);
-        void RemoveChild(IControl control);
-        void SetSiblingIndex(int index);
 
         void HandleControlHierarchyChanged();
     }
@@ -38,12 +32,13 @@ namespace Nessle
 
     public class Control : IControl
     {
-        public IControl parent { get; private set; }
-        public int childCount => _children.Count;
         public string identifier { get; private set; }
         public string identifierFull { get; private set; }
         public GameObject gameObject { get; private set; }
         public RectTransform transform { get; private set; }
+
+        public ValueObservable<IControl> parent { get; } = new ValueObservable<IControl>();
+        public ListObservable<IControl> children { get; } = new ListObservable<IControl>();
         public IValueObservable<Rect> rect => _rect;
 
         private ValueObservable<Rect> _rect = new ValueObservable<Rect>();
@@ -62,6 +57,29 @@ namespace Nessle
 
             transform = gameObject.GetOrAddComponent<RectTransform>();
             gameObject.GetOrAddComponent<RectTransformChangedHandler>().onReceivedEvent += x => _rect.From(x);
+
+            children.Subscribe(x =>
+            {
+                if (x.operationType == OpType.Add)
+                {
+                    x.element.parent.From(this);
+                }
+                else if (x.operationType == OpType.Remove && x.element.parent.value == this)
+                {
+                    x.element.parent.From(default(IControl));
+                }
+            });
+
+            parent.Subscribe(x =>
+            {
+                if (x.previousValue.children.Contains(this))
+                    x.previousValue.children.Remove(this);
+
+                if (!x.currentValue.children.Contains(this))
+                    x.currentValue.children.Add(this);
+
+                HandleControlHierarchyChanged();
+            });
         }
 
         public IControl GetChild(int index)
@@ -93,23 +111,9 @@ namespace Nessle
             transform.SetSiblingIndex(index);
         }
 
-        public void SetParent(IControl parent)
-        {
-            var prevParent = this.parent;
-            this.parent = parent;
-
-            if (prevParent != null)
-                prevParent.RemoveChild(this);
-
-            if (parent != null)
-                parent.AddChild(this);
-
-            HandleControlHierarchyChanged();
-        }
-
         public void HandleControlHierarchyChanged()
         {
-            identifierFull = parent == null ? identifier : $"{parent.identifierFull}.{identifier}";
+            identifierFull = parent == null ? identifier : $"{parent.value.identifierFull}.{identifier}";
 
             foreach (var child in _children)
                 child.HandleControlHierarchyChanged();
@@ -117,26 +121,14 @@ namespace Nessle
 
         public void AddChild(IControl child)
         {
-            if (child.parent != this)
+            if (child.parent.value != this)
             {
-                child.SetParent(this);
+                child.parent.From(this);
                 return;
             }
 
             _children.Add(child);
             child.transform.SetParent(transform, false);
-        }
-
-        public void RemoveChild(IControl child)
-        {
-            if (child.parent == this)
-            {
-                child.SetParent(null);
-                return;
-            }
-
-            _children.Remove(child);
-            child.transform.SetParent(null, false);
         }
 
         public virtual void Dispose()
@@ -148,6 +140,9 @@ namespace Nessle
 
             foreach (var binding in _bindings)
                 binding.Dispose();
+
+            parent.Dispose();
+            children.Dispose();
 
             UnityEngine.Object.Destroy(gameObject);
         }

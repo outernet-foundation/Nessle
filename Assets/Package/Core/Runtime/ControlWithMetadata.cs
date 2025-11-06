@@ -14,15 +14,15 @@ namespace Nessle
     {
         public IControl control { get; }
         public TData metadata { get; }
-        public IControl parent => control.parent;
         public string identifier => control.identifier;
         public string identifierFull => control.identifierFull;
 
         public RectTransform transform => control.transform;
         public GameObject gameObject => control.gameObject;
-        public IValueObservable<Rect> rect => control.rect;
 
-        public int childCount => control.childCount;
+        public ValueObservable<IControl> parent => control.parent;
+        public ListObservable<IControl> children => control.children;
+        public IValueObservable<Rect> rect => control.rect;
 
         public ControlWithMetadata(IControl control, TData metadata)
         {
@@ -45,26 +45,11 @@ namespace Nessle
         public void RemoveBinding(params IDisposable[] bindings)
             => control.RemoveBinding(bindings);
 
-        public void SetParent(IControl parent)
-            => control.SetParent(parent);
-
-        public void SetSiblingIndex(int index)
-            => control.SetSiblingIndex(index);
-
-        void IControl.AddChild(IControl child)
-            => control.AddChild(child);
-
-        void IControl.RemoveChild(IControl child)
-            => control.RemoveChild(child);
-
         public void Dispose()
             => control.Dispose();
 
         public void HandleControlHierarchyChanged()
             => control.HandleControlHierarchyChanged();
-
-        public IControl GetChild(int index)
-            => control.GetChild(index);
     }
 
     public interface IControlWithMetadata<TProps, TData> : IControlWithMetadata<TData>
