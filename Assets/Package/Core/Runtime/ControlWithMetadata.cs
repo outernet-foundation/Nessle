@@ -4,36 +4,33 @@ using UnityEngine;
 
 namespace Nessle
 {
-    public interface IControlWithMetadata<TProps, TData> : IControl<TProps>
+    public interface IControlWithMetadata<TData> : IControl
     {
-        IControl<TProps> control { get; }
+        IControl control { get; }
         TData metadata { get; }
     }
 
-    public class UnityControlWithMetadata<TProps, TData> : IControlWithMetadata<TProps, TData>, IControl
+    public class ControlWithMetadata<TData> : IControlWithMetadata<TData>
     {
-        public IControl<TProps> control { get; }
+        public IControl control { get; }
         public TData metadata { get; }
         public IControl parent => control.parent;
         public string identifier => control.identifier;
         public string identifierFull => control.identifierFull;
-        public TProps props => control.props;
 
-        public RectTransform transform => _control.transform;
-        public GameObject gameObject => _control.gameObject;
-        public IValueObservable<Rect> rect => _control.rect;
+        public RectTransform transform => control.transform;
+        public GameObject gameObject => control.gameObject;
+        public IValueObservable<Rect> rect => control.rect;
 
-        private IControl _control;
+        public int childCount => control.childCount;
 
-        public UnityControlWithMetadata(IControl<TProps> control, TData metadata)
+        public ControlWithMetadata(IControl control, TData metadata)
         {
             if (control is not IControl unityControl)
                 throw new Exception($"{parent} is not a {nameof(IControl)}");
 
             this.control = control;
             this.metadata = metadata;
-
-            _control = unityControl;
         }
 
         public void AddBinding(IDisposable binding)
@@ -55,15 +52,35 @@ namespace Nessle
             => control.SetSiblingIndex(index);
 
         void IControl.AddChild(IControl child)
-            => _control.AddChild(child);
+            => control.AddChild(child);
 
         void IControl.RemoveChild(IControl child)
-            => _control.RemoveChild(child);
+            => control.RemoveChild(child);
 
         public void Dispose()
             => control.Dispose();
 
         public void HandleControlHierarchyChanged()
             => control.HandleControlHierarchyChanged();
+
+        public IControl GetChild(int index)
+            => control.GetChild(index);
+    }
+
+    public interface IControlWithMetadata<TProps, TData> : IControlWithMetadata<TData>
+    {
+        new IControl<TProps> control { get; }
+        IControl IControlWithMetadata<TData>.control => control;
+    }
+
+    public class ControlWithMetadata<TProps, TData> : ControlWithMetadata<TData>, IControlWithMetadata<TProps, TData>
+    {
+        new public IControl<TProps> control { get; }
+        public TProps props => control.props;
+
+        public ControlWithMetadata(IControl<TProps> control, TData metadata) : base(control, metadata)
+        {
+            this.control = control;
+        }
     }
 }

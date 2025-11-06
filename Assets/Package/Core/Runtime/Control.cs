@@ -8,12 +8,15 @@ namespace Nessle
     public interface IControl : IDisposable
     {
         IControl parent { get; }
+        int childCount { get; }
         string identifier { get; }
         string identifierFull { get; }
         GameObject gameObject { get; }
         RectTransform transform { get; }
 
         IValueObservable<Rect> rect { get; }
+
+        IControl GetChild(int index);
 
         void AddBinding(IDisposable binding);
         void AddBinding(params IDisposable[] bindings);
@@ -36,6 +39,7 @@ namespace Nessle
     public class Control : IControl
     {
         public IControl parent { get; private set; }
+        public int childCount => _children.Count;
         public string identifier { get; private set; }
         public string identifierFull { get; private set; }
         public GameObject gameObject { get; private set; }
@@ -43,7 +47,7 @@ namespace Nessle
         public IValueObservable<Rect> rect => _rect;
 
         private ValueObservable<Rect> _rect = new ValueObservable<Rect>();
-        private HashSet<IControl> _children = new HashSet<IControl>();
+        private List<IControl> _children = new List<IControl>();
         private List<IDisposable> _bindings = new List<IDisposable>();
 
         public Control(string identifier, params Type[] components)
@@ -59,6 +63,9 @@ namespace Nessle
             transform = gameObject.GetOrAddComponent<RectTransform>();
             gameObject.GetOrAddComponent<RectTransformChangedHandler>().onReceivedEvent += x => _rect.From(x);
         }
+
+        public IControl GetChild(int index)
+            => _children[index];
 
         public void AddBinding(IDisposable binding)
         {

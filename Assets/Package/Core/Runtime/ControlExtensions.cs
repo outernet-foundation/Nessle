@@ -52,7 +52,7 @@ namespace Nessle
         }
 
         public static IControlWithMetadata<TProps, TData> WithMetadata<TProps, TData>(this IControl<TProps> control, TData data)
-            => new UnityControlWithMetadata<TProps, TData>(control, data);
+            => new ControlWithMetadata<TProps, TData>(control, data);
 
         public static void Active<T>(this T control, IValueObservable<bool> active)
             where T : IControl
