@@ -41,17 +41,22 @@ namespace Nessle
         public ListObservable<IControl> children { get; } = new ListObservable<IControl>();
         public IValueObservable<Rect> rect => _rect;
 
+        private RectTransform _transformParentOverride;
         private ValueObservable<Rect> _rect = new ValueObservable<Rect>();
-        private List<IControl> _children = new List<IControl>();
         private List<IDisposable> _bindings = new List<IDisposable>();
+
+        private RectTransform _transformParent => _transformParentOverride == null ?
+            transform : _transformParentOverride;
 
         public Control(string identifier, params Type[] components)
             : this(identifier, new GameObject(identifier, components)) { }
 
-        public Control(string identifier, GameObject gameObject)
+        public Control(string identifier, GameObject gameObject, RectTransform transformParentOverride = default)
         {
             this.identifier = identifierFull = identifier;
             this.gameObject = gameObject;
+
+            _transformParentOverride = transformParentOverride;
 
             gameObject.name = identifier;
 
@@ -63,7 +68,7 @@ namespace Nessle
                 if (x.operationType == OpType.Add)
                 {
                     x.element.parent.From(this);
-                    x.element.transform.SetParent(transform, false);
+                    x.element.transform.SetParent(_transformParent, false);
                     x.element.transform.SetSiblingIndex(x.index);
                 }
                 else if (x.operationType == OpType.Remove && x.element.parent.value == this)
@@ -83,9 +88,6 @@ namespace Nessle
                 HandleControlHierarchyChanged();
             });
         }
-
-        public IControl GetChild(int index)
-            => _children[index];
 
         public void AddBinding(IDisposable binding)
         {
@@ -117,27 +119,15 @@ namespace Nessle
         {
             identifierFull = parent == null ? identifier : $"{parent.value.identifierFull}.{identifier}";
 
-            foreach (var child in _children)
+            foreach (var child in children)
                 child.HandleControlHierarchyChanged();
-        }
-
-        public void AddChild(IControl child)
-        {
-            if (child.parent.value != this)
-            {
-                child.parent.From(this);
-                return;
-            }
-
-            _children.Add(child);
-            child.transform.SetParent(transform, false);
         }
 
         public virtual void Dispose()
         {
             _rect.Dispose();
 
-            foreach (var child in _children)
+            foreach (var child in children)
                 child.Dispose();
 
             foreach (var binding in _bindings)
@@ -157,8 +147,8 @@ namespace Nessle
         public Control(string identifier, T props, params Type[] components)
             : this(identifier, props, new GameObject(identifier, components)) { }
 
-        public Control(string identifier, T props, GameObject gameObject)
-            : base(identifier, gameObject)
+        public Control(string identifier, T props, GameObject gameObject, RectTransform transformParentOverride = default)
+            : base(identifier, gameObject, transformParentOverride)
         {
             this.props = props;
         }

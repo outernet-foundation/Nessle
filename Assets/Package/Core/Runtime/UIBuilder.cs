@@ -198,7 +198,8 @@ namespace Nessle
         public static Control<ButtonProps> Button(string identifier = "button", ButtonProps props = default, Button prefab = default, Action<IControl<ButtonProps>> setup = default)
         {
             var button = UnityEngine.Object.Instantiate(prefab == null ? primitives.button : prefab);
-            var control = new Control<ButtonProps>(identifier, props ?? new ButtonProps(), button.gameObject);
+            var content = (RectTransform)button.transform.Find("content");
+            var control = new Control<ButtonProps>(identifier, props ?? new ButtonProps(), button.gameObject, content);
 
             button.onClick.AddListener(() => control.props.onClick.value?.Invoke());
 
@@ -483,7 +484,7 @@ namespace Nessle
         public static Control<ScrollRectProps> ScrollRect(string identifier = "scrollRect", ScrollRectProps props = default, ScrollRect prefab = default, Action<IControl<ScrollRectProps>> setup = default)
         {
             var scrollRect = UnityEngine.Object.Instantiate(prefab == null ? primitives.scrollRect : prefab);
-            var control = new Control<ScrollRectProps>(identifier, props ?? new ScrollRectProps(), scrollRect.gameObject);
+            var control = new Control<ScrollRectProps>(identifier, props ?? new ScrollRectProps(), scrollRect.gameObject, scrollRect.viewport);
 
             scrollRect.onValueChanged.AddListener(x => control.props.value.From(x));
 
@@ -494,7 +495,6 @@ namespace Nessle
                 control.props.content.Subscribe(x =>
                 {
                     x.currentValue.parent.From(control);
-                    x.currentValue.transform.SetParent(scrollRect.viewport, false);
                     scrollRect.content = x.currentValue.transform;
                     x.currentValue.SetPivot(new Vector2(0, 1));
                     x.currentValue.AnchorToTop();
