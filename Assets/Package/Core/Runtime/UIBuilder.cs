@@ -494,6 +494,8 @@ namespace Nessle
                 control.props.vertical.Subscribe(x => scrollRect.vertical = x.currentValue),
                 control.props.content.Subscribe(x =>
                 {
+                    Debug.Log("EP: SETTING CONTENT PARENT");
+                    x.previousValue?.parent.From(default(IControl));
                     x.currentValue.parent.From(control);
                     scrollRect.content = x.currentValue.transform;
                     x.currentValue.SetPivot(new Vector2(0, 1));
