@@ -65,7 +65,7 @@ namespace Nessle
             where TProps : IValueProps<TValue>
         {
             control.AddBinding(
-                bindTo.Subscribe(x => value.From(x.currentValue)),
+                bindTo.Subscribe(x => control.props.value.From(x.currentValue)),
                 control.props.value.Subscribe(x => bindTo.From(x.currentValue))
             );
         }
@@ -74,7 +74,7 @@ namespace Nessle
             where TProps : IValueProps<TValue>
         {
             control.AddBinding(
-                bindTo.Subscribe(x => value.From(toValue(x.currentValue))),
+                bindTo.Subscribe(x => control.props.value.From(toValue(x.currentValue))),
                 control.props.value.Subscribe(x => bindTo.From(toSource(x.currentValue)))
             );
         }
