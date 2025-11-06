@@ -51,6 +51,9 @@ namespace Nessle
             ));
         }
 
+        public static IControlWithMetadata<TData> WithMetadata<TData>(this IControl control, TData data)
+            => new ControlWithMetadata<TData>(control, data);
+
         public static IControlWithMetadata<TProps, TData> WithMetadata<TProps, TData>(this IControl<TProps> control, TData data)
             => new ControlWithMetadata<TProps, TData>(control, data);
 
