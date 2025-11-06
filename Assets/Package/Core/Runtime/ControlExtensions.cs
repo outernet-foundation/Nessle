@@ -448,21 +448,5 @@ namespace Nessle
         {
             control.gameObject.GetOrAddComponent<DeselectHandler>().onReceivedEvent += onDeselect;
         }
-
-        public static void Columns<T>(this T control, float spacing, params IControl[] controls)
-            where T : IControl
-        {
-            control.children.From(controls);
-            float step = 1f / controls.Length;
-            for (int i = 0; i < controls.Length; i++)
-            {
-                var child = controls[i];
-                child.transform.anchorMin = new Vector2(step * i, 0);
-                child.transform.anchorMax = new Vector2(step * (i + 1), 1);
-
-                child.transform.offsetMin = new Vector2(Mathf.Lerp(0f, spacing, i * step), 0);
-                child.transform.offsetMax = new Vector2(Mathf.Lerp(-spacing, 0f, (i + 1) * step), 0);
-            }
-        }
     }
 }
