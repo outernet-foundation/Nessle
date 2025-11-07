@@ -79,10 +79,10 @@ namespace Nessle
 
             parent.Subscribe(x =>
             {
-                if (x.previousValue.children.Contains(this))
+                if (x.previousValue != null && x.previousValue.children.Contains(this))
                     x.previousValue.children.Remove(this);
 
-                if (!x.currentValue.children.Contains(this))
+                if (x.currentValue != null && !x.currentValue.children.Contains(this))
                     x.currentValue.children.Add(this);
 
                 HandleControlHierarchyChanged();
