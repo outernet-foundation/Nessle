@@ -68,7 +68,7 @@ namespace Nessle
                 if (x.operationType == OpType.Add)
                 {
                     x.element.parent.From(this);
-                    x.element.transform.SetParent(_transformParent, false);
+                    x.element.transform.SetParent(transform, false);
                     x.element.transform.SetSiblingIndex(x.index);
                 }
                 else if (x.operationType == OpType.Remove && x.element.parent.value == this)
