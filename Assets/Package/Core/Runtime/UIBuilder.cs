@@ -496,6 +496,10 @@ namespace Nessle
                 {
                     Debug.Log("EP: SETTING CONTENT PARENT");
                     x.previousValue?.parent.From(default(IControl));
+
+                    if (x.currentValue == null)
+                        return;
+
                     x.currentValue.parent.From(control);
                     scrollRect.content = x.currentValue.transform;
                     x.currentValue.SetPivot(new Vector2(0, 1));
