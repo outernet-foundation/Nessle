@@ -488,24 +488,22 @@ namespace Nessle
 
             scrollRect.onValueChanged.AddListener(x => control.props.value.From(x));
 
-            control.AddBinding(
-                control.props.value.Subscribe(x => scrollRect.normalizedPosition = x.currentValue),
-                control.props.horizontal.Subscribe(x => scrollRect.horizontal = x.currentValue),
-                control.props.vertical.Subscribe(x => scrollRect.vertical = x.currentValue),
-                control.props.content.Subscribe(x =>
-                {
-                    Debug.Log("EP: SETTING CONTENT PARENT");
-                    x.previousValue?.parent.From(default(IControl));
+            control.AddBinding(control.props.value.Subscribe(x => scrollRect.normalizedPosition = x.currentValue));
+            control.AddBinding(control.props.horizontal.Subscribe(x => scrollRect.horizontal = x.currentValue));
+            control.AddBinding(control.props.vertical.Subscribe(x => scrollRect.vertical = x.currentValue));
+            control.AddBinding(control.props.content.Subscribe(x =>
+            {
+                Debug.Log("EP: SETTING CONTENT PARENT");
+                x.previousValue?.parent.From(default(IControl));
 
-                    if (x.currentValue == null)
-                        return;
+                if (x.currentValue == null)
+                    return;
 
-                    x.currentValue.parent.From(control);
-                    scrollRect.content = x.currentValue.transform;
-                    x.currentValue.SetPivot(new Vector2(0, 1));
-                    x.currentValue.AnchorToTop();
-                })
-            );
+                x.currentValue.parent.From(control);
+                scrollRect.content = x.currentValue.transform;
+                x.currentValue.SetPivot(new Vector2(0, 1));
+                x.currentValue.AnchorToTop();
+            }));
 
             return control;
         }
