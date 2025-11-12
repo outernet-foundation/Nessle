@@ -117,7 +117,7 @@ namespace Nessle
 
         public void HandleControlHierarchyChanged()
         {
-            identifierFull = parent == null ? identifier : $"{parent.value.identifierFull}.{identifier}";
+            identifierFull = parent.value == null ? identifier : $"{parent.value.identifierFull}.{identifier}";
 
             foreach (var child in children)
                 child.HandleControlHierarchyChanged();
@@ -136,7 +136,14 @@ namespace Nessle
             parent.Dispose();
             children.Dispose();
 
-            UnityEngine.Object.Destroy(gameObject);
+            if (Application.isPlaying)
+            {
+                UnityEngine.Object.Destroy(gameObject);
+            }
+            else
+            {
+                UnityEngine.Object.DestroyImmediate(gameObject);
+            }
         }
     }
 
