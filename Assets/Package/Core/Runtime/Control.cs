@@ -127,6 +127,9 @@ namespace Nessle
         {
             _rect.Dispose();
 
+            if (parent.value != null)
+                parent.value.children.Remove(this);
+
             foreach (var child in children)
                 child.Dispose();
 
