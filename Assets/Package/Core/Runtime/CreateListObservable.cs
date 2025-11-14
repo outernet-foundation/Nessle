@@ -4,7 +4,7 @@ using ObserveThing;
 
 namespace Nessle
 {
-    public class CreateListObservable<T> : IListObservable<T> where T : IDisposable
+    public class CreateListObservable<T> : IListObservable<T> where T : IControl
     {
         private IListObservable<T> _list;
 
@@ -45,8 +45,7 @@ namespace Nessle
                 else if (args.operationType == OpType.Remove)
                 {
                     _currentList.Remove(args.element);
-                    if (!_currentList.Contains(args.element))
-                        args.element.Dispose();
+                    args.element.Dispose();
                 }
             }
 
