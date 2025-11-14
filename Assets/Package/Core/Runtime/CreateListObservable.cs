@@ -41,10 +41,12 @@ namespace Nessle
                 if (args.operationType == OpType.Add)
                 {
                     _currentList.Add(args.element);
+                    _observer.OnNext(args);
                 }
                 else if (args.operationType == OpType.Remove)
                 {
                     _currentList.Remove(args.element);
+                    _observer.OnNext(args);
                     args.element.Dispose();
                 }
             }
@@ -65,6 +67,9 @@ namespace Nessle
                     return;
 
                 _disposed = true;
+
+                foreach (var element in _currentList)
+                    element.Dispose();
 
                 _listStream.Dispose();
                 _observer.OnDispose();
