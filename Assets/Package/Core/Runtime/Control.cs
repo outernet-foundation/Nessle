@@ -130,8 +130,8 @@ namespace Nessle
             if (parent.value != null)
                 parent.value.children.Remove(this);
 
-            foreach (var child in children.ToArray())
-                child.Dispose();
+            while (children.count > 0)
+                children[children.count - 1].Dispose();
 
             foreach (var binding in _bindings)
                 binding.Dispose();
