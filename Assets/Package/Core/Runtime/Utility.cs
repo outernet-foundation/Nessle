@@ -25,5 +25,11 @@ namespace Nessle
 
         public static void AlphaFrom<T>(this ValueObservable<Color> observable, IValueObservable<float> alpha)
             => observable.From(alpha.SelectDynamic(x => observable.value.Alpha(x)));
+
+        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, U> create)
+            where U : System.IDisposable => new CreateListObservable<U>(source.SelectDynamic(create));
+
+        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, IValueObservable<U>> create)
+            where U : System.IDisposable => new CreateListObservable<U>(source.SelectDynamic(create));
     }
 }
