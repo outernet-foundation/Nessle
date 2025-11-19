@@ -11,19 +11,34 @@ namespace Nessle
         public static void LabelFrom<T>(this T control, IValueObservable<string> label)
             where T : IControl<ButtonProps>
         {
-            control.children.Add(Text("label").Setup(x => x.props.text.From(label)));
+            control.children.Add(Text("label").Setup(x =>
+            {
+                x.props.text.From(label);
+                x.props.style.verticalAlignment.From(TMPro.VerticalAlignmentOptions.Capline);
+                x.props.style.horizontalAlignment.From(TMPro.HorizontalAlignmentOptions.Center);
+            }));
         }
 
         public static void LabelFrom<T, U>(this T control, IValueObservable<U> label)
             where T : IControl<ButtonProps>
         {
-            control.children.Add(Text("label").Setup(x => x.props.text.From(label)));
+            control.children.Add(Text("label").Setup(x =>
+            {
+                x.props.text.From(label);
+                x.props.style.verticalAlignment.From(TMPro.VerticalAlignmentOptions.Capline);
+                x.props.style.horizontalAlignment.From(TMPro.HorizontalAlignmentOptions.Center);
+            }));
         }
 
         public static void LabelFrom<T>(this T control, string label)
             where T : IControl<ButtonProps>
         {
-            control.children.Add(Text("label").Setup(x => x.props.text.From(label)));
+            control.children.Add(Text("label").Setup(x =>
+            {
+                x.props.text.From(label);
+                x.props.style.verticalAlignment.From(TMPro.VerticalAlignmentOptions.Capline);
+                x.props.style.horizontalAlignment.From(TMPro.HorizontalAlignmentOptions.Center);
+            }));
         }
 
         public static void IconFrom<T>(this T control, Sprite icon)
