@@ -623,6 +623,9 @@ namespace Nessle
 
             toggle.onValueChanged.AddListener(x => control.props.isOn.From(x));
 
+            control.props.isOn.From(toggle.isOn);
+            control.props.interactable.From(toggle.interactable);
+
             control.AddBinding(
                 control.props.isOn.Subscribe(x => toggle.isOn = x.currentValue),
                 control.props.interactable.Subscribe(x => toggle.interactable = x.currentValue)
