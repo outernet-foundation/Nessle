@@ -7,7 +7,7 @@ namespace Nessle.StatefulExtensions
 {
     public static class Extensions
     {
-        public static void BindValue<TProps, TValue>(this IControl<TProps> control, Func<TProps, ValueObservable<TValue>> accessValue, ObservablePrimitive<TValue> bindTo)
+        public static void Value<TProps, TValue>(this IControl<TProps> control, Func<TProps, ValueObservable<TValue>> accessValue, ObservablePrimitive<TValue> bindTo)
         {
             var value = accessValue(control.props);
             control.AddBinding(
@@ -16,7 +16,7 @@ namespace Nessle.StatefulExtensions
             );
         }
 
-        public static void BindValue<TProps, TValue, TSource>(this IControl<TProps> control, Func<TProps, ValueObservable<TValue>> accessValue, ObservablePrimitive<TSource> bindTo, Func<TValue, TSource> toSource, Func<TSource, TValue> toValue)
+        public static void Value<TProps, TValue, TSource>(this IControl<TProps> control, Func<TProps, ValueObservable<TValue>> accessValue, ObservablePrimitive<TSource> bindTo, Func<TValue, TSource> toSource, Func<TSource, TValue> toValue)
         {
             var value = accessValue(control.props);
             control.AddBinding(

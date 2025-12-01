@@ -607,12 +607,12 @@ namespace Nessle
         public class ToggleProps : IDisposable
         {
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
-            public ValueObservable<bool> isOn { get; } = new ValueObservable<bool>();
+            public ValueObservable<bool> value { get; } = new ValueObservable<bool>();
 
             public void Dispose()
             {
                 interactable.Dispose();
-                isOn.Dispose();
+                value.Dispose();
             }
         }
 
@@ -621,13 +621,13 @@ namespace Nessle
             var toggle = UnityEngine.Object.Instantiate(prefab == null ? primitives.toggle : prefab);
             var control = new Control<ToggleProps>(identifier, props ?? new ToggleProps(), toggle.gameObject);
 
-            toggle.onValueChanged.AddListener(x => control.props.isOn.From(x));
+            toggle.onValueChanged.AddListener(x => control.props.value.From(x));
 
-            control.props.isOn.From(toggle.isOn);
+            control.props.value.From(toggle.isOn);
             control.props.interactable.From(toggle.interactable);
 
             control.AddBinding(
-                control.props.isOn.Subscribe(x => toggle.isOn = x.currentValue),
+                control.props.value.Subscribe(x => toggle.isOn = x.currentValue),
                 control.props.interactable.Subscribe(x => toggle.interactable = x.currentValue)
             );
 
