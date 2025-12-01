@@ -70,10 +70,10 @@ namespace Nessle
             return control;
         }
 
-        public static TControl Value<TControl, TProps, TValue>(this TControl control, Func<TProps, ValueObservable<TValue>> accessValue, ValueObservable<TValue> bindTo)
-            where TControl : IControl<TProps>
+        public static TControl Value<TControl, TValue>(this TControl control, Func<TControl, ValueObservable<TValue>> accessValue, ValueObservable<TValue> bindTo)
+            where TControl : IControl
         {
-            var value = accessValue(control.props);
+            var value = accessValue(control);
             control.AddBinding(
                 bindTo.Subscribe(x => value.From(x.currentValue)),
                 value.Subscribe(x => bindTo.From(x.currentValue))
@@ -81,10 +81,10 @@ namespace Nessle
             return control;
         }
 
-        public static TControl Value<TControl, TProps, TValue, TSource>(this TControl control, Func<TProps, ValueObservable<TValue>> accessValue, ValueObservable<TSource> bindTo, Func<TValue, TSource> toSource, Func<TSource, TValue> toValue)
-            where TControl : IControl<TProps>
+        public static TControl Value<TControl, TValue, TSource>(this TControl control, Func<TControl, ValueObservable<TValue>> accessValue, ValueObservable<TSource> bindTo, Func<TValue, TSource> toSource, Func<TSource, TValue> toValue)
+            where TControl : IControl
         {
-            var value = accessValue(control.props);
+            var value = accessValue(control);
             control.AddBinding(
                 bindTo.Subscribe(x => value.From(toValue(x.currentValue))),
                 value.Subscribe(x => bindTo.From(toSource(x.currentValue)))
