@@ -6,10 +6,10 @@ namespace Nessle.StatefulExtensions
 {
     public static class ToggleExtensions
     {
-        public static void Value(this IControl<ToggleProps> control, ObservablePrimitive<bool> bindTo)
-            => control.Value(x => x.value, bindTo);
+        public static T Value<T>(this T control, ObservablePrimitive<bool> bindTo)
+            where T : IControl<ToggleProps> => control.Value(x => x.props.value, bindTo);
 
-        public static void Value<T>(this IControl<ToggleProps> control, ObservablePrimitive<T> bindTo, Func<bool, T> toSource, Func<T, bool> toControl)
-            => control.Value(x => x.value, bindTo, toSource, toControl);
+        public static TControl Value<TControl, TValue>(this TControl control, ObservablePrimitive<TValue> bindTo, Func<bool, TValue> toSource, Func<TValue, bool> toControl)
+            where TControl : IControl<ToggleProps> => control.Value(x => x.props.value, bindTo, toSource, toControl);
     }
 }

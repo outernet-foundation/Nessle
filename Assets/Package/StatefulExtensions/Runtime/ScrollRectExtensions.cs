@@ -7,10 +7,10 @@ namespace Nessle.StatefulExtensions
 {
     public static class ScrollRectExtensions
     {
-        public static void Value(this IControl<ScrollRectProps> control, ObservablePrimitive<Vector2> bindTo)
-            => control.Value(x => x.value, bindTo);
+        public static T Value<T>(this T control, ObservablePrimitive<Vector2> bindTo)
+            where T : IControl<ScrollRectProps> => control.Value(x => x.props.value, bindTo);
 
-        public static void Value<T>(this IControl<ScrollRectProps> control, ObservablePrimitive<T> bindTo, Func<Vector2, T> toSource, Func<T, Vector2> toControl)
-            => control.Value(x => x.value, bindTo, toSource, toControl);
+        public static TControl Value<TControl, TValue>(this TControl control, ObservablePrimitive<TValue> bindTo, Func<Vector2, TValue> toSource, Func<TValue, Vector2> toControl)
+            where TControl : IControl<ScrollRectProps> => control.Value(x => x.props.value, bindTo, toSource, toControl);
     }
 }

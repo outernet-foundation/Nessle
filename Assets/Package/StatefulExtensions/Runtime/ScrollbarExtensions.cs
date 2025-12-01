@@ -6,10 +6,12 @@ namespace Nessle.StatefulExtensions
 {
     public static class ScrollbarExtensions
     {
-        public static void Value(this IControl<ScrollbarProps> control, ObservablePrimitive<float> bindTo)
-            => control.Value(x => x.value, bindTo);
+        public static T Value<T>(this T control, ObservablePrimitive<float> bindTo)
+            where T : IControl<ScrollbarProps> => control.Value(x => x.props.value, bindTo);
 
-        public static void Value<T>(this IControl<ScrollbarProps> control, ObservablePrimitive<T> bindTo, Func<float, T> toSource, Func<T, float> toControl)
-            => control.Value(x => x.value, bindTo, toSource, toControl);
+
+        public static TControl Value<TControl, TValue>(this TControl control, ObservablePrimitive<TValue> bindTo, Func<float, TValue> toSource, Func<TValue, float> toControl)
+            where TControl : IControl<ScrollbarProps> => control.Value(x => x.props.value, bindTo, toSource, toControl);
+
     }
 }

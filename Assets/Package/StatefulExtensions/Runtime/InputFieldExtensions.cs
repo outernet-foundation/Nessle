@@ -6,10 +6,10 @@ namespace Nessle.StatefulExtensions
 {
     public static class InputFieldExtensions
     {
-        public static void Value(this IControl<InputFieldProps> control, ObservablePrimitive<string> bindTo)
-            => control.Value(x => x.inputText.text, bindTo);
+        public static T Value<T>(this T control, ObservablePrimitive<string> bindTo)
+            where T : IControl<InputFieldProps> => control.Value(x => x.props.inputText.text, bindTo);
 
-        public static void Value<T>(this IControl<InputFieldProps> control, ObservablePrimitive<T> bindTo, Func<string, T> toSource, Func<T, string> toControl)
-            => control.Value(x => x.inputText.text, bindTo, toSource, toControl);
+        public static TControl Value<TControl, TValue>(this TControl control, ObservablePrimitive<TValue> bindTo, Func<string, TValue> toSource, Func<TValue, string> toControl)
+            where TControl : IControl<InputFieldProps> => control.Value(x => x.props.inputText.text, bindTo, toSource, toControl);
     }
 }

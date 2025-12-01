@@ -6,10 +6,10 @@ namespace Nessle.StatefulExtensions
 {
     public static class DropdownExtensions
     {
-        public static void Value(this IControl<DropdownProps> control, ObservablePrimitive<int> bindTo)
-            => control.Value(x => x.value, bindTo);
+        public static T Value<T>(this T control, ObservablePrimitive<int> bindTo)
+            where T : IControl<DropdownProps> => control.Value(x => x.props.value, bindTo);
 
-        public static void Value<T>(this IControl<DropdownProps> control, ObservablePrimitive<T> bindTo, Func<int, T> toSource, Func<T, int> toControl)
-            => control.Value(x => x.value, bindTo, toSource, toControl);
+        public static TControl Value<TControl, TValue>(this TControl control, ObservablePrimitive<TValue> bindTo, Func<int, TValue> toSource, Func<TValue, int> toControl)
+            where TControl : IControl<DropdownProps> => control.Value(x => x.props.value, bindTo, toSource, toControl);
     }
 }

@@ -6,10 +6,12 @@ namespace Nessle.StatefulExtensions
 {
     public static class FloatFieldExtensions
     {
-        public static void Value(this IControl<FloatFieldProps> control, ObservablePrimitive<float> bindTo)
-            => control.Value(x => x.value, bindTo);
+        public static T Value<T>(this T control, ObservablePrimitive<float> bindTo)
+            where T : IControl<FloatFieldProps> => control.Value(x => x.props.value, bindTo);
 
-        public static void Value<T>(this IControl<FloatFieldProps> control, ObservablePrimitive<T> bindTo, Func<float, T> toSource, Func<T, float> toControl)
-            => control.Value(x => x.value, bindTo, toSource, toControl);
+
+        public static TControl Value<TControl, TValue>(this TControl control, ObservablePrimitive<TValue> bindTo, Func<float, TValue> toSource, Func<TValue, float> toControl)
+            where TControl : IControl<FloatFieldProps> => control.Value(x => x.props.value, bindTo, toSource, toControl);
+
     }
 }
