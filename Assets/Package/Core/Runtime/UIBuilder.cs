@@ -76,14 +76,16 @@ namespace Nessle
             }
         }
 
-        public class TextProps : IDisposable
+        public class TextProps : IDisposable, IValueProps<string>, IColorProps
         {
-            public ValueObservable<string> text { get; } = new ValueObservable<string>();
+            public ValueObservable<string> value { get; } = new ValueObservable<string>();
             public TextStyleProps style { get; } = new TextStyleProps();
+
+            ValueObservable<Color> IColorProps.color => style.color;
 
             public void Dispose()
             {
-                text.Dispose();
+                value.Dispose();
                 style.Dispose();
             }
         }
@@ -151,7 +153,7 @@ namespace Nessle
             var control = new Control<TextProps>(identifier, props ?? new TextProps(), text.gameObject);
 
             control.AddBinding(
-                control.props.text.Subscribe(x => text.text = x.currentValue),
+                control.props.value.Subscribe(x => text.text = x.currentValue),
                 BindTextStyle(control.props.style, text, true)
             );
 
@@ -160,7 +162,7 @@ namespace Nessle
             return control;
         }
 
-        public class ImageProps : IDisposable
+        public class ImageProps : IDisposable, IColorProps
         {
             public ValueObservable<Sprite> sprite { get; } = new ValueObservable<Sprite>();
             public ValueObservable<Color> color { get; } = new ValueObservable<Color>();
@@ -215,7 +217,7 @@ namespace Nessle
             return control;
         }
 
-        public class ButtonProps : IDisposable
+        public class ButtonProps : IDisposable, IInteractableProps
         {
             public ValueObservable<Action> onClick { get; } = new ValueObservable<Action>();
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
@@ -310,7 +312,7 @@ namespace Nessle
             return control;
         }
 
-        public class InputFieldProps : IDisposable
+        public class InputFieldProps : IDisposable, IValueProps<string>, IInteractableProps
         {
             public TextProps inputText { get; } = new TextProps();
             public TextProps placeholderText { get; } = new TextProps();
@@ -320,6 +322,8 @@ namespace Nessle
             public ValueObservable<int> characterLimit { get; } = new ValueObservable<int>();
             public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
             public ValueObservable<Action<string>> onEndEdit { get; } = new ValueObservable<Action<string>>();
+
+            ValueObservable<string> IValueProps<string>.value => inputText.value;
 
             public void Dispose()
             {
@@ -342,11 +346,11 @@ namespace Nessle
             inputField.enabled = false;
             inputField.enabled = true;
 
-            inputField.onValueChanged.AddListener(x => control.props.inputText.text.From(x));
+            inputField.onValueChanged.AddListener(x => control.props.inputText.value.From(x));
             inputField.onEndEdit.AddListener(x => control.props.onEndEdit.value?.Invoke(x));
 
             control.AddBinding(
-                control.props.inputText.text.Subscribe(x => inputField.text = x.currentValue),
+                control.props.inputText.value.Subscribe(x => inputField.text = x.currentValue),
                 BindTextStyle(control.props.inputText.style, inputField.textComponent, true),
                 control.props.contentType.Subscribe(x => inputField.contentType = x.currentValue),
                 control.props.readOnly.Subscribe(x => inputField.readOnly = x.currentValue),
@@ -358,7 +362,7 @@ namespace Nessle
             if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
             {
                 control.AddBinding(
-                    control.props.placeholderText.text.Subscribe(x => placeholder.text = x.currentValue),
+                    control.props.placeholderText.value.Subscribe(x => placeholder.text = x.currentValue),
                     BindTextStyle(control.props.placeholderText.style, placeholder, true)
                 );
             }
@@ -366,7 +370,7 @@ namespace Nessle
             return control;
         }
 
-        public class FloatFieldProps : IDisposable
+        public class FloatFieldProps : IDisposable, IValueProps<float>, IInteractableProps
         {
             public ValueObservable<float> value { get; } = new ValueObservable<float>();
             public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
@@ -404,7 +408,7 @@ namespace Nessle
             if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
             {
                 control.AddBinding(
-                    control.props.placeholderText.text.Subscribe(x => placeholder.text = x.currentValue),
+                    control.props.placeholderText.value.Subscribe(x => placeholder.text = x.currentValue),
                     BindTextStyle(control.props.placeholderText.style, placeholder, true)
                 );
             }
@@ -412,7 +416,7 @@ namespace Nessle
             return control;
         }
 
-        public class IntFieldProps : IDisposable
+        public class IntFieldProps : IDisposable, IValueProps<int>, IInteractableProps
         {
             public ValueObservable<int> value { get; } = new ValueObservable<int>();
             public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
@@ -450,7 +454,7 @@ namespace Nessle
             if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
             {
                 control.AddBinding(
-                    control.props.placeholderText.text.Subscribe(x => placeholder.text = x.currentValue),
+                    control.props.placeholderText.value.Subscribe(x => placeholder.text = x.currentValue),
                     BindTextStyle(control.props.placeholderText.style, placeholder, true)
                 );
             }
@@ -461,7 +465,7 @@ namespace Nessle
         public static Control Space(string identifier = "space")
             => new Control(identifier);
 
-        public class ScrollbarProps : IDisposable
+        public class ScrollbarProps : IDisposable, IValueProps<float>, IInteractableProps
         {
             public ValueObservable<float> value { get; } = new ValueObservable<float>();
             public ValueObservable<ScrollbarDirection> direction { get; } = new ValueObservable<ScrollbarDirection>();
@@ -494,7 +498,7 @@ namespace Nessle
             return control;
         }
 
-        public class ScrollRectProps : IDisposable
+        public class ScrollRectProps : IDisposable, IValueProps<Vector2>
         {
             public ValueObservable<Vector2> value { get; } = new ValueObservable<Vector2>(new Vector2(0, 1));
             public ValueObservable<bool> horizontal { get; } = new ValueObservable<bool>(true);
@@ -564,7 +568,7 @@ namespace Nessle
             return control;
         }
 
-        public class DropdownProps : IDisposable
+        public class DropdownProps : IDisposable, IValueProps<int>, IInteractableProps
         {
             public ValueObservable<int> value { get; } = new ValueObservable<int>();
             public ValueObservable<bool> allowMultiselect { get; } = new ValueObservable<bool>();
@@ -604,15 +608,15 @@ namespace Nessle
             return control;
         }
 
-        public class ToggleProps : IDisposable
+        public class ToggleProps : IDisposable, IValueProps<bool>, IInteractableProps
         {
-            public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
             public ValueObservable<bool> value { get; } = new ValueObservable<bool>();
+            public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
 
             public void Dispose()
             {
-                interactable.Dispose();
                 value.Dispose();
+                interactable.Dispose();
             }
         }
 
@@ -634,13 +638,14 @@ namespace Nessle
             return control;
         }
 
-        public class SliderProps : IDisposable
+        public class SliderProps : IDisposable, IValueProps<float>, IInteractableProps
         {
             public ValueObservable<float> value { get; } = new ValueObservable<float>();
             public ValueObservable<float> minValue { get; } = new ValueObservable<float>();
             public ValueObservable<float> maxValue { get; } = new ValueObservable<float>();
             public ValueObservable<bool> wholeNumbers { get; } = new ValueObservable<bool>();
             public ValueObservable<SliderDirection> direction { get; } = new ValueObservable<SliderDirection>();
+            public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
 
             public void Dispose()
             {
@@ -649,6 +654,7 @@ namespace Nessle
                 maxValue.Dispose();
                 wholeNumbers.Dispose();
                 direction.Dispose();
+                interactable.Dispose();
             }
         }
 
@@ -664,7 +670,8 @@ namespace Nessle
                 control.props.minValue.Subscribe(x => slider.minValue = x.currentValue),
                 control.props.maxValue.Subscribe(x => slider.maxValue = x.currentValue),
                 control.props.wholeNumbers.Subscribe(x => slider.wholeNumbers = x.currentValue),
-                control.props.direction.Subscribe(x => slider.direction = x.currentValue)
+                control.props.direction.Subscribe(x => slider.direction = x.currentValue),
+                control.props.interactable.Subscribe(x => slider.interactable = x.currentValue)
             );
 
             return control;

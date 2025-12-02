@@ -5,20 +5,6 @@ namespace Nessle
 {
     public static class DropdownExtensions
     {
-        public static T Value<T>(this T control, int value)
-            where T : IControl<UIBuilder.DropdownProps>
-        {
-            control.props.value.From(value);
-            return control;
-        }
-
-        public static T Value<T>(this T control, IValueObservable<int> value)
-            where T : IControl<UIBuilder.DropdownProps>
-        {
-            control.props.value.From(value);
-            return control;
-        }
-
         public static T Options<T>(this T control, params string[] options)
             where T : IControl<UIBuilder.DropdownProps> => control.Options((IEnumerable<string>)options);
 

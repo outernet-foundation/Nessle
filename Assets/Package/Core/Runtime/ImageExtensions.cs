@@ -18,19 +18,5 @@ namespace Nessle
             control.props.sprite.From(sprite);
             return control;
         }
-
-        public static T Color<T>(this T control, Color color)
-            where T : IControl<UIBuilder.ImageProps>
-        {
-            control.props.color.From(color);
-            return control;
-        }
-
-        public static T Color<T>(this T control, IValueObservable<Color> color)
-            where T : IControl<UIBuilder.ImageProps>
-        {
-            control.props.color.From(color);
-            return control;
-        }
     }
 }
