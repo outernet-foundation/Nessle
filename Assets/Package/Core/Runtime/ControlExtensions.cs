@@ -292,6 +292,20 @@ namespace Nessle
             return control;
         }
 
+        public static T ChildParentOverride<T>(this T control, RectTransform childParentOverride)
+            where T : IControl
+        {
+            control.childParentOverride.From(childParentOverride);
+            return control;
+        }
+
+        public static T ChildParentOverride<T>(this T control, IValueObservable<RectTransform> childParentOverride)
+            where T : IControl
+        {
+            control.childParentOverride.From(childParentOverride);
+            return control;
+        }
+
         public static T IgnoreLayout<T>(this T control, IValueObservable<bool> ignoreLayout)
             where T : IControl
         {

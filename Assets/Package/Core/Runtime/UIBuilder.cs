@@ -233,10 +233,11 @@ namespace Nessle
         {
             var button = UnityEngine.Object.Instantiate(prefab == null ? primitives.button : prefab);
             var content = (RectTransform)button.transform.Find("content");
-            var control = new Control<ButtonProps>(identifier, props ?? new ButtonProps(), button.gameObject, content);
+            var control = new Control<ButtonProps>(identifier, props ?? new ButtonProps(), button.gameObject);
 
             button.onClick.AddListener(() => control.props.onClick.value?.Invoke());
 
+            control.ChildParentOverride(content);
             control.AddBinding(control.props.interactable.Subscribe(x => button.interactable = x.currentValue));
 
             return control;
@@ -566,7 +567,7 @@ namespace Nessle
         public static Control<ScrollRectProps> ScrollRect(string identifier = "scrollRect", ScrollRectProps props = default, ScrollRect prefab = default, Action<IControl<ScrollRectProps>> setup = default)
         {
             var scrollRect = UnityEngine.Object.Instantiate(prefab == null ? primitives.scrollRect : prefab);
-            var control = new Control<ScrollRectProps>(identifier, props ?? new ScrollRectProps(), scrollRect.gameObject, scrollRect.viewport);
+            var control = new Control<ScrollRectProps>(identifier, props ?? new ScrollRectProps(), scrollRect.gameObject);
 
             scrollRect.onValueChanged.AddListener(x => control.props.value.From(x));
 
@@ -610,6 +611,8 @@ namespace Nessle
                 scrollRect.horizontal = control.props.horizontal.value;
                 scrollRect.vertical = control.props.vertical.value;
             }));
+
+            control.ChildParentOverride(scrollRect.viewport);
 
             return control;
         }

@@ -13,6 +13,7 @@ namespace Nessle
         GameObject gameObject { get; }
         RectTransform transform { get; }
 
+        ValueObservable<RectTransform> childParentOverride { get; }
         ValueObservable<IControl> parent { get; }
         ListObservable<IControl> children { get; }
         IValueObservable<Rect> rect { get; }
@@ -37,38 +38,41 @@ namespace Nessle
         public GameObject gameObject { get; private set; }
         public RectTransform transform { get; private set; }
 
+        public ValueObservable<RectTransform> childParentOverride { get; } = new ValueObservable<RectTransform>();
         public ValueObservable<IControl> parent { get; } = new ValueObservable<IControl>();
         public ListObservable<IControl> children { get; } = new ListObservable<IControl>();
         public IValueObservable<Rect> rect => _rect;
 
-        private RectTransform _transformParentOverride;
         private ValueObservable<Rect> _rect = new ValueObservable<Rect>();
+        private ValueObservable<RectTransform> _childParent { get; } = new ValueObservable<RectTransform>();
         private List<IDisposable> _bindings = new List<IDisposable>();
-
-        private RectTransform _transformParent => _transformParentOverride == null ?
-            transform : _transformParentOverride;
 
         public Control(string identifier, params Type[] components)
             : this(identifier, new GameObject(identifier, components)) { }
 
-        public Control(string identifier, GameObject gameObject, RectTransform transformParentOverride = default)
+        public Control(string identifier, GameObject gameObject)
         {
             this.identifier = identifierFull = identifier;
             this.gameObject = gameObject;
-
-            _transformParentOverride = transformParentOverride;
 
             gameObject.name = identifier;
 
             transform = gameObject.GetOrAddComponent<RectTransform>();
             gameObject.GetOrAddComponent<RectTransformChangedHandler>().onReceivedEvent += x => _rect.From(x);
 
+            _childParent.From(childParentOverride.SelectDynamic(x => x == null ? transform : x));
+            _childParent.Subscribe(x =>
+            {
+                foreach (var child in children)
+                    child.transform.SetParent(x.currentValue, false);
+            });
+
             children.Subscribe(x =>
             {
                 if (x.operationType == OpType.Add)
                 {
                     x.element.parent.From(this);
-                    x.element.transform.SetParent(_transformParent, false);
+                    x.element.transform.SetParent(_childParent.value, false);
                     x.element.transform.SetSiblingIndex(x.index);
                 }
                 else if (x.operationType == OpType.Remove && x.element.parent.value == this)
@@ -157,8 +161,8 @@ namespace Nessle
         public Control(string identifier, T props, params Type[] components)
             : this(identifier, props, new GameObject(identifier, components)) { }
 
-        public Control(string identifier, T props, GameObject gameObject, RectTransform transformParentOverride = default)
-            : base(identifier, gameObject, transformParentOverride)
+        public Control(string identifier, T props, GameObject gameObject)
+            : base(identifier, gameObject)
         {
             this.props = props;
         }
