@@ -395,7 +395,7 @@ namespace Nessle
 
             inputField.enabled = false;
             inputField.enabled = true;
-
+            inputField.contentType = TMP_ContentType.DecimalNumber;
             inputField.onEndEdit.AddListener(x => control.props.value.From(float.TryParse(x, out var value) ? value : 0));
 
             control.AddBinding(
@@ -441,7 +441,7 @@ namespace Nessle
 
             inputField.enabled = false;
             inputField.enabled = true;
-
+            inputField.contentType = TMP_ContentType.IntegerNumber;
             inputField.onEndEdit.AddListener(x => control.props.value.From(int.TryParse(x, out var value) ? value : 0));
 
             control.AddBinding(

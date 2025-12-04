@@ -38,12 +38,6 @@ namespace Nessle
             return control;
         }
 
-        public static IControlWithMetadata<TData> WithMetadata<TData>(this IControl control, TData data)
-            => new ControlWithMetadata<TData>(control, data);
-
-        public static IControlWithMetadata<TProps, TData> WithMetadata<TProps, TData>(this IControl<TProps> control, TData data)
-            => new ControlWithMetadata<TProps, TData>(control, data);
-
         public static T Active<T>(this T control, IValueObservable<bool> active)
             where T : IControl
         {
