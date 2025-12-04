@@ -462,6 +462,52 @@ namespace Nessle
             return control;
         }
 
+        public class DoubleFieldProps : IDisposable, IValueProps<double>, IInteractableProps
+        {
+            public ValueObservable<double> value { get; } = new ValueObservable<double>();
+            public TextStyleProps inputTextStyle { get; } = new TextStyleProps();
+            public TextProps placeholderText { get; } = new TextProps();
+            public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
+            public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
+
+            public void Dispose()
+            {
+                value.Dispose();
+                inputTextStyle.Dispose();
+                placeholderText.Dispose();
+                readOnly.Dispose();
+                interactable.Dispose();
+            }
+        }
+
+        public static Control<DoubleFieldProps> DoubleField(string identifier = "doubleField", DoubleFieldProps props = default, TMP_InputField prefab = default)
+        {
+            var inputField = UnityEngine.Object.Instantiate(prefab == null ? primitives.inputField : prefab);
+            var control = new Control<DoubleFieldProps>(identifier, props ?? new DoubleFieldProps(), inputField.gameObject);
+
+            inputField.enabled = false;
+            inputField.enabled = true;
+            inputField.contentType = TMP_ContentType.DecimalNumber;
+            inputField.onEndEdit.AddListener(x => control.props.value.From(double.TryParse(x, out var value) ? value : 0));
+
+            control.AddBinding(
+                control.props.value.Subscribe(x => inputField.text = x.currentValue.ToString()),
+                BindTextStyle(control.props.inputTextStyle, inputField.textComponent, true),
+                control.props.readOnly.Subscribe(x => inputField.readOnly = x.currentValue),
+                control.props.interactable.Subscribe(x => inputField.interactable = x.currentValue)
+            );
+
+            if (inputField.placeholder != null && inputField.placeholder is TMP_Text placeholder)
+            {
+                control.AddBinding(
+                    control.props.placeholderText.value.Subscribe(x => placeholder.text = x.currentValue),
+                    BindTextStyle(control.props.placeholderText.style, placeholder, true)
+                );
+            }
+
+            return control;
+        }
+
         public static Control Space(string identifier = "space")
             => new Control(identifier);
 
