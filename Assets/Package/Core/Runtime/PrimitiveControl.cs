@@ -23,6 +23,9 @@ namespace Nessle
         [SerializeField]
         protected RectTransform _childParentOverride;
 
+        public void Setup()
+            => Setup(gameObject.name);
+
         public virtual void Setup(string identifier)
         {
             this.identifier = identifierFull = identifier;
@@ -61,6 +64,7 @@ namespace Nessle
         }
 
         protected virtual void SetupInternal() { }
+        protected virtual void DisposeInternal() { }
 
         public void AddBinding(IDisposable binding)
         {
@@ -120,6 +124,8 @@ namespace Nessle
             {
                 DestroyImmediate(gameObject);
             }
+
+            DisposeInternal();
         }
     }
 
@@ -130,10 +136,13 @@ namespace Nessle
         public override void Setup(string identifier)
             => Setup(identifier, default);
 
+        public void Setup(T props)
+            => Setup(gameObject.name, props);
+
         public void Setup(string identifier, T props)
         {
-            base.Setup(identifier);
             this.props = props ?? new T();
+            base.Setup(identifier);
         }
 
         public override void Dispose()

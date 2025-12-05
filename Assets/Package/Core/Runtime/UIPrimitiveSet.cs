@@ -1,7 +1,5 @@
 using UnityEngine;
 
-using static Nessle.UIBuilder;
-
 namespace Nessle
 {
     [CreateAssetMenu(fileName = "UIPrimitiveSet", menuName = "Nessle/UI Primitive Set")]
@@ -10,9 +8,6 @@ namespace Nessle
         public PrimitiveControl<TextProps> text => _text;
         public PrimitiveControl<ImageProps> image => _image;
         public PrimitiveControl<InputFieldProps> inputField => _inputField;
-        public PrimitiveControl<FloatFieldProps> floatField => _floatField;
-        public PrimitiveControl<IntFieldProps> intField => _intField;
-        public PrimitiveControl<DoubleFieldProps> doubleField => _doubleField;
         public PrimitiveControl<ScrollbarProps> scrollbar => _scrollbar;
         public PrimitiveControl<ScrollRectProps> scrollRect => _scrollRect;
         public PrimitiveControl<DropdownProps> dropdown => _dropdown;
@@ -25,9 +20,6 @@ namespace Nessle
         [SerializeField] private PrimitiveControl<TextProps> _text;
         [SerializeField] private PrimitiveControl<ImageProps> _image;
         [SerializeField] private PrimitiveControl<InputFieldProps> _inputField;
-        [SerializeField] private PrimitiveControl<FloatFieldProps> _floatField;
-        [SerializeField] private PrimitiveControl<IntFieldProps> _intField;
-        [SerializeField] private PrimitiveControl<DoubleFieldProps> _doubleField;
         [SerializeField] private PrimitiveControl<ScrollbarProps> _scrollbar;
         [SerializeField] private PrimitiveControl<ScrollRectProps> _scrollRect;
         [SerializeField] private PrimitiveControl<DropdownProps> _dropdown;

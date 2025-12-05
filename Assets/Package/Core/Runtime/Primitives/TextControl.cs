@@ -8,7 +8,7 @@ namespace Nessle
     public class TextProps : IDisposable, IValueProps<string>, IColorProps
     {
         public ValueObservable<string> value { get; } = new ValueObservable<string>();
-        public TextStyleProps style { get; } = new TextStyleProps();
+        public TextStyleProps style { get; }
 
         ValueObservable<Color> IColorProps.color => style.color;
 
@@ -83,7 +83,8 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(Utility.BindText(props, _text));
+            props.value.From(_text.text);
+            AddBinding(props.value.Subscribe(x => _text.text = x.currentValue));
         }
     }
 }

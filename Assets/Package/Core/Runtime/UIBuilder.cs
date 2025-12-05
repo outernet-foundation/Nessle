@@ -57,17 +57,47 @@ namespace Nessle
         public static PrimitiveControl<InputFieldProps> InputField(string identifier = "inputField", InputFieldProps props = default, PrimitiveControl<InputFieldProps> prefab = default)
             => Control(identifier, props, prefab == null ? primitives.inputField : prefab);
 
-        public static PrimitiveControl<FloatFieldProps> FloatField(string identifier = "floatField", FloatFieldProps props = default, PrimitiveControl<FloatFieldProps> prefab = default)
-            => Control(identifier, props, prefab == null ? primitives.floatField : prefab);
+        public static IControl<InputFieldProps<float>> FloatField(string identifier = "floatField", InputFieldProps<float> props = default, PrimitiveControl<InputFieldProps<float>> prefab = default)
+        {
+            if (prefab != null)
+                return Control(identifier, props, prefab);
 
-        public static PrimitiveControl<IntFieldProps> IntField(string identifier = "intField", IntFieldProps props = default, PrimitiveControl<IntFieldProps> prefab = default)
-            => Control(identifier, props, prefab == null ? primitives.intField : prefab);
+            props = props ?? new InputFieldProps<float>();
+            var inputField = InputField($"{identifier}.inputField", props.inputField);
+            var control = Control(identifier, props, inputField.gameObject);
+            props.value.From(float.TryParse(inputField.props.value.value, out var value) ? value : 0);
+            props.inputField.onEndEdit.From(x => props.value.From(float.TryParse(x, out var value) ? value : 0));
+            return control;
+        }
 
-        public static PrimitiveControl<DoubleFieldProps> DoubleField(string identifier = "doubleField", DoubleFieldProps props = default, PrimitiveControl<DoubleFieldProps> prefab = default)
-            => Control(identifier, props, prefab == null ? primitives.doubleField : prefab);
+        public static IControl<InputFieldProps<int>> IntField(string identifier = "intField", InputFieldProps<int> props = default, PrimitiveControl<InputFieldProps<int>> prefab = default)
+        {
+            if (prefab != null)
+                return Control(identifier, props, prefab);
 
-        // public static Control Space(string identifier = "space")
-        //     => new Control(identifier);
+            props = props ?? new InputFieldProps<int>();
+            var inputField = InputField($"{identifier}.inputField", props.inputField);
+            var control = Control(identifier, props, inputField.gameObject);
+            props.value.From(int.TryParse(inputField.props.value.value, out var value) ? value : 0);
+            props.inputField.onEndEdit.From(x => props.value.From(int.TryParse(x, out var value) ? value : 0));
+            return control;
+        }
+
+        public static IControl<InputFieldProps<double>> DoubleField(string identifier = "doubleField", InputFieldProps<double> props = default, PrimitiveControl<InputFieldProps<double>> prefab = default)
+        {
+            if (prefab != null)
+                return Control(identifier, props, prefab);
+
+            props = props ?? new InputFieldProps<double>();
+            var inputField = InputField($"{identifier}.inputField", props.inputField);
+            var control = Control(identifier, props, inputField.gameObject);
+            props.value.From(int.TryParse(inputField.props.value.value, out var value) ? value : 0);
+            props.inputField.onEndEdit.From(x => props.value.From(double.TryParse(x, out var value) ? value : 0));
+            return control;
+        }
+
+        public static IControl Space(string identifier = "space")
+            => Control(identifier);
 
         public static PrimitiveControl<ScrollbarProps> Scrollbar(string identifier = "scrollbar", ScrollbarProps props = default, PrimitiveControl<ScrollbarProps> prefab = default)
             => Control(identifier, props, prefab == null ? primitives.scrollbar : prefab);
