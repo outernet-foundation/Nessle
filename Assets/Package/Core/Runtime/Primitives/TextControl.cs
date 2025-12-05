@@ -8,7 +8,7 @@ namespace Nessle
     public class TextProps : IDisposable, IValueProps<string>, IColorProps
     {
         public ValueObservable<string> value { get; } = new ValueObservable<string>();
-        public TextStyleProps style { get; }
+        public TextStyleProps style { get; } = new TextStyleProps();
 
         ValueObservable<Color> IColorProps.color => style.color;
 
