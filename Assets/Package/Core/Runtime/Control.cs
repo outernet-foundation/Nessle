@@ -6,7 +6,6 @@ using ObserveThing;
 
 namespace Nessle
 {
-    [RequireComponent(typeof(RectTransform))]
     public class Control : IControl
     {
         public string identifier { get; private set; }
@@ -122,14 +121,14 @@ namespace Nessle
         }
     }
 
-    public class Control<T> : Control, IControl<T> where T : new()
+    public class Control<T> : Control, IControl<T>
     {
         public T props { get; private set; }
 
         public Control(string identifier, T props, GameObject gameObject, RectTransform childParentOverride = default)
             : base(identifier, gameObject, childParentOverride)
         {
-            this.props = props ?? new T();
+            this.props = props;
         }
 
         public override void Dispose()

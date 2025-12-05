@@ -1,8 +1,35 @@
+using System;
+using UnityEngine;
+
 namespace Nessle
 {
     public static class UIBuilder
     {
         public static UIPrimitiveSet primitives { get; set; }
+
+        public static IControl Control(string identifier, params Type[] componentTypes)
+            => Control(identifier, new GameObject(identifier, componentTypes), default(RectTransform));
+
+        public static IControl Control(string identifier, RectTransform childParentOverride, params Type[] componentTypes)
+            => Control(identifier, new GameObject(identifier, componentTypes), childParentOverride);
+
+        public static IControl Control(string identifier, GameObject gameObject)
+            => Control(identifier, gameObject, default(RectTransform));
+
+        public static IControl Control(string identifier, GameObject gameObject, RectTransform childParentOverride)
+            => new Control(identifier, gameObject, childParentOverride);
+
+        public static IControl<T> Control<T>(string identifier, T props, params Type[] componentTypes)
+            => Control(identifier, props, new GameObject(identifier, componentTypes), default);
+
+        public static IControl<T> Control<T>(string identifier, T props, RectTransform childParentOverride, params Type[] componentTypes)
+            => Control(identifier, props, new GameObject(identifier, componentTypes), childParentOverride);
+
+        public static IControl<T> Control<T>(string identifier, T props, GameObject gameObject)
+            => Control(identifier, props, gameObject, default);
+
+        public static IControl<T> Control<T>(string identifier, T props, GameObject gameObject, RectTransform childParentOverride)
+            => new Control<T>(identifier, props, gameObject, childParentOverride);
 
         public static PrimitiveControl<T> Control<T>(string identifier, T props, PrimitiveControl<T> prefab)
             where T : new()
