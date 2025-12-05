@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using ObserveThing;
 
+using static Nessle.UIBuilder;
+
 namespace Nessle
 {
     public interface IValueProps<T>
@@ -17,6 +19,11 @@ namespace Nessle
     public interface IColorProps
     {
         ValueObservable<Color> color { get; }
+    }
+
+    public interface ILayoutProps
+    {
+        LayoutProps layout { get; }
     }
 
     public static class InterfaceExtensions

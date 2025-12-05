@@ -7,11 +7,10 @@ using ObserveThing;
 namespace Nessle
 {
     [RequireComponent(typeof(RectTransform))]
-    public class Control : IControl
+    public class PrimitiveControl : MonoBehaviour, IControl
     {
         public string identifier { get; private set; }
         public string identifierFull { get; private set; }
-        public GameObject gameObject { get; private set; }
         public RectTransform rectTransform { get; private set; }
 
         public ValueObservable<IControl> parent { get; } = new ValueObservable<IControl>();
@@ -21,18 +20,16 @@ namespace Nessle
         private ValueObservable<Rect> _rect = new ValueObservable<Rect>();
         private List<IDisposable> _bindings = new List<IDisposable>();
 
-        private RectTransform _childParentOverride;
+        [SerializeField]
+        protected RectTransform _childParentOverride;
 
-        public Control(string identifier, GameObject gameObject, RectTransform childParentOverride = default)
+        public virtual void Setup(string identifier)
         {
             this.identifier = identifierFull = identifier;
-            this.gameObject = gameObject;
 
             gameObject.name = identifier;
 
-            _childParentOverride = childParentOverride;
-
-            rectTransform = gameObject.GetOrAddComponent<RectTransform>();
+            rectTransform = gameObject.GetComponent<RectTransform>();
             gameObject.GetOrAddComponent<RectTransformChangedHandler>().onReceivedEvent += x => _rect.From(x);
 
             children.Subscribe(x =>
@@ -43,7 +40,7 @@ namespace Nessle
                     x.element.rectTransform.SetParent(_childParentOverride == null ? rectTransform : _childParentOverride, false);
                     x.element.rectTransform.SetSiblingIndex(x.index);
                 }
-                else if (x.operationType == OpType.Remove && x.element.parent.value == this)
+                else if (x.operationType == OpType.Remove && (object)x.element.parent.value == this)
                 {
                     x.element.parent.From(default(IControl));
                 }
@@ -59,7 +56,11 @@ namespace Nessle
 
                 HandleControlHierarchyChanged();
             });
+
+            SetupInternal();
         }
+
+        protected virtual void SetupInternal() { }
 
         public void AddBinding(IDisposable binding)
         {
@@ -113,22 +114,25 @@ namespace Nessle
 
             if (Application.isPlaying)
             {
-                UnityEngine.Object.Destroy(gameObject);
+                Destroy(gameObject);
             }
             else
             {
-                UnityEngine.Object.DestroyImmediate(gameObject);
+                DestroyImmediate(gameObject);
             }
         }
     }
 
-    public class Control<T> : Control, IControl<T> where T : new()
+    public class PrimitiveControl<T> : PrimitiveControl, IControl<T> where T : new()
     {
         public T props { get; private set; }
 
-        public Control(string identifier, T props, GameObject gameObject, RectTransform childParentOverride = default)
-            : base(identifier, gameObject, childParentOverride)
+        public override void Setup(string identifier)
+            => Setup(identifier, default);
+
+        public void Setup(string identifier, T props)
         {
+            base.Setup(identifier);
             this.props = props ?? new T();
         }
 
