@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 using ObserveThing;
 using TMPro;
@@ -40,14 +39,7 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(
-                props.value.Subscribe(x => _dropdown.value = x.currentValue),
-                props.allowMultiselect.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
-                props.options.Subscribe(_ => _dropdown.options = props.options.Select(x => new TMP_Dropdown.OptionData() { text = x }).ToList()),
-                props.interactable.Subscribe(x => _dropdown.interactable = x.currentValue),
-                Utility.BindTextStyle(props.captionTextStyle, _dropdown.captionText, true),
-                Utility.BindTextStyle(props.itemTextStyle, _dropdown.itemText, true)
-            );
+            AddBinding(Utility.BindDropdown(props, _dropdown, true));
         }
     }
 }

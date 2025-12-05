@@ -7,11 +7,13 @@ namespace Nessle
 {
     public class ButtonProps : IDisposable, IInteractableProps
     {
+        public ImageProps background { get; } = new ImageProps();
         public ValueObservable<Action> onClick { get; } = new ValueObservable<Action>();
         public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
 
         public void Dispose()
         {
+            background.Dispose();
             onClick.Dispose();
             interactable.Dispose();
         }

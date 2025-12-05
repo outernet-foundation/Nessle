@@ -51,20 +51,7 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(
-                props.sprite.Subscribe(x => _image.sprite = x.currentValue),
-                props.color.Subscribe(x => _image.color = x.currentValue),
-                props.imageType.Subscribe(x => _image.type = x.currentValue),
-                props.fillCenter.Subscribe(x => _image.fillCenter = x.currentValue),
-                props.pixelsPerUnitMultiplier.Subscribe(x => _image.pixelsPerUnitMultiplier = x.currentValue),
-                props.raycastTarget.Subscribe(x => _image.raycastTarget = x.currentValue),
-                props.raycastPadding.Subscribe(x => _image.raycastPadding = x.currentValue),
-                props.useSpriteMesh.Subscribe(x => _image.useSpriteMesh = x.currentValue),
-                props.preserveAspect.Subscribe(x => _image.preserveAspect = x.currentValue),
-                props.fillOrigin.Subscribe(x => _image.fillOrigin = x.currentValue),
-                props.fillMethod.Subscribe(x => _image.fillMethod = x.currentValue),
-                props.fillAmount.Subscribe(x => _image.fillAmount = x.currentValue)
-            );
+            AddBinding(Utility.BindImage(props, _image, true));
         }
     }
 }
