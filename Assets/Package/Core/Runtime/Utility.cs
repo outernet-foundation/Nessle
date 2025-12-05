@@ -93,6 +93,23 @@ namespace Nessle
             );
         }
 
+        public static void CopyFromText(TextProps props, TMP_Text text)
+        {
+            props.value.From(text.text);
+            CopyFromText(props.style, text);
+        }
+
+        public static IDisposable BindText(TextProps props, TMP_Text text, bool copyFromText = false)
+        {
+            if (copyFromText)
+                CopyFromText(props, text);
+
+            return new ComposedDisposable(
+                props.value.Subscribe(x => text.text = x.currentValue),
+                BindTextStyle(props.style, text, copyFromText)
+            );
+        }
+
         public static void CopyFromLayout(LayoutProps props, HorizontalOrVerticalLayoutGroup layout)
         {
             props.padding.From(layout.padding);

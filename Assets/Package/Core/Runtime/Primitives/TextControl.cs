@@ -83,10 +83,7 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(
-                props.value.Subscribe(x => _text.text = x.currentValue),
-                Utility.BindTextStyle(props.style, _text, true)
-            );
+            AddBinding(Utility.BindText(props, _text));
         }
     }
 }
