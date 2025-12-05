@@ -83,8 +83,13 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            Utility.CopyFromText(props.style, _text);
             props.value.From(_text.text);
-            AddBinding(props.value.Subscribe(x => _text.text = x.currentValue));
+
+            AddBinding(
+                Utility.BindTextStyle(props.style, _text),
+                props.value.Subscribe(x => _text.text = x.currentValue)
+            );
         }
     }
 }
