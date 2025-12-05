@@ -68,7 +68,11 @@ namespace Nessle
             var control = Control(identifier, props, inputField.gameObject);
             props.value.From(float.TryParse(inputField.props.value.value, out var value) ? value : 0);
             props.inputField.onEndEdit.From(x => props.value.From(float.TryParse(x, out var value) ? value : 0));
-            control.AddBinding(inputField);
+            control.AddBinding(
+                inputField,
+                props.value.Subscribe(x => props.inputField.value.From(x.currentValue.ToString()))
+            );
+
             return control;
         }
 
@@ -82,7 +86,11 @@ namespace Nessle
             var control = Control(identifier, props, inputField.gameObject);
             props.value.From(int.TryParse(inputField.props.value.value, out var value) ? value : 0);
             props.inputField.onEndEdit.From(x => props.value.From(int.TryParse(x, out var value) ? value : 0));
-            control.AddBinding(inputField);
+            control.AddBinding(
+                inputField,
+                props.value.Subscribe(x => props.inputField.value.From(x.currentValue.ToString()))
+            );
+
             return control;
         }
 
@@ -96,7 +104,11 @@ namespace Nessle
             var control = Control(identifier, props, inputField.gameObject);
             props.value.From(int.TryParse(inputField.props.value.value, out var value) ? value : 0);
             props.inputField.onEndEdit.From(x => props.value.From(double.TryParse(x, out var value) ? value : 0));
-            control.AddBinding(inputField);
+            control.AddBinding(
+                inputField,
+                props.value.Subscribe(x => props.inputField.value.From(x.currentValue.ToString()))
+            );
+
             return control;
         }
 
