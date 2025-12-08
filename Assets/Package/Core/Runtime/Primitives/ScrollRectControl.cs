@@ -92,11 +92,17 @@ namespace Nessle
 
         public override ScrollRectProps GetInstanceProps()
         {
+            var content = _scrollRect.content;
+            var contentControl = default(IControl);
+
+            if (content != null)
+                contentControl = content.GetComponent<IControl>();
+
             return new ScrollRectProps(
                 new ValueObservable<Vector2>(_scrollRect.normalizedPosition),
                 new ValueObservable<bool>(_scrollRect.horizontal),
                 new ValueObservable<bool>(_scrollRect.vertical),
-                new ValueObservable<IControl>(_scrollRect.content?.GetComponent<IControl>())
+                new ValueObservable<IControl>(contentControl)
             );
         }
     }
