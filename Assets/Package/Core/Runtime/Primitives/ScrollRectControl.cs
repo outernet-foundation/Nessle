@@ -7,10 +7,23 @@ namespace Nessle
 {
     public class ScrollRectProps : IDisposable, IValueProps<Vector2>
     {
-        public ValueObservable<Vector2> value { get; } = new ValueObservable<Vector2>(new Vector2(0, 1));
-        public ValueObservable<bool> horizontal { get; } = new ValueObservable<bool>(true);
-        public ValueObservable<bool> vertical { get; } = new ValueObservable<bool>(true);
-        public ValueObservable<IControl> content { get; } = new ValueObservable<IControl>();
+        public ValueObservable<Vector2> value { get; }
+        public ValueObservable<bool> horizontal { get; }
+        public ValueObservable<bool> vertical { get; }
+        public ValueObservable<IControl> content { get; }
+
+        public ScrollRectProps(
+            ValueObservable<Vector2> value = default,
+            ValueObservable<bool> horizontal = default,
+            ValueObservable<bool> vertical = default,
+            ValueObservable<IControl> content = default
+        )
+        {
+            this.value = value ?? new ValueObservable<Vector2>(new Vector2(0, 1));
+            this.horizontal = horizontal ?? new ValueObservable<bool>(true);
+            this.vertical = vertical ?? new ValueObservable<bool>(true);
+            this.content = content ?? new ValueObservable<IControl>();
+        }
 
         public void Dispose()
         {
@@ -75,6 +88,16 @@ namespace Nessle
                 _scrollRect.horizontal = props.horizontal.value;
                 _scrollRect.vertical = props.vertical.value;
             }));
+        }
+
+        public override ScrollRectProps GetInstanceProps()
+        {
+            return new ScrollRectProps(
+                new ValueObservable<Vector2>(_scrollRect.normalizedPosition),
+                new ValueObservable<bool>(_scrollRect.horizontal),
+                new ValueObservable<bool>(_scrollRect.vertical),
+                new ValueObservable<IControl>(_scrollRect.content?.GetComponent<IControl>())
+            );
         }
     }
 }

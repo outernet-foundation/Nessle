@@ -33,7 +33,6 @@ namespace Nessle
             => new Control<T>(identifier, props, gameObject, childParentOverride);
 
         public static PrimitiveControl<T> Control<T>(string identifier, T props, PrimitiveControl<T> prefab)
-            where T : new()
         {
             var control = UnityEngine.Object.Instantiate(prefab);
             control.Setup(identifier, props);

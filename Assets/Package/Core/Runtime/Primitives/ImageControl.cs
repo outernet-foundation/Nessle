@@ -9,18 +9,47 @@ namespace Nessle
 {
     public class ImageProps : IDisposable, IColorProps
     {
-        public ValueObservable<Sprite> sprite { get; } = new ValueObservable<Sprite>();
-        public ValueObservable<Color> color { get; } = new ValueObservable<Color>();
-        public ValueObservable<ImageType> imageType { get; } = new ValueObservable<ImageType>();
-        public ValueObservable<bool> fillCenter { get; } = new ValueObservable<bool>(true);
-        public ValueObservable<float> pixelsPerUnitMultiplier { get; } = new ValueObservable<float>(1);
-        public ValueObservable<bool> raycastTarget { get; } = new ValueObservable<bool>(true);
-        public ValueObservable<Vector4> raycastPadding { get; } = new ValueObservable<Vector4>();
-        public ValueObservable<bool> useSpriteMesh { get; } = new ValueObservable<bool>();
-        public ValueObservable<bool> preserveAspect { get; } = new ValueObservable<bool>();
-        public ValueObservable<int> fillOrigin { get; } = new ValueObservable<int>();
-        public ValueObservable<ImageFillMethod> fillMethod { get; } = new ValueObservable<ImageFillMethod>();
-        public ValueObservable<float> fillAmount { get; } = new ValueObservable<float>();
+        public ValueObservable<Sprite> sprite { get; }
+        public ValueObservable<Color> color { get; }
+        public ValueObservable<ImageType> imageType { get; }
+        public ValueObservable<bool> fillCenter { get; }
+        public ValueObservable<float> pixelsPerUnitMultiplier { get; }
+        public ValueObservable<bool> raycastTarget { get; }
+        public ValueObservable<Vector4> raycastPadding { get; }
+        public ValueObservable<bool> useSpriteMesh { get; }
+        public ValueObservable<bool> preserveAspect { get; }
+        public ValueObservable<int> fillOrigin { get; }
+        public ValueObservable<ImageFillMethod> fillMethod { get; }
+        public ValueObservable<float> fillAmount { get; }
+
+        public ImageProps(
+            ValueObservable<Sprite> sprite = default,
+            ValueObservable<Color> color = default,
+            ValueObservable<ImageType> imageType = default,
+            ValueObservable<bool> fillCenter = default,
+            ValueObservable<float> pixelsPerUnitMultiplier = default,
+            ValueObservable<bool> raycastTarget = default,
+            ValueObservable<Vector4> raycastPadding = default,
+            ValueObservable<bool> useSpriteMesh = default,
+            ValueObservable<bool> preserveAspect = default,
+            ValueObservable<int> fillOrigin = default,
+            ValueObservable<ImageFillMethod> fillMethod = default,
+            ValueObservable<float> fillAmount = default
+        )
+        {
+            this.sprite = sprite ?? new ValueObservable<Sprite>();
+            this.color = color ?? new ValueObservable<Color>();
+            this.imageType = imageType ?? new ValueObservable<ImageType>();
+            this.fillCenter = fillCenter ?? new ValueObservable<bool>();
+            this.pixelsPerUnitMultiplier = pixelsPerUnitMultiplier ?? new ValueObservable<float>(1);
+            this.raycastTarget = raycastTarget ?? new ValueObservable<bool>();
+            this.raycastPadding = raycastPadding ?? new ValueObservable<Vector4>();
+            this.useSpriteMesh = useSpriteMesh ?? new ValueObservable<bool>();
+            this.preserveAspect = preserveAspect ?? new ValueObservable<bool>();
+            this.fillOrigin = fillOrigin ?? new ValueObservable<int>();
+            this.fillMethod = fillMethod ?? new ValueObservable<ImageFillMethod>();
+            this.fillAmount = fillAmount ?? new ValueObservable<float>();
+        }
 
         public void Dispose()
         {
@@ -51,19 +80,6 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            props.sprite.From(_image.sprite);
-            props.color.From(_image.color);
-            props.imageType.From(_image.type);
-            props.fillCenter.From(_image.fillCenter);
-            props.pixelsPerUnitMultiplier.From(_image.pixelsPerUnitMultiplier);
-            props.raycastTarget.From(_image.raycastTarget);
-            props.raycastPadding.From(_image.raycastPadding);
-            props.useSpriteMesh.From(_image.useSpriteMesh);
-            props.preserveAspect.From(_image.preserveAspect);
-            props.fillOrigin.From(_image.fillOrigin);
-            props.fillMethod.From(_image.fillMethod);
-            props.fillAmount.From(_image.fillAmount);
-
             AddBinding(
                 props.sprite.Subscribe(x => _image.sprite = x.currentValue),
                 props.color.Subscribe(x => _image.color = x.currentValue),
@@ -77,6 +93,24 @@ namespace Nessle
                 props.fillOrigin.Subscribe(x => _image.fillOrigin = x.currentValue),
                 props.fillMethod.Subscribe(x => _image.fillMethod = x.currentValue),
                 props.fillAmount.Subscribe(x => _image.fillAmount = x.currentValue)
+            );
+        }
+
+        public override ImageProps GetInstanceProps()
+        {
+            return new ImageProps(
+                new ValueObservable<Sprite>(_image.sprite),
+                new ValueObservable<Color>(_image.color),
+                new ValueObservable<ImageType>(_image.type),
+                new ValueObservable<bool>(_image.fillCenter),
+                new ValueObservable<float>(_image.pixelsPerUnitMultiplier),
+                new ValueObservable<bool>(_image.raycastTarget),
+                new ValueObservable<Vector4>(_image.raycastPadding),
+                new ValueObservable<bool>(_image.useSpriteMesh),
+                new ValueObservable<bool>(_image.preserveAspect),
+                new ValueObservable<int>(_image.fillOrigin),
+                new ValueObservable<ImageFillMethod>(_image.fillMethod),
+                new ValueObservable<float>(_image.fillAmount)
             );
         }
     }

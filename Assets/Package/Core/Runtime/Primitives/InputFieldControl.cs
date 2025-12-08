@@ -10,15 +10,38 @@ namespace Nessle
     public class InputFieldProps : IDisposable, IValueProps<string>, IInteractableProps
     {
         public ValueObservable<string> value => inputText.value;
-        public TextProps inputText { get; } = new TextProps();
-        public TextProps placeholderText { get; } = new TextProps();
-        public ValueObservable<TMP_ContentType> contentType { get; } = new ValueObservable<TMP_ContentType>();
-        public ValueObservable<bool> readOnly { get; } = new ValueObservable<bool>();
-        public ValueObservable<TMP_LineType> lineType { get; } = new ValueObservable<TMP_LineType>();
-        public ValueObservable<int> characterLimit { get; } = new ValueObservable<int>();
-        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
-        public ValueObservable<Action<string>> onEndEdit { get; } = new ValueObservable<Action<string>>();
-        public ImageProps background { get; } = new ImageProps();
+        public TextProps inputText { get; }
+        public TextProps placeholderText { get; }
+        public ValueObservable<TMP_ContentType> contentType { get; }
+        public ValueObservable<bool> readOnly { get; }
+        public ValueObservable<TMP_LineType> lineType { get; }
+        public ValueObservable<int> characterLimit { get; }
+        public ValueObservable<bool> interactable { get; }
+        public ValueObservable<Action<string>> onEndEdit { get; }
+        public ImageProps background { get; }
+
+        public InputFieldProps(
+            TextProps inputText = default,
+            TextProps placeholderText = default,
+            ValueObservable<TMP_ContentType> contentType = default,
+            ValueObservable<bool> readOnly = default,
+            ValueObservable<TMP_LineType> lineType = default,
+            ValueObservable<int> characterLimit = default,
+            ValueObservable<bool> interactable = default,
+            ValueObservable<Action<string>> onEndEdit = default,
+            ImageProps background = default
+        )
+        {
+            this.inputText = inputText ?? new TextProps();
+            this.placeholderText = placeholderText ?? new TextProps();
+            this.contentType = contentType ?? new ValueObservable<TMP_ContentType>();
+            this.readOnly = readOnly ?? new ValueObservable<bool>();
+            this.lineType = lineType ?? new ValueObservable<TMP_LineType>();
+            this.characterLimit = characterLimit ?? new ValueObservable<int>();
+            this.interactable = interactable ?? new ValueObservable<bool>();
+            this.onEndEdit = onEndEdit ?? new ValueObservable<Action<string>>();
+            this.background = background ?? new ImageProps();
+        }
 
         public void Dispose()
         {
@@ -61,20 +84,12 @@ namespace Nessle
             _inputField = GetComponent<TMP_InputField>();
             _inputText = _inputField.textComponent.gameObject.GetComponent<PrimitiveControl<TextProps>>();
             _placeholderText = _inputField.placeholder.gameObject.GetComponent<PrimitiveControl<TextProps>>();
+            _inputField.onValueChanged.AddListener(x => props.inputText.value.From(x));
+            _inputField.onEndEdit.AddListener(x => props.onEndEdit.value?.Invoke(x));
         }
 
         protected override void SetupInternal()
         {
-            _inputText?.Setup(props.inputText);
-            _placeholderText?.Setup(props.placeholderText);
-            background?.Setup(props.background);
-
-            _inputField.enabled = false;
-            _inputField.enabled = true;
-
-            _inputField.onValueChanged.AddListener(x => props.inputText.value.From(x));
-            _inputField.onEndEdit.AddListener(x => props.onEndEdit.value?.Invoke(x));
-
             AddBinding(
                 props.value.Subscribe(x => _inputField.text = x.currentValue),
                 props.contentType.Subscribe(x => _inputField.contentType = x.currentValue),
@@ -90,6 +105,21 @@ namespace Nessle
             _inputText?.Dispose();
             _placeholderText?.Dispose();
             background?.Dispose();
+        }
+
+        public override InputFieldProps GetInstanceProps()
+        {
+            return new InputFieldProps(
+                _inputText?.GetInstanceProps(),
+                _placeholderText?.GetInstanceProps(),
+                new ValueObservable<TMP_ContentType>(_inputField.contentType),
+                new ValueObservable<bool>(_inputField.readOnly),
+                new ValueObservable<TMP_LineType>(_inputField.lineType),
+                new ValueObservable<int>(_inputField.characterLimit),
+                new ValueObservable<bool>(_inputField.interactable),
+                new ValueObservable<Action<string>>(),
+                background?.GetInstanceProps()
+            );
         }
     }
 }

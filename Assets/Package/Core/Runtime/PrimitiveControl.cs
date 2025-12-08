@@ -129,9 +129,11 @@ namespace Nessle
         }
     }
 
-    public class PrimitiveControl<T> : PrimitiveControl, IControl<T> where T : new()
+    public abstract class PrimitiveControl<T> : PrimitiveControl, IControl<T>
     {
         public T props { get; private set; }
+
+        public abstract T GetInstanceProps();
 
         public override void Setup(string identifier)
             => Setup(identifier, default);
@@ -141,7 +143,7 @@ namespace Nessle
 
         public void Setup(string identifier, T props)
         {
-            this.props = props ?? new T();
+            this.props = props ?? GetInstanceProps();
             base.Setup(identifier);
         }
 

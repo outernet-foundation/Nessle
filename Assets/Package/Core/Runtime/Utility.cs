@@ -34,37 +34,36 @@ namespace Nessle
         public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, IValueObservable<U>> create)
             where U : IControl => new CreateListObservable<U>(source.SelectDynamic(create));
 
-        public static void CopyFromText(TextStyleProps props, TMP_Text text)
+        public static TextStyleProps StylePropsFromText(TMP_Text text)
         {
-            props.font.From(text.font);
-            props.textStyle.From(text.textStyle);
-            props.styleSheet.From(text.styleSheet);
-            props.color.From(text.color);
-            props.fontStyle.From(text.fontStyle);
-            props.fontSize.From(text.fontSize);
-            props.fontWeight.From(text.fontWeight);
-            props.enableAutoSizing.From(text.enableAutoSizing);
-            props.fontSizeMin.From(text.fontSizeMin);
-            props.fontSizeMax.From(text.fontSizeMax);
-            props.horizontalAlignment.From(text.horizontalAlignment);
-            props.verticalAlignment.From(text.verticalAlignment);
-            props.characterSpacing.From(text.characterSpacing);
-            props.wordSpacing.From(text.wordSpacing);
-            props.lineSpacing.From(text.lineSpacing);
-            props.lineSpacingAdjustment.From(text.lineSpacingAdjustment);
-            props.paragraphSpacing.From(text.paragraphSpacing);
-            props.characterWidthAdjustment.From(text.characterWidthAdjustment);
-            props.textWrappingMode.From(text.textWrappingMode);
-            props.overflowMode.From(text.overflowMode);
-            props.horizontalMapping.From(text.horizontalMapping);
-            props.verticalMapping.From(text.verticalMapping);
+            return new TextStyleProps(
+                new ValueObservable<TMP_FontAsset>(text.font),
+                new ValueObservable<TMP_Style>(text.textStyle),
+                new ValueObservable<TMP_StyleSheet>(text.styleSheet),
+                new ValueObservable<Color>(text.color),
+                new ValueObservable<FontStyles>(text.fontStyle),
+                new ValueObservable<float>(text.fontSize),
+                new ValueObservable<FontWeight>(text.fontWeight),
+                new ValueObservable<bool>(text.enableAutoSizing),
+                new ValueObservable<float>(text.fontSizeMin),
+                new ValueObservable<float>(text.fontSizeMax),
+                new ValueObservable<HorizontalAlignmentOptions>(text.horizontalAlignment),
+                new ValueObservable<VerticalAlignmentOptions>(text.verticalAlignment),
+                new ValueObservable<float>(text.characterSpacing),
+                new ValueObservable<float>(text.wordSpacing),
+                new ValueObservable<float>(text.lineSpacing),
+                new ValueObservable<float>(text.lineSpacingAdjustment),
+                new ValueObservable<float>(text.paragraphSpacing),
+                new ValueObservable<float>(text.characterWidthAdjustment),
+                new ValueObservable<TextWrappingModes>(text.textWrappingMode),
+                new ValueObservable<TextOverflowModes>(text.overflowMode),
+                new ValueObservable<TextureMappingOptions>(text.horizontalMapping),
+                new ValueObservable<TextureMappingOptions>(text.verticalMapping)
+            );
         }
 
-        public static IDisposable BindTextStyle(TextStyleProps props, TMP_Text text, bool copyFromText = false)
+        public static IDisposable BindTextStyle(TextStyleProps props, TMP_Text text)
         {
-            if (copyFromText)
-                CopyFromText(props, text);
-
             return new ComposedDisposable(
                 props.font.Subscribe(x => text.font = x.currentValue),
                 props.textStyle.Subscribe(x => text.textStyle = x.currentValue),
