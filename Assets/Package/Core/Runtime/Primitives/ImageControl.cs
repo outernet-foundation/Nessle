@@ -40,9 +40,9 @@ namespace Nessle
             this.sprite = sprite ?? new ValueObservable<Sprite>();
             this.color = color ?? new ValueObservable<Color>();
             this.imageType = imageType ?? new ValueObservable<ImageType>();
-            this.fillCenter = fillCenter ?? new ValueObservable<bool>();
+            this.fillCenter = fillCenter ?? new ValueObservable<bool>(true);
             this.pixelsPerUnitMultiplier = pixelsPerUnitMultiplier ?? new ValueObservable<float>(1);
-            this.raycastTarget = raycastTarget ?? new ValueObservable<bool>();
+            this.raycastTarget = raycastTarget ?? new ValueObservable<bool>(true);
             this.raycastPadding = raycastPadding ?? new ValueObservable<Vector4>();
             this.useSpriteMesh = useSpriteMesh ?? new ValueObservable<bool>();
             this.preserveAspect = preserveAspect ?? new ValueObservable<bool>();
