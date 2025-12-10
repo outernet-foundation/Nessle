@@ -7,20 +7,9 @@ namespace Nessle
 {
     public class ButtonProps : IDisposable, IInteractableProps
     {
-        public ImageProps background { get; } = new ImageProps();
-        public ValueObservable<Action> onClick { get; } = new ValueObservable<Action>();
-        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
-
-        public ButtonProps(
-            ImageProps background = default,
-            ValueObservable<Action> onClick = default,
-            ValueObservable<bool> interactable = default
-        )
-        {
-            this.background = background ?? new ImageProps();
-            this.onClick = onClick ?? new ValueObservable<Action>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
-        }
+        public ImageProps background { get; set; }
+        public ValueObservable<Action> onClick { get; set; }
+        public ValueObservable<bool> interactable { get; set; }
 
         public void Dispose()
         {
@@ -44,6 +33,9 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.interactable = props.interactable ?? new ValueObservable<bool>(_button.interactable);
+            props.onClick = props.onClick ?? new ValueObservable<Action>();
+
             if (background != null)
                 background.Setup(props: props.background);
 
@@ -53,14 +45,6 @@ namespace Nessle
         protected override void DisposeInternal()
         {
             background?.Dispose();
-        }
-
-        public override ButtonProps GetInstanceProps()
-        {
-            return new ButtonProps(
-                background?.GetInstanceProps(),
-                interactable: new ValueObservable<bool>(_button.interactable)
-            );
         }
     }
 }

@@ -9,47 +9,18 @@ namespace Nessle
 {
     public class ImageProps : IDisposable, IColorProps
     {
-        public ValueObservable<Sprite> sprite { get; }
-        public ValueObservable<Color> color { get; }
-        public ValueObservable<ImageType> imageType { get; }
-        public ValueObservable<bool> fillCenter { get; }
-        public ValueObservable<float> pixelsPerUnitMultiplier { get; }
-        public ValueObservable<bool> raycastTarget { get; }
-        public ValueObservable<Vector4> raycastPadding { get; }
-        public ValueObservable<bool> useSpriteMesh { get; }
-        public ValueObservable<bool> preserveAspect { get; }
-        public ValueObservable<int> fillOrigin { get; }
-        public ValueObservable<ImageFillMethod> fillMethod { get; }
-        public ValueObservable<float> fillAmount { get; }
-
-        public ImageProps(
-            ValueObservable<Sprite> sprite = default,
-            ValueObservable<Color> color = default,
-            ValueObservable<ImageType> imageType = default,
-            ValueObservable<bool> fillCenter = default,
-            ValueObservable<float> pixelsPerUnitMultiplier = default,
-            ValueObservable<bool> raycastTarget = default,
-            ValueObservable<Vector4> raycastPadding = default,
-            ValueObservable<bool> useSpriteMesh = default,
-            ValueObservable<bool> preserveAspect = default,
-            ValueObservable<int> fillOrigin = default,
-            ValueObservable<ImageFillMethod> fillMethod = default,
-            ValueObservable<float> fillAmount = default
-        )
-        {
-            this.sprite = sprite ?? new ValueObservable<Sprite>();
-            this.color = color ?? new ValueObservable<Color>();
-            this.imageType = imageType ?? new ValueObservable<ImageType>();
-            this.fillCenter = fillCenter ?? new ValueObservable<bool>(true);
-            this.pixelsPerUnitMultiplier = pixelsPerUnitMultiplier ?? new ValueObservable<float>(1);
-            this.raycastTarget = raycastTarget ?? new ValueObservable<bool>(true);
-            this.raycastPadding = raycastPadding ?? new ValueObservable<Vector4>();
-            this.useSpriteMesh = useSpriteMesh ?? new ValueObservable<bool>();
-            this.preserveAspect = preserveAspect ?? new ValueObservable<bool>();
-            this.fillOrigin = fillOrigin ?? new ValueObservable<int>();
-            this.fillMethod = fillMethod ?? new ValueObservable<ImageFillMethod>();
-            this.fillAmount = fillAmount ?? new ValueObservable<float>();
-        }
+        public ValueObservable<Sprite> sprite { get; set; }
+        public ValueObservable<Color> color { get; set; }
+        public ValueObservable<ImageType> imageType { get; set; }
+        public ValueObservable<bool> fillCenter { get; set; }
+        public ValueObservable<float> pixelsPerUnitMultiplier { get; set; }
+        public ValueObservable<bool> raycastTarget { get; set; }
+        public ValueObservable<Vector4> raycastPadding { get; set; }
+        public ValueObservable<bool> useSpriteMesh { get; set; }
+        public ValueObservable<bool> preserveAspect { get; set; }
+        public ValueObservable<int> fillOrigin { get; set; }
+        public ValueObservable<ImageFillMethod> fillMethod { get; set; }
+        public ValueObservable<float> fillAmount { get; set; }
 
         public void Dispose()
         {
@@ -80,6 +51,19 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.sprite = props.sprite ?? new ValueObservable<Sprite>(_image.sprite);
+            props.color = props.color ?? new ValueObservable<Color>(_image.color);
+            props.imageType = props.imageType ?? new ValueObservable<ImageType>(_image.type);
+            props.fillCenter = props.fillCenter ?? new ValueObservable<bool>(_image.fillCenter);
+            props.pixelsPerUnitMultiplier = props.pixelsPerUnitMultiplier ?? new ValueObservable<float>(_image.pixelsPerUnitMultiplier);
+            props.raycastTarget = props.raycastTarget ?? new ValueObservable<bool>(_image.raycastTarget);
+            props.raycastPadding = props.raycastPadding ?? new ValueObservable<Vector4>(_image.raycastPadding);
+            props.useSpriteMesh = props.useSpriteMesh ?? new ValueObservable<bool>(_image.useSpriteMesh);
+            props.preserveAspect = props.preserveAspect ?? new ValueObservable<bool>(_image.preserveAspect);
+            props.fillOrigin = props.fillOrigin ?? new ValueObservable<int>(_image.fillOrigin);
+            props.fillMethod = props.fillMethod ?? new ValueObservable<ImageFillMethod>(_image.fillMethod);
+            props.fillAmount = props.fillAmount ?? new ValueObservable<float>(_image.fillAmount);
+
             AddBinding(
                 props.sprite.Subscribe(x => _image.sprite = x.currentValue),
                 props.color.Subscribe(x => _image.color = x.currentValue),
@@ -93,24 +77,6 @@ namespace Nessle
                 props.fillOrigin.Subscribe(x => _image.fillOrigin = x.currentValue),
                 props.fillMethod.Subscribe(x => _image.fillMethod = x.currentValue),
                 props.fillAmount.Subscribe(x => _image.fillAmount = x.currentValue)
-            );
-        }
-
-        public override ImageProps GetInstanceProps()
-        {
-            return new ImageProps(
-                new ValueObservable<Sprite>(_image.sprite),
-                new ValueObservable<Color>(_image.color),
-                new ValueObservable<ImageType>(_image.type),
-                new ValueObservable<bool>(_image.fillCenter),
-                new ValueObservable<float>(_image.pixelsPerUnitMultiplier),
-                new ValueObservable<bool>(_image.raycastTarget),
-                new ValueObservable<Vector4>(_image.raycastPadding),
-                new ValueObservable<bool>(_image.useSpriteMesh),
-                new ValueObservable<bool>(_image.preserveAspect),
-                new ValueObservable<int>(_image.fillOrigin),
-                new ValueObservable<ImageFillMethod>(_image.fillMethod),
-                new ValueObservable<float>(_image.fillAmount)
             );
         }
     }

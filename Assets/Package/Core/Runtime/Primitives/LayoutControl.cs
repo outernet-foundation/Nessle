@@ -7,43 +7,18 @@ namespace Nessle
 {
     public class LayoutProps : IDisposable, ILayoutProps
     {
-        public ValueObservable<RectOffset> padding { get; }
-        public ValueObservable<float> spacing { get; }
-        public ValueObservable<TextAnchor> childAlignment { get; }
-        public ValueObservable<bool> reverseArrangement { get; }
-        public ValueObservable<bool> childForceExpandHeight { get; }
-        public ValueObservable<bool> childForceExpandWidth { get; }
-        public ValueObservable<bool> childControlWidth { get; }
-        public ValueObservable<bool> childControlHeight { get; }
-        public ValueObservable<bool> childScaleWidth { get; }
-        public ValueObservable<bool> childScaleHeight { get; }
+        public ValueObservable<RectOffset> padding { get; set; }
+        public ValueObservable<float> spacing { get; set; }
+        public ValueObservable<TextAnchor> childAlignment { get; set; }
+        public ValueObservable<bool> reverseArrangement { get; set; }
+        public ValueObservable<bool> childForceExpandHeight { get; set; }
+        public ValueObservable<bool> childForceExpandWidth { get; set; }
+        public ValueObservable<bool> childControlWidth { get; set; }
+        public ValueObservable<bool> childControlHeight { get; set; }
+        public ValueObservable<bool> childScaleWidth { get; set; }
+        public ValueObservable<bool> childScaleHeight { get; set; }
 
         LayoutProps ILayoutProps.layout => this;
-
-        public LayoutProps(
-            ValueObservable<RectOffset> padding = default,
-            ValueObservable<float> spacing = default,
-            ValueObservable<TextAnchor> childAlignment = default,
-            ValueObservable<bool> reverseArrangement = default,
-            ValueObservable<bool> childForceExpandHeight = default,
-            ValueObservable<bool> childForceExpandWidth = default,
-            ValueObservable<bool> childControlWidth = default,
-            ValueObservable<bool> childControlHeight = default,
-            ValueObservable<bool> childScaleWidth = default,
-            ValueObservable<bool> childScaleHeight = default
-        )
-        {
-            this.padding = padding ?? new ValueObservable<RectOffset>();
-            this.spacing = spacing ?? new ValueObservable<float>();
-            this.childAlignment = childAlignment ?? new ValueObservable<TextAnchor>();
-            this.reverseArrangement = reverseArrangement ?? new ValueObservable<bool>();
-            this.childForceExpandHeight = childForceExpandHeight ?? new ValueObservable<bool>();
-            this.childForceExpandWidth = childForceExpandWidth ?? new ValueObservable<bool>();
-            this.childControlWidth = childControlWidth ?? new ValueObservable<bool>();
-            this.childControlHeight = childControlHeight ?? new ValueObservable<bool>();
-            this.childScaleWidth = childScaleWidth ?? new ValueObservable<bool>();
-            this.childScaleHeight = childScaleHeight ?? new ValueObservable<bool>();
-        }
 
         public void Dispose()
         {
@@ -72,6 +47,17 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.padding = props.padding ?? new ValueObservable<RectOffset>(_layout.padding);
+            props.spacing = props.spacing ?? new ValueObservable<float>(_layout.spacing);
+            props.childAlignment = props.childAlignment ?? new ValueObservable<TextAnchor>(_layout.childAlignment);
+            props.reverseArrangement = props.reverseArrangement ?? new ValueObservable<bool>(_layout.reverseArrangement);
+            props.childForceExpandHeight = props.childForceExpandHeight ?? new ValueObservable<bool>(_layout.childForceExpandHeight);
+            props.childForceExpandWidth = props.childForceExpandWidth ?? new ValueObservable<bool>(_layout.childForceExpandWidth);
+            props.childControlWidth = props.childControlWidth ?? new ValueObservable<bool>(_layout.childControlWidth);
+            props.childControlHeight = props.childControlHeight ?? new ValueObservable<bool>(_layout.childControlHeight);
+            props.childScaleWidth = props.childScaleWidth ?? new ValueObservable<bool>(_layout.childScaleWidth);
+            props.childScaleHeight = props.childScaleHeight ?? new ValueObservable<bool>(_layout.childScaleHeight);
+
             AddBinding(
                 props.padding.Subscribe(x => _layout.padding = x.currentValue),
                 props.spacing.Subscribe(x => _layout.spacing = x.currentValue),
@@ -83,22 +69,6 @@ namespace Nessle
                 props.childControlHeight.Subscribe(x => _layout.childControlHeight = x.currentValue),
                 props.childScaleWidth.Subscribe(x => _layout.childScaleWidth = x.currentValue),
                 props.childScaleHeight.Subscribe(x => _layout.childScaleHeight = x.currentValue)
-            );
-        }
-
-        public override LayoutProps GetInstanceProps()
-        {
-            return new LayoutProps(
-                new ValueObservable<RectOffset>(_layout.padding),
-                new ValueObservable<float>(_layout.spacing),
-                new ValueObservable<TextAnchor>(_layout.childAlignment),
-                new ValueObservable<bool>(_layout.reverseArrangement),
-                new ValueObservable<bool>(_layout.childForceExpandHeight),
-                new ValueObservable<bool>(_layout.childForceExpandWidth),
-                new ValueObservable<bool>(_layout.childControlWidth),
-                new ValueObservable<bool>(_layout.childControlHeight),
-                new ValueObservable<bool>(_layout.childScaleWidth),
-                new ValueObservable<bool>(_layout.childScaleHeight)
             );
         }
     }

@@ -8,30 +8,13 @@ namespace Nessle
 {
     public class DropdownProps : IDisposable, IValueProps<int>, IInteractableProps
     {
-        public ValueObservable<int> value { get; } = new ValueObservable<int>();
-        public ValueObservable<bool> allowMultiselect { get; } = new ValueObservable<bool>();
-        public ListObservable<string> options { get; } = new ListObservable<string>();
-        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
+        public ValueObservable<int> value { get; set; }
+        public ValueObservable<bool> allowMultiselect { get; set; }
+        public ListObservable<string> options { get; set; }
+        public ValueObservable<bool> interactable { get; set; }
 
-        public TextStyleProps captionTextStyle { get; } = new TextStyleProps();
-        public TextStyleProps itemTextStyle { get; } = new TextStyleProps();
-
-        public DropdownProps(
-            ValueObservable<int> value = default,
-            ValueObservable<bool> allowMultiselect = default,
-            ListObservable<string> options = default,
-            ValueObservable<bool> interactable = default,
-            TextStyleProps captionTextStyle = default,
-            TextStyleProps itemTextStyle = default
-        )
-        {
-            this.value = value ?? new ValueObservable<int>();
-            this.allowMultiselect = allowMultiselect ?? new ValueObservable<bool>();
-            this.options = options ?? new ListObservable<string>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
-            this.captionTextStyle = captionTextStyle ?? new TextStyleProps();
-            this.itemTextStyle = itemTextStyle ?? new TextStyleProps();
-        }
+        public TextStyleProps captionTextStyle { get; set; }
+        public TextStyleProps itemTextStyle { get; set; }
 
         public void Dispose()
         {
@@ -57,6 +40,14 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.value = props.value ?? new ValueObservable<int>(_dropdown.value);
+            props.allowMultiselect = props.allowMultiselect ?? new ValueObservable<bool>(_dropdown.MultiSelect);
+            props.options = props.options ?? new ListObservable<string>(_dropdown.options.Select(x => x.text));
+            props.interactable = props.interactable ?? new ValueObservable<bool>(_dropdown.interactable);
+
+            Utility.CompleteProps(_dropdown.captionText, props.captionTextStyle);
+            Utility.CompleteProps(_dropdown.itemText, props.itemTextStyle);
+
             AddBinding(
                 props.value.Subscribe(x => _dropdown.value = x.currentValue),
                 props.allowMultiselect.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
@@ -64,18 +55,6 @@ namespace Nessle
                 props.interactable.Subscribe(x => _dropdown.interactable = x.currentValue),
                 Utility.BindTextStyle(props.captionTextStyle, _dropdown.captionText),
                 Utility.BindTextStyle(props.itemTextStyle, _dropdown.itemText)
-            );
-        }
-
-        public override DropdownProps GetInstanceProps()
-        {
-            return new DropdownProps(
-                new ValueObservable<int>(_dropdown.value),
-                new ValueObservable<bool>(_dropdown.MultiSelect),
-                new ListObservable<string>(_dropdown.options.Select(x => x.text)),
-                new ValueObservable<bool>(_dropdown.interactable),
-                Utility.StylePropsFromText(_dropdown.captionText),
-                Utility.StylePropsFromText(_dropdown.itemText)
             );
         }
     }

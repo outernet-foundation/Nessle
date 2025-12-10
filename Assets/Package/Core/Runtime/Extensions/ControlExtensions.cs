@@ -10,512 +10,496 @@ namespace Nessle
 {
     public static class ControlExtensions
     {
-        public static T Style<T>(this T control, Action<T> setup)
-            where T : IControl
+        public static T Style<T>(this T constructor, Action<T> setup)
+            where T : IControlConstructor
         {
-            setup(control);
-            return control;
+            setup(constructor);
+            return constructor;
         }
 
-        public static T Children<T>(this T control, params IControl[] children)
+        public static T Children<T>(this T constructor, params IControl[] children)
             where T : IControl
         {
-            control.children.From(children);
-            return control;
+            constructor.children.From(children);
+            return constructor;
         }
 
-        public static T Children<T>(this T control, IEnumerable<IControl> children)
+        public static T Children<T>(this T constructor, IEnumerable<IControl> children)
             where T : IControl
         {
-            control.children.From(children);
-            return control;
+            constructor.children.From(children);
+            return constructor;
         }
 
-        public static T Children<T>(this T control, IListObservable<IControl> children)
+        public static T Children<T>(this T constructor, IListObservable<IControl> children)
             where T : IControl
         {
-            control.children.From(children);
-            return control;
+            constructor.children.From(children);
+            return constructor;
         }
 
-        public static T Active<T>(this T control, IValueObservable<bool> active)
-            where T : IControl
+        public static T Active<T>(this T constructor, IValueObservable<bool> active)
+            where T : IControlConstructor
         {
-            control.AddBinding(active.Subscribe(x => control.gameObject.SetActive(x.currentValue)));
-            return control;
+            constructor.control.AddBinding(active.Subscribe(x => constructor.control.gameObject.SetActive(x.currentValue)));
+            return constructor;
         }
 
-        public static T Selected<T>(this T control, IValueObservable<bool> selected)
-            where T : IControl
+        public static T Selected<T>(this T constructor, IValueObservable<bool> selected)
+            where T : IControlConstructor
         {
-            control.AddBinding(selected.Subscribe(x =>
+            constructor.control.AddBinding(selected.Subscribe(x =>
             {
                 if (x.currentValue)
                 {
-                    EventSystem.current.SetSelectedGameObject(control.gameObject);
+                    EventSystem.current.SetSelectedGameObject(constructor.control.gameObject);
                 }
                 else if (!EventSystem.current.alreadySelecting &&
-                    EventSystem.current.currentSelectedGameObject == control.gameObject)
+                    EventSystem.current.currentSelectedGameObject == constructor.control.gameObject)
                 {
                     EventSystem.current.SetSelectedGameObject(null);
                 }
             }));
-            return control;
+            return constructor;
         }
 
-        public static T Active<T>(this T control, bool active)
-            where T : IControl
+        public static T Active<T>(this T constructor, bool active)
+            where T : IControlConstructor
         {
-            control.gameObject.SetActive(active);
-            return control;
+            constructor.control.gameObject.SetActive(active);
+            return constructor;
         }
 
-        public static T FillParent<T>(this T control)
-            where T : IControl
+        public static T FillParent<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(0, 0);
-            control.rectTransform.anchorMax = new Vector2(1, 1);
-            control.rectTransform.offsetMin = new Vector2(0, 0);
-            control.rectTransform.offsetMax = new Vector2(0, 0);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(0, 0);
+            constructor.control.rectTransform.anchorMax = new Vector2(1, 1);
+            constructor.control.rectTransform.offsetMin = new Vector2(0, 0);
+            constructor.control.rectTransform.offsetMax = new Vector2(0, 0);
+            return constructor;
         }
 
-        public static T FillParentWidth<T>(this T control)
-            where T : IControl
+        public static T FillParentWidth<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(0, control.rectTransform.anchorMin.y);
-            control.rectTransform.anchorMax = new Vector2(1, control.rectTransform.anchorMax.y);
-            control.rectTransform.offsetMin = new Vector2(0, control.rectTransform.offsetMin.y);
-            control.rectTransform.offsetMax = new Vector2(0, control.rectTransform.offsetMax.y);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(0, constructor.control.rectTransform.anchorMin.y);
+            constructor.control.rectTransform.anchorMax = new Vector2(1, constructor.control.rectTransform.anchorMax.y);
+            constructor.control.rectTransform.offsetMin = new Vector2(0, constructor.control.rectTransform.offsetMin.y);
+            constructor.control.rectTransform.offsetMax = new Vector2(0, constructor.control.rectTransform.offsetMax.y);
+            return constructor;
         }
 
-        public static T FillParentHeight<T>(this T control)
-            where T : IControl
+        public static T FillParentHeight<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(control.rectTransform.anchorMin.x, 0);
-            control.rectTransform.anchorMax = new Vector2(control.rectTransform.anchorMax.x, 1);
-            control.rectTransform.offsetMin = new Vector2(control.rectTransform.offsetMin.x, 0);
-            control.rectTransform.offsetMax = new Vector2(control.rectTransform.offsetMax.x, 0);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(constructor.control.rectTransform.anchorMin.x, 0);
+            constructor.control.rectTransform.anchorMax = new Vector2(constructor.control.rectTransform.anchorMax.x, 1);
+            constructor.control.rectTransform.offsetMin = new Vector2(constructor.control.rectTransform.offsetMin.x, 0);
+            constructor.control.rectTransform.offsetMax = new Vector2(constructor.control.rectTransform.offsetMax.x, 0);
+            return constructor;
         }
 
-        public static T AnchorToTop<T>(this T control)
-            where T : IControl
+        public static T AnchorToTop<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(control.rectTransform.anchorMin.x, 1);
-            control.rectTransform.anchorMax = new Vector2(control.rectTransform.anchorMax.x, 1);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(constructor.control.rectTransform.anchorMin.x, 1);
+            constructor.control.rectTransform.anchorMax = new Vector2(constructor.control.rectTransform.anchorMax.x, 1);
+            return constructor;
         }
 
-        public static T AnchorToBottom<T>(this T control)
-            where T : IControl
+        public static T AnchorToBottom<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(control.rectTransform.anchorMin.x, 0);
-            control.rectTransform.anchorMax = new Vector2(control.rectTransform.anchorMax.x, 0);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(constructor.control.rectTransform.anchorMin.x, 0);
+            constructor.control.rectTransform.anchorMax = new Vector2(constructor.control.rectTransform.anchorMax.x, 0);
+            return constructor;
         }
 
-        public static T AnchorToLeft<T>(this T control)
-            where T : IControl
+        public static T AnchorToLeft<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(0, control.rectTransform.anchorMin.y);
-            control.rectTransform.anchorMax = new Vector2(0, control.rectTransform.anchorMax.y);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(0, constructor.control.rectTransform.anchorMin.y);
+            constructor.control.rectTransform.anchorMax = new Vector2(0, constructor.control.rectTransform.anchorMax.y);
+            return constructor;
         }
 
-        public static T AnchorToRight<T>(this T control)
-            where T : IControl
+        public static T AnchorToRight<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(1, control.rectTransform.anchorMin.y);
-            control.rectTransform.anchorMax = new Vector2(1, control.rectTransform.anchorMax.y);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(1, constructor.control.rectTransform.anchorMin.y);
+            constructor.control.rectTransform.anchorMax = new Vector2(1, constructor.control.rectTransform.anchorMax.y);
+            return constructor;
         }
 
-        public static T AnchorToTopLeft<T>(this T control)
-            where T : IControl
+        public static T AnchorToTopLeft<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(0, 1);
-            control.rectTransform.anchorMax = new Vector2(0, 1);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(0, 1);
+            constructor.control.rectTransform.anchorMax = new Vector2(0, 1);
+            return constructor;
         }
 
-        public static T AnchorToTopRight<T>(this T control)
-            where T : IControl
+        public static T AnchorToTopRight<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(1, 1);
-            control.rectTransform.anchorMax = new Vector2(1, 1);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(1, 1);
+            constructor.control.rectTransform.anchorMax = new Vector2(1, 1);
+            return constructor;
         }
 
-        public static T AnchorToBottomLeft<T>(this T control)
-            where T : IControl
+        public static T AnchorToBottomLeft<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(0, 0);
-            control.rectTransform.anchorMax = new Vector2(0, 0);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(0, 0);
+            constructor.control.rectTransform.anchorMax = new Vector2(0, 0);
+            return constructor;
         }
 
-        public static T AnchorToBottomRight<T>(this T control)
-            where T : IControl
+        public static T AnchorToBottomRight<T>(this T constructor)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = new Vector2(1, 0);
-            control.rectTransform.anchorMax = new Vector2(1, 0);
-            return control;
+            constructor.control.rectTransform.anchorMin = new Vector2(1, 0);
+            constructor.control.rectTransform.anchorMax = new Vector2(1, 0);
+            return constructor;
         }
 
-        public static T SetPivot<T>(this T control, Vector2 pivot)
-            where T : IControl
+        public static T SetPivot<T>(this T constructor, Vector2 pivot)
+            where T : IControlConstructor
         {
-            control.rectTransform.pivot = pivot;
-            return control;
+            constructor.control.rectTransform.pivot = pivot;
+            return constructor;
         }
 
-        public static T SetPivot<T>(this T control, IValueObservable<Vector2> pivot)
-            where T : IControl
+        public static T SetPivot<T>(this T constructor, IValueObservable<Vector2> pivot)
+            where T : IControlConstructor
         {
-            control.AddBinding(pivot.Subscribe(x => control.rectTransform.pivot = x.currentValue));
-            return control;
+            constructor.control.AddBinding(pivot.Subscribe(x => constructor.control.rectTransform.pivot = x.currentValue));
+            return constructor;
         }
 
-        public static T LocalPosition<T>(this T control, Vector3 localPosition)
-            where T : IControl
+        public static T LocalPosition<T>(this T constructor, Vector3 localPosition)
+            where T : IControlConstructor
         {
-            control.rectTransform.localPosition = localPosition;
-            return control;
+            constructor.control.rectTransform.localPosition = localPosition;
+            return constructor;
         }
 
-        public static T LocalPosition<T>(this T control, IValueObservable<Vector2> localPosition)
-            where T : IControl
+        public static T LocalPosition<T>(this T constructor, IValueObservable<Vector2> localPosition)
+            where T : IControlConstructor
         {
-            control.AddBinding(localPosition.Subscribe(x => control.rectTransform.localPosition = x.currentValue));
-            return control;
+            constructor.control.AddBinding(localPosition.Subscribe(x => constructor.control.rectTransform.localPosition = x.currentValue));
+            return constructor;
         }
 
-        public static T Anchor<T>(this T control, Vector2 anchor)
-            where T : IControl
+        public static T Anchor<T>(this T constructor, Vector2 anchor)
+            where T : IControlConstructor
         {
-            control.AnchorMin(anchor);
-            control.AnchorMax(anchor);
-            return control;
+            constructor.AnchorMin(anchor);
+            constructor.AnchorMax(anchor);
+            return constructor;
         }
 
-        public static T Anchor<T>(this T control, IValueObservable<Vector2> anchor)
-            where T : IControl
+        public static T Anchor<T>(this T constructor, IValueObservable<Vector2> anchor)
+            where T : IControlConstructor
         {
-            control.AnchorMin(anchor);
-            control.AnchorMax(anchor);
-            return control;
+            constructor.AnchorMin(anchor);
+            constructor.AnchorMax(anchor);
+            return constructor;
         }
 
-        public static T AnchorMin<T>(this T control, Vector2 anchorMin)
-            where T : IControl
+        public static T AnchorMin<T>(this T constructor, Vector2 anchorMin)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMin = anchorMin;
-            return control;
+            constructor.control.rectTransform.anchorMin = anchorMin;
+            return constructor;
         }
 
-        public static T AnchorMin<T>(this T control, IValueObservable<Vector2> anchorMin)
-            where T : IControl
+        public static T AnchorMin<T>(this T constructor, IValueObservable<Vector2> anchorMin)
+            where T : IControlConstructor
         {
-            control.AddBinding(anchorMin.Subscribe(x => control.rectTransform.anchorMin = x.currentValue));
-            return control;
+            constructor.control.AddBinding(anchorMin.Subscribe(x => constructor.control.rectTransform.anchorMin = x.currentValue));
+            return constructor;
         }
 
-        public static T AnchorMax<T>(this T control, Vector2 anchorMax)
-            where T : IControl
+        public static T AnchorMax<T>(this T constructor, Vector2 anchorMax)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchorMax = anchorMax;
-            return control;
+            constructor.control.rectTransform.anchorMax = anchorMax;
+            return constructor;
         }
 
-        public static T AnchorMax<T>(this T control, IValueObservable<Vector2> anchorMax)
-            where T : IControl
+        public static T AnchorMax<T>(this T constructor, IValueObservable<Vector2> anchorMax)
+            where T : IControlConstructor
         {
-            control.AddBinding(anchorMax.Subscribe(x => control.rectTransform.anchorMax = x.currentValue));
-            return control;
+            constructor.control.AddBinding(anchorMax.Subscribe(x => constructor.control.rectTransform.anchorMax = x.currentValue));
+            return constructor;
         }
 
-        public static T OffsetMin<T>(this T control, Vector2 offsetMin)
-            where T : IControl
+        public static T OffsetMin<T>(this T constructor, Vector2 offsetMin)
+            where T : IControlConstructor
         {
-            control.rectTransform.offsetMin = offsetMin;
-            return control;
+            constructor.control.rectTransform.offsetMin = offsetMin;
+            return constructor;
         }
 
-        public static T OffsetMin<T>(this T control, IValueObservable<Vector2> offsetMin)
-            where T : IControl
+        public static T OffsetMin<T>(this T constructor, IValueObservable<Vector2> offsetMin)
+            where T : IControlConstructor
         {
-            control.AddBinding(offsetMin.Subscribe(x => control.rectTransform.offsetMin = x.currentValue));
-            return control;
+            constructor.control.AddBinding(offsetMin.Subscribe(x => constructor.control.rectTransform.offsetMin = x.currentValue));
+            return constructor;
         }
 
-        public static T OffsetMax<T>(this T control, Vector2 offsetMax)
-            where T : IControl
+        public static T OffsetMax<T>(this T constructor, Vector2 offsetMax)
+            where T : IControlConstructor
         {
-            control.rectTransform.offsetMax = offsetMax;
-            return control;
+            constructor.control.rectTransform.offsetMax = offsetMax;
+            return constructor;
         }
 
-        public static T OffsetMax<T>(this T control, IValueObservable<Vector2> offsetMax)
-            where T : IControl
+        public static T OffsetMax<T>(this T constructor, IValueObservable<Vector2> offsetMax)
+            where T : IControlConstructor
         {
-            control.AddBinding(offsetMax.Subscribe(x => control.rectTransform.offsetMax = x.currentValue));
-            return control;
+            constructor.control.AddBinding(offsetMax.Subscribe(x => constructor.control.rectTransform.offsetMax = x.currentValue));
+            return constructor;
         }
 
-        public static T AnchoredPosition<T>(this T control, Vector2 anchoredPosition)
-            where T : IControl
+        public static T AnchoredPosition<T>(this T constructor, Vector2 anchoredPosition)
+            where T : IControlConstructor
         {
-            control.rectTransform.anchoredPosition = anchoredPosition;
-            return control;
+            constructor.control.rectTransform.anchoredPosition = anchoredPosition;
+            return constructor;
         }
 
-        public static T AnchoredPosition<T>(this T control, IValueObservable<Vector2> anchoredPosition)
-            where T : IControl
+        public static T AnchoredPosition<T>(this T constructor, IValueObservable<Vector2> anchoredPosition)
+            where T : IControlConstructor
         {
-            control.AddBinding(anchoredPosition.Subscribe(x => control.rectTransform.anchoredPosition = x.currentValue));
-            return control;
+            constructor.control.AddBinding(anchoredPosition.Subscribe(x => constructor.control.rectTransform.anchoredPosition = x.currentValue));
+            return constructor;
         }
 
-        public static T SizeDelta<T>(this T control, Vector2 sizeDelta)
-            where T : IControl
+        public static T SizeDelta<T>(this T constructor, Vector2 sizeDelta)
+            where T : IControlConstructor
         {
-            control.rectTransform.sizeDelta = sizeDelta;
-            return control;
+            constructor.control.rectTransform.sizeDelta = sizeDelta;
+            return constructor;
         }
 
-        public static T SizeDelta<T>(this T control, IValueObservable<Vector2> sizeDelta)
-            where T : IControl
+        public static T SizeDelta<T>(this T constructor, IValueObservable<Vector2> sizeDelta)
+            where T : IControlConstructor
         {
-            control.AddBinding(sizeDelta.Subscribe(x => control.rectTransform.sizeDelta = x.currentValue));
-            return control;
+            constructor.control.AddBinding(sizeDelta.Subscribe(x => constructor.control.rectTransform.sizeDelta = x.currentValue));
+            return constructor;
         }
 
-        public static T IgnoreLayout<T>(this T control, IValueObservable<bool> ignoreLayout)
-            where T : IControl
+        public static T IgnoreLayout<T>(this T constructor, IValueObservable<bool> ignoreLayout)
+            where T : IControlConstructor
         {
-            control.AddBinding(ignoreLayout.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x.currentValue));
-            return control;
+            constructor.control.AddBinding(ignoreLayout.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x.currentValue));
+            return constructor;
         }
 
-        public static T IgnoreLayout<T>(this T control, bool ignoreLayout)
-            where T : IControl
+        public static T IgnoreLayout<T>(this T constructor, bool ignoreLayout)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = ignoreLayout;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = ignoreLayout;
+            return constructor;
         }
 
-        public static T MinWidth<T>(this T control, IValueObservable<float> minWidth)
-            where T : IControl
+        public static T MinWidth<T>(this T constructor, IValueObservable<float> minWidth)
+            where T : IControlConstructor
         {
-            control.AddBinding(minWidth.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x.currentValue));
-            return control;
+            constructor.control.AddBinding(minWidth.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x.currentValue));
+            return constructor;
         }
 
-        public static T MinWidth<T>(this T control, float minWidth)
-            where T : IControl
+        public static T MinWidth<T>(this T constructor, float minWidth)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = minWidth;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = minWidth;
+            return constructor;
         }
 
-        public static T MinHeight<T>(this T control, IValueObservable<float> minHeight)
-            where T : IControl
+        public static T MinHeight<T>(this T constructor, IValueObservable<float> minHeight)
+            where T : IControlConstructor
         {
-            control.AddBinding(minHeight.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x.currentValue));
-            return control;
+            constructor.control.AddBinding(minHeight.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x.currentValue));
+            return constructor;
         }
 
-        public static T MinHeight<T>(this T control, float minHeight)
-            where T : IControl
+        public static T MinHeight<T>(this T constructor, float minHeight)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = minHeight;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = minHeight;
+            return constructor;
         }
 
-        public static T PreferredWidth<T>(this T control, IValueObservable<float> preferredWidth)
-            where T : IControl
+        public static T PreferredWidth<T>(this T constructor, IValueObservable<float> preferredWidth)
+            where T : IControlConstructor
         {
-            control.AddBinding(preferredWidth.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x.currentValue));
-            return control;
+            constructor.control.AddBinding(preferredWidth.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x.currentValue));
+            return constructor;
         }
 
-        public static T PreferredWidth<T>(this T control, float preferredWidth)
-            where T : IControl
+        public static T PreferredWidth<T>(this T constructor, float preferredWidth)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = preferredWidth;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = preferredWidth;
+            return constructor;
         }
 
-        public static T PreferredHeight<T>(this T control, IValueObservable<float> preferredHeight)
-            where T : IControl
+        public static T PreferredHeight<T>(this T constructor, IValueObservable<float> preferredHeight)
+            where T : IControlConstructor
         {
-            control.AddBinding(preferredHeight.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x.currentValue));
-            return control;
+            constructor.control.AddBinding(preferredHeight.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x.currentValue));
+            return constructor;
         }
 
-        public static T PreferredHeight<T>(this T control, float preferredHeight)
-            where T : IControl
+        public static T PreferredHeight<T>(this T constructor, float preferredHeight)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = preferredHeight;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = preferredHeight;
+            return constructor;
         }
 
-        public static T FlexibleWidth<T>(this T control, IValueObservable<bool> flexibleWidth)
-            where T : IControl
+        public static T FlexibleWidth<T>(this T constructor, IValueObservable<bool> flexibleWidth)
+            where T : IControlConstructor
         {
-            control.AddBinding(flexibleWidth.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x.currentValue ? 1 : -1));
-            return control;
+            constructor.control.AddBinding(flexibleWidth.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x.currentValue ? 1 : -1));
+            return constructor;
         }
 
-        public static T FlexibleWidth<T>(this T control, bool flexibleWidth)
-            where T : IControl
+        public static T FlexibleWidth<T>(this T constructor, bool flexibleWidth)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = flexibleWidth ? 1 : -1;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = flexibleWidth ? 1 : -1;
+            return constructor;
         }
 
-        public static T FlexibleHeight<T>(this T control, IValueObservable<bool> flexibleHeight)
-            where T : IControl
+        public static T FlexibleHeight<T>(this T constructor, IValueObservable<bool> flexibleHeight)
+            where T : IControlConstructor
         {
-            control.AddBinding(flexibleHeight.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x.currentValue ? 1 : -1));
-            return control;
+            constructor.control.AddBinding(flexibleHeight.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x.currentValue ? 1 : -1));
+            return constructor;
         }
 
-        public static T FlexibleHeight<T>(this T control, bool flexibleHeight)
-            where T : IControl
+        public static T FlexibleHeight<T>(this T constructor, bool flexibleHeight)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = flexibleHeight ? 1 : -1;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = flexibleHeight ? 1 : -1;
+            return constructor;
         }
 
-        public static T LayoutPriority<T>(this T control, IValueObservable<int> layoutPriority)
-            where T : IControl
+        public static T LayoutPriority<T>(this T constructor, IValueObservable<int> layoutPriority)
+            where T : IControlConstructor
         {
-            control.AddBinding(layoutPriority.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x.currentValue));
-            return control;
+            constructor.control.AddBinding(layoutPriority.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x.currentValue));
+            return constructor;
         }
 
-        public static T LayoutPriority<T>(this T control, int layoutPriority)
-            where T : IControl
+        public static T LayoutPriority<T>(this T constructor, int layoutPriority)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = layoutPriority;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = layoutPriority;
+            return constructor;
         }
 
-        public static T FitContentVertical<T>(this T control, IValueObservable<FitMode> fitContentVertical)
-            where T : IControl
+        public static T FitContentVertical<T>(this T constructor, IValueObservable<FitMode> fitContentVertical)
+            where T : IControlConstructor
         {
-            control.AddBinding(fitContentVertical.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x.currentValue));
-            return control;
+            constructor.control.AddBinding(fitContentVertical.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x.currentValue));
+            return constructor;
         }
 
-        public static T FitContentVertical<T>(this T control, FitMode fitContentVertical)
-            where T : IControl
+        public static T FitContentVertical<T>(this T constructor, FitMode fitContentVertical)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = fitContentVertical;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = fitContentVertical;
+            return constructor;
         }
 
-        public static T FitContentHorizontal<T>(this T control, IValueObservable<FitMode> fitContentHorizontal)
-            where T : IControl
+        public static T FitContentHorizontal<T>(this T constructor, IValueObservable<FitMode> fitContentHorizontal)
+            where T : IControlConstructor
         {
-            control.AddBinding(fitContentHorizontal.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x.currentValue));
-            return control;
+            constructor.control.AddBinding(fitContentHorizontal.Subscribe(x => constructor.control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x.currentValue));
+            return constructor;
         }
 
-        public static T FitContentHorizontal<T>(this T control, FitMode fitContentHorizontal)
-            where T : IControl
+        public static T FitContentHorizontal<T>(this T constructor, FitMode fitContentHorizontal)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = fitContentHorizontal;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = fitContentHorizontal;
+            return constructor;
         }
 
-        public static T SiblingIndex<T>(this T control, int index)
-            where T : IControl
+        public static T OnHoverEntered<T>(this T constructor, Action<PointerEventData> onHoverEntered)
+            where T : IControlConstructor
         {
-            if (control.parent.value == null)
-                return control;
-
-            var currIndex = control.parent.value.children.IndexOf(control);
-
-            if (currIndex == index)
-                return control;
-
-            control.children.RemoveAt(currIndex);
-            control.children.Insert(index, control);
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<PointerEnterHandler>().onReceivedEvent += onHoverEntered;
+            return constructor;
         }
 
-        public static T OnHoverEntered<T>(this T control, Action<PointerEventData> onHoverEntered)
-            where T : IControl
+        public static T OnHoverExited<T>(this T constructor, Action<PointerEventData> onHoverExited)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<PointerEnterHandler>().onReceivedEvent += onHoverEntered;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<PointerExitHandler>().onReceivedEvent += onHoverExited;
+            return constructor;
         }
 
-        public static T OnHoverExited<T>(this T control, Action<PointerEventData> onHoverExited)
-            where T : IControl
+        public static T OnPointerDown<T>(this T constructor, Action<PointerEventData> onPointerDown)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<PointerExitHandler>().onReceivedEvent += onHoverExited;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<PointerDownHandler>().onReceivedEvent += onPointerDown;
+            return constructor;
         }
 
-        public static T OnPointerDown<T>(this T control, Action<PointerEventData> onPointerDown)
-            where T : IControl
+        public static T OnPointerUp<T>(this T constructor, Action<PointerEventData> onPointerUp)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<PointerDownHandler>().onReceivedEvent += onPointerDown;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<PointerUpHandler>().onReceivedEvent += onPointerUp;
+            return constructor;
         }
 
-        public static T OnPointerUp<T>(this T control, Action<PointerEventData> onPointerUp)
-            where T : IControl
+        public static T OnPointerClick<T>(this T constructor, Action<PointerEventData> onPointerClick)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<PointerUpHandler>().onReceivedEvent += onPointerUp;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<PointerClickHandler>().onReceivedEvent += onPointerClick;
+            return constructor;
         }
 
-        public static T OnPointerClick<T>(this T control, Action<PointerEventData> onPointerClick)
-            where T : IControl
+        public static T OnDragStarted<T>(this T constructor, Action<PointerEventData> onDragStarted)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<PointerClickHandler>().onReceivedEvent += onPointerClick;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<BeginDragHandler>().onReceivedEvent += onDragStarted;
+            return constructor;
         }
 
-        public static T OnDragStarted<T>(this T control, Action<PointerEventData> onDragStarted)
-            where T : IControl
+        public static T OnDrag<T>(this T constructor, Action<PointerEventData> onDrag)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<BeginDragHandler>().onReceivedEvent += onDragStarted;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<DragHandler>().onReceivedEvent += onDrag;
+            return constructor;
         }
 
-        public static T OnDrag<T>(this T control, Action<PointerEventData> onDrag)
-            where T : IControl
+        public static T OnDragEnded<T>(this T constructor, Action<PointerEventData> onDragEnded)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<DragHandler>().onReceivedEvent += onDrag;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<EndDragHandler>().onReceivedEvent += onDragEnded;
+            return constructor;
         }
 
-        public static T OnDragEnded<T>(this T control, Action<PointerEventData> onDragEnded)
-            where T : IControl
+        public static T OnSelect<T>(this T constructor, Action<BaseEventData> onSelect)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<EndDragHandler>().onReceivedEvent += onDragEnded;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<SelectHandler>().onReceivedEvent += onSelect;
+            return constructor;
         }
 
-        public static T OnSelect<T>(this T control, Action<BaseEventData> onSelect)
-            where T : IControl
+        public static T OnDeselect<T>(this T constructor, Action<BaseEventData> onDeselect)
+            where T : IControlConstructor
         {
-            control.gameObject.GetOrAddComponent<SelectHandler>().onReceivedEvent += onSelect;
-            return control;
-        }
-
-        public static T OnDeselect<T>(this T control, Action<BaseEventData> onDeselect)
-            where T : IControl
-        {
-            control.gameObject.GetOrAddComponent<DeselectHandler>().onReceivedEvent += onDeselect;
-            return control;
+            constructor.control.gameObject.GetOrAddComponent<DeselectHandler>().onReceivedEvent += onDeselect;
+            return constructor;
         }
     }
 }
