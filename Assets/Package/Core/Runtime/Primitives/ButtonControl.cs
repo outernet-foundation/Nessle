@@ -11,15 +11,14 @@ namespace Nessle
         public ValueObservable<Action> onClick { get; } = new ValueObservable<Action>();
         public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
 
-        public ButtonProps(
-            ImageProps background = default,
-            ValueObservable<Action> onClick = default,
-            ValueObservable<bool> interactable = default
-        )
+        public void PopulateFrom(Button button)
         {
-            this.background = background ?? new ImageProps();
-            this.onClick = onClick ?? new ValueObservable<Action>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
+            interactable.From(button.interactable);
+        }
+
+        public IDisposable BindTo(Button button)
+        {
+            return interactable.Subscribe(x => button.interactable = x.currentValue);
         }
 
         public void Dispose()
@@ -33,7 +32,7 @@ namespace Nessle
     [RequireComponent(typeof(Button))]
     public class ButtonControl : PrimitiveControl<ButtonProps>
     {
-        public PrimitiveControl<ImageProps> background;
+        public Image background;
         private Button _button;
 
         private void Awake()
@@ -44,23 +43,21 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            AddBinding(props.BindTo(_button));
+
             if (background != null)
-                background.Setup(props: props.background);
-
-            AddBinding(props.interactable.Subscribe(x => _button.interactable = x.currentValue));
+                AddBinding(props.background.BindTo(background));
         }
 
-        protected override void DisposeInternal()
+        protected override ButtonProps GetDefaultProps()
         {
-            background?.Dispose();
-        }
+            var props = new ButtonProps();
+            props.PopulateFrom(_button);
 
-        public override ButtonProps GetInstanceProps()
-        {
-            return new ButtonProps(
-                background?.GetInstanceProps(),
-                interactable: new ValueObservable<bool>(_button.interactable)
-            );
+            if (background != null)
+                props.background.PopulateFrom(background);
+
+            return props;
         }
     }
 }

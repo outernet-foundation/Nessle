@@ -16,21 +16,26 @@ namespace Nessle
         public TextStyleProps captionTextStyle { get; } = new TextStyleProps();
         public TextStyleProps itemTextStyle { get; } = new TextStyleProps();
 
-        public DropdownProps(
-            ValueObservable<int> value = default,
-            ValueObservable<bool> allowMultiselect = default,
-            ListObservable<string> options = default,
-            ValueObservable<bool> interactable = default,
-            TextStyleProps captionTextStyle = default,
-            TextStyleProps itemTextStyle = default
-        )
+        public void PopulateFrom(TMP_Dropdown dropdown)
         {
-            this.value = value ?? new ValueObservable<int>();
-            this.allowMultiselect = allowMultiselect ?? new ValueObservable<bool>();
-            this.options = options ?? new ListObservable<string>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
-            this.captionTextStyle = captionTextStyle ?? new TextStyleProps();
-            this.itemTextStyle = itemTextStyle ?? new TextStyleProps();
+            value.From(dropdown.value);
+            allowMultiselect.From(dropdown.MultiSelect);
+            options.From(dropdown.options.Select(x => x.text));
+            interactable.From(dropdown.interactable);
+            itemTextStyle.PopulateFrom(dropdown.itemText);
+            captionTextStyle.PopulateFrom(dropdown.captionText);
+        }
+
+        public IDisposable BindTo(TMP_Dropdown dropdown)
+        {
+            return new ComposedDisposable(
+                value.Subscribe(x => dropdown.value = x.currentValue),
+                allowMultiselect.Subscribe(x => dropdown.MultiSelect = x.currentValue),
+                options.Subscribe(_ => dropdown.options = options.Select(x => new TMP_Dropdown.OptionData() { text = x }).ToList()),
+                interactable.Subscribe(x => dropdown.interactable = x.currentValue),
+                captionTextStyle.BindTo(dropdown.captionText),
+                itemTextStyle.BindTo(dropdown.itemText)
+            );
         }
 
         public void Dispose()
@@ -57,26 +62,14 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(
-                props.value.Subscribe(x => _dropdown.value = x.currentValue),
-                props.allowMultiselect.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
-                props.options.Subscribe(_ => _dropdown.options = props.options.Select(x => new TMP_Dropdown.OptionData() { text = x }).ToList()),
-                props.interactable.Subscribe(x => _dropdown.interactable = x.currentValue),
-                Utility.BindTextStyle(props.captionTextStyle, _dropdown.captionText),
-                Utility.BindTextStyle(props.itemTextStyle, _dropdown.itemText)
-            );
+            AddBinding(props.BindTo(_dropdown));
         }
 
-        public override DropdownProps GetInstanceProps()
+        protected override DropdownProps GetDefaultProps()
         {
-            return new DropdownProps(
-                new ValueObservable<int>(_dropdown.value),
-                new ValueObservable<bool>(_dropdown.MultiSelect),
-                new ListObservable<string>(_dropdown.options.Select(x => x.text)),
-                new ValueObservable<bool>(_dropdown.interactable),
-                Utility.StylePropsFromText(_dropdown.captionText),
-                Utility.StylePropsFromText(_dropdown.itemText)
-            );
+            var props = new DropdownProps();
+            props.PopulateFrom(_dropdown);
+            return props;
         }
     }
 }

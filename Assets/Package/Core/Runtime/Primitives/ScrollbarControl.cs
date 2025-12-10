@@ -8,22 +8,27 @@ namespace Nessle
 {
     public class ScrollbarProps : IDisposable, IValueProps<float>, IInteractableProps
     {
-        public ValueObservable<float> value { get; }
-        public ValueObservable<ScrollbarDirection> direction { get; }
-        public ValueObservable<float> size { get; }
-        public ValueObservable<bool> interactable { get; }
+        public ValueObservable<float> value { get; } = new ValueObservable<float>();
+        public ValueObservable<ScrollbarDirection> direction { get; } = new ValueObservable<ScrollbarDirection>();
+        public ValueObservable<float> size { get; } = new ValueObservable<float>();
+        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
 
-        public ScrollbarProps(
-            ValueObservable<float> value = default,
-            ValueObservable<ScrollbarDirection> direction = default,
-            ValueObservable<float> size = default,
-            ValueObservable<bool> interactable = default
-        )
+        public void PopulateFrom(Scrollbar scrollbar)
         {
-            this.value = value ?? new ValueObservable<float>();
-            this.direction = direction ?? new ValueObservable<ScrollbarDirection>();
-            this.size = size ?? new ValueObservable<float>();
-            this.interactable = interactable ?? new ValueObservable<bool>(true);
+            value.From(scrollbar.value);
+            direction.From(scrollbar.direction);
+            size.From(scrollbar.size);
+            interactable.From(scrollbar.interactable);
+        }
+
+        public IDisposable BindTo(Scrollbar scrollbar)
+        {
+            return new ComposedDisposable(
+                value.Subscribe(x => scrollbar.value = x.currentValue),
+                direction.Subscribe(x => scrollbar.direction = x.currentValue),
+                size.Subscribe(x => scrollbar.size = x.currentValue),
+                interactable.Subscribe(x => scrollbar.interactable = x.currentValue)
+            );
         }
 
         public void Dispose()
@@ -48,22 +53,14 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(
-                props.value.Subscribe(x => _scrollbar.value = x.currentValue),
-                props.direction.Subscribe(x => _scrollbar.direction = x.currentValue),
-                props.size.Subscribe(x => _scrollbar.size = x.currentValue),
-                props.interactable.Subscribe(x => _scrollbar.interactable = x.currentValue)
-            );
+            AddBinding(props.BindTo(_scrollbar));
         }
 
-        public override ScrollbarProps GetInstanceProps()
+        protected override ScrollbarProps GetDefaultProps()
         {
-            return new ScrollbarProps(
-                new ValueObservable<float>(_scrollbar.value),
-                new ValueObservable<ScrollbarDirection>(_scrollbar.direction),
-                new ValueObservable<float>(_scrollbar.size),
-                new ValueObservable<bool>(_scrollbar.interactable)
-            );
+            var props = new ScrollbarProps();
+            props.PopulateFrom(_scrollbar);
+            return props;
         }
     }
 }

@@ -133,7 +133,7 @@ namespace Nessle
     {
         public T props { get; private set; }
 
-        public abstract T GetInstanceProps();
+        protected abstract T GetDefaultProps();
 
         public override void Setup(string identifier)
             => Setup(identifier, default);
@@ -143,7 +143,7 @@ namespace Nessle
 
         public void Setup(string identifier, T props)
         {
-            this.props = props ?? GetInstanceProps();
+            this.props = props ?? GetDefaultProps();
             base.Setup(identifier);
         }
 

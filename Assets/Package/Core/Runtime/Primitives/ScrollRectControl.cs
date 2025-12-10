@@ -7,22 +7,74 @@ namespace Nessle
 {
     public class ScrollRectProps : IDisposable, IValueProps<Vector2>
     {
-        public ValueObservable<Vector2> value { get; }
-        public ValueObservable<bool> horizontal { get; }
-        public ValueObservable<bool> vertical { get; }
-        public ValueObservable<IControl> content { get; }
+        public ValueObservable<Vector2> value { get; } = new ValueObservable<Vector2>(new Vector2(0, 1));
+        public ValueObservable<bool> horizontal { get; } = new ValueObservable<bool>(true);
+        public ValueObservable<bool> vertical { get; } = new ValueObservable<bool>(true);
+        public ValueObservable<IControl> content { get; } = new ValueObservable<IControl>();
 
-        public ScrollRectProps(
-            ValueObservable<Vector2> value = default,
-            ValueObservable<bool> horizontal = default,
-            ValueObservable<bool> vertical = default,
-            ValueObservable<IControl> content = default
-        )
+        public void PopulateFrom(ScrollRect scrollRect)
         {
-            this.value = value ?? new ValueObservable<Vector2>(new Vector2(0, 1));
-            this.horizontal = horizontal ?? new ValueObservable<bool>(true);
-            this.vertical = vertical ?? new ValueObservable<bool>(true);
-            this.content = content ?? new ValueObservable<IControl>();
+            var contentObj = scrollRect.content;
+            var contentControl = default(IControl);
+
+            if (content != null)
+            {
+                contentControl = contentObj.GetComponent<IControl>();
+
+                if (contentControl == null)
+                    contentControl = UIBuilder.Control(contentObj.name, content);
+            }
+
+            value.From(scrollRect.normalizedPosition);
+            horizontal.From(scrollRect.horizontal);
+            vertical.From(scrollRect.vertical);
+            content.From(contentControl);
+        }
+
+        public IDisposable BindTo(ScrollRect scrollRect, IControl containingControl)
+        {
+            return new ComposedDisposable(
+                value.Subscribe(x =>
+                {
+                    if (scrollRect.content == null)
+                        return;
+
+                    scrollRect.normalizedPosition = x.currentValue;
+                }),
+
+                horizontal.Subscribe(x =>
+                {
+                    if (scrollRect.content == null)
+                        return;
+
+                    scrollRect.horizontal = x.currentValue;
+                }),
+
+                vertical.Subscribe(x =>
+                {
+                    if (scrollRect.content == null)
+                        return;
+
+                    scrollRect.vertical = x.currentValue;
+                }),
+
+                content.Subscribe(x =>
+                {
+                    x.previousValue?.parent.From(default(IControl));
+
+                    if (x.currentValue == null)
+                        return;
+
+                    x.currentValue.parent.From(containingControl);
+                    scrollRect.content = x.currentValue.rectTransform;
+                    x.currentValue.SetPivot(new Vector2(0, 1));
+                    x.currentValue.AnchorToTop();
+
+                    scrollRect.normalizedPosition = value.value;
+                    scrollRect.horizontal = horizontal.value;
+                    scrollRect.vertical = vertical.value;
+                })
+            );
         }
 
         public void Dispose()
@@ -48,62 +100,14 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(props.value.Subscribe(x =>
-            {
-                if (_scrollRect.content == null)
-                    return;
-
-                _scrollRect.normalizedPosition = x.currentValue;
-            }));
-
-            AddBinding(props.horizontal.Subscribe(x =>
-            {
-                if (_scrollRect.content == null)
-                    return;
-
-                _scrollRect.horizontal = x.currentValue;
-            }));
-
-            AddBinding(props.vertical.Subscribe(x =>
-            {
-                if (_scrollRect.content == null)
-                    return;
-
-                _scrollRect.vertical = x.currentValue;
-            }));
-
-            AddBinding(props.content.Subscribe(x =>
-            {
-                x.previousValue?.parent.From(default(IControl));
-
-                if (x.currentValue == null)
-                    return;
-
-                x.currentValue.parent.From(this);
-                _scrollRect.content = x.currentValue.rectTransform;
-                x.currentValue.SetPivot(new Vector2(0, 1));
-                x.currentValue.AnchorToTop();
-
-                _scrollRect.normalizedPosition = props.value.value;
-                _scrollRect.horizontal = props.horizontal.value;
-                _scrollRect.vertical = props.vertical.value;
-            }));
+            AddBinding(props.BindTo(_scrollRect, this));
         }
 
-        public override ScrollRectProps GetInstanceProps()
+        protected override ScrollRectProps GetDefaultProps()
         {
-            var content = _scrollRect.content;
-            var contentControl = default(IControl);
-
-            if (content != null)
-                contentControl = content.GetComponent<IControl>();
-
-            return new ScrollRectProps(
-                new ValueObservable<Vector2>(_scrollRect.normalizedPosition),
-                new ValueObservable<bool>(_scrollRect.horizontal),
-                new ValueObservable<bool>(_scrollRect.vertical),
-                new ValueObservable<IControl>(contentControl)
-            );
+            var props = new ScrollRectProps();
+            props.PopulateFrom(_scrollRect);
+            return props;
         }
     }
 }

@@ -8,28 +8,33 @@ namespace Nessle
 {
     public class SliderProps : IDisposable, IValueProps<float>, IInteractableProps
     {
-        public ValueObservable<float> value { get; }
-        public ValueObservable<float> minValue { get; }
-        public ValueObservable<float> maxValue { get; }
-        public ValueObservable<bool> wholeNumbers { get; }
-        public ValueObservable<SliderDirection> direction { get; }
-        public ValueObservable<bool> interactable { get; }
+        public ValueObservable<float> value { get; } = new ValueObservable<float>();
+        public ValueObservable<float> minValue { get; } = new ValueObservable<float>();
+        public ValueObservable<float> maxValue { get; } = new ValueObservable<float>();
+        public ValueObservable<bool> wholeNumbers { get; } = new ValueObservable<bool>();
+        public ValueObservable<SliderDirection> direction { get; } = new ValueObservable<SliderDirection>();
+        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
 
-        public SliderProps(
-            ValueObservable<float> value = default,
-            ValueObservable<float> minValue = default,
-            ValueObservable<float> maxValue = default,
-            ValueObservable<bool> wholeNumbers = default,
-            ValueObservable<SliderDirection> direction = default,
-            ValueObservable<bool> interactable = default
-        )
+        public void PopulateFrom(Slider slider)
         {
-            this.value = value ?? new ValueObservable<float>();
-            this.minValue = minValue ?? new ValueObservable<float>();
-            this.maxValue = maxValue ?? new ValueObservable<float>();
-            this.wholeNumbers = wholeNumbers ?? new ValueObservable<bool>();
-            this.direction = direction ?? new ValueObservable<SliderDirection>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
+            value.From(slider.value);
+            minValue.From(slider.minValue);
+            maxValue.From(slider.maxValue);
+            wholeNumbers.From(slider.wholeNumbers);
+            direction.From(slider.direction);
+            interactable.From(slider.interactable);
+        }
+
+        public IDisposable BindTo(Slider slider)
+        {
+            return new ComposedDisposable(
+                value.Subscribe(x => slider.value = x.currentValue),
+                minValue.Subscribe(x => slider.minValue = x.currentValue),
+                maxValue.Subscribe(x => slider.maxValue = x.currentValue),
+                wholeNumbers.Subscribe(x => slider.wholeNumbers = x.currentValue),
+                direction.Subscribe(x => slider.direction = x.currentValue),
+                interactable.Subscribe(x => slider.interactable = x.currentValue)
+            );
         }
 
         public void Dispose()
@@ -56,26 +61,14 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(
-                props.value.Subscribe(x => _slider.value = x.currentValue),
-                props.minValue.Subscribe(x => _slider.minValue = x.currentValue),
-                props.maxValue.Subscribe(x => _slider.maxValue = x.currentValue),
-                props.wholeNumbers.Subscribe(x => _slider.wholeNumbers = x.currentValue),
-                props.direction.Subscribe(x => _slider.direction = x.currentValue),
-                props.interactable.Subscribe(x => _slider.interactable = x.currentValue)
-            );
+            AddBinding(props.BindTo(_slider));
         }
 
-        public override SliderProps GetInstanceProps()
+        protected override SliderProps GetDefaultProps()
         {
-            return new SliderProps(
-                new ValueObservable<float>(_slider.value),
-                new ValueObservable<float>(_slider.minValue),
-                new ValueObservable<float>(_slider.maxValue),
-                new ValueObservable<bool>(_slider.wholeNumbers),
-                new ValueObservable<SliderDirection>(_slider.direction),
-                new ValueObservable<bool>(_slider.interactable)
-            );
+            var props = new SliderProps();
+            props.PopulateFrom(_slider);
+            return props;
         }
     }
 }
