@@ -109,6 +109,21 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.CompleteWith(
+                Props.From(_image.sprite),
+                Props.From(_image.color),
+                Props.From(_image.type),
+                Props.From(_image.fillCenter),
+                Props.From(_image.pixelsPerUnitMultiplier),
+                Props.From(_image.raycastTarget),
+                Props.From(_image.raycastPadding),
+                Props.From(_image.useSpriteMesh),
+                Props.From(_image.preserveAspect),
+                Props.From(_image.fillOrigin),
+                Props.From(_image.fillMethod),
+                Props.From(_image.fillAmount)
+            );
+
             AddBinding(
                 props.sprite.Subscribe(x => _image.sprite = x.currentValue),
                 props.color.Subscribe(x => _image.color = x.currentValue),
