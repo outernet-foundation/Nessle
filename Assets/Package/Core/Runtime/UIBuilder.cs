@@ -123,19 +123,19 @@ namespace Nessle
         public static IControl Space(string identifier = "space")
             => Control(identifier);
 
-        public static IControl Scrollbar(string identifier = "scrollbar", ScrollbarProps props = default, PrimitiveControl<ScrollbarProps> prefab = default)
+        public static IControl<ScrollbarProps> Scrollbar(string identifier = "scrollbar", ScrollbarProps props = default, PrimitiveControl<ScrollbarProps> prefab = default)
             => Control(identifier, props ?? new ScrollbarProps(), prefab == null ? primitives.scrollbar : prefab);
 
-        public static IControl ScrollRect(string identifier = "scrollRect", ScrollRectProps props = default, PrimitiveControl<ScrollRectProps> prefab = default)
+        public static IControl<ScrollRectProps> ScrollRect(string identifier = "scrollRect", ScrollRectProps props = default, PrimitiveControl<ScrollRectProps> prefab = default)
             => Control(identifier, props ?? new ScrollRectProps(), prefab == null ? primitives.scrollRect : prefab);
 
-        public static IControl Dropdown(string identifier = "dropdown", DropdownProps props = default, PrimitiveControl<DropdownProps> prefab = default)
+        public static IControl<DropdownProps> Dropdown(string identifier = "dropdown", DropdownProps props = default, PrimitiveControl<DropdownProps> prefab = default)
             => Control(identifier, props ?? new DropdownProps(), prefab == null ? primitives.dropdown : prefab);
 
-        public static IControl Toggle(string identifier = "toggle", ToggleProps props = default, PrimitiveControl<ToggleProps> prefab = default)
+        public static IControl<ToggleProps> Toggle(string identifier = "toggle", ToggleProps props = default, PrimitiveControl<ToggleProps> prefab = default)
             => Control(identifier, props ?? new ToggleProps(), prefab == null ? primitives.toggle : prefab);
 
-        public static IControl Slider(string identifier = "slider", SliderProps props = default, PrimitiveControl<SliderProps> prefab = default)
+        public static IControl<SliderProps> Slider(string identifier = "slider", SliderProps props = default, PrimitiveControl<SliderProps> prefab = default)
             => Control(identifier, props ?? new SliderProps(), prefab == null ? primitives.slider : prefab);
     }
 }
