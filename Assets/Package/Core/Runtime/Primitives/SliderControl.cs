@@ -64,7 +64,7 @@ namespace Nessle
             AddBinding(props.BindTo(_slider));
         }
 
-        protected override SliderProps GetDefaultProps()
+        protected override SliderProps CompleteProps()
         {
             var props = new SliderProps();
             props.PopulateFrom(_slider);

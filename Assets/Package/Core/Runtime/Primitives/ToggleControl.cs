@@ -47,7 +47,7 @@ namespace Nessle
             AddBinding(props.BindTo(_toggle));
         }
 
-        protected override ToggleProps GetDefaultProps()
+        protected override ToggleProps CompleteProps()
         {
             var props = new ToggleProps();
             props.PopulateFrom(_toggle);

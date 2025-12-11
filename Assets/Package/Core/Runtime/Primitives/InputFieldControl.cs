@@ -96,7 +96,7 @@ namespace Nessle
                 AddBinding(props.background.BindTo(background));
         }
 
-        protected override InputFieldProps GetDefaultProps()
+        protected override InputFieldProps CompleteProps()
         {
             var props = new InputFieldProps();
             props.PopulateFrom(_inputField);

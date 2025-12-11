@@ -7,19 +7,9 @@ namespace Nessle
 {
     public class ButtonProps : IDisposable, IInteractableProps
     {
-        public ImageProps background { get; } = new ImageProps();
-        public ValueObservable<Action> onClick { get; } = new ValueObservable<Action>();
-        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
-
-        public void PopulateFrom(Button button)
-        {
-            interactable.From(button.interactable);
-        }
-
-        public IDisposable BindTo(Button button)
-        {
-            return interactable.Subscribe(x => button.interactable = x.currentValue);
-        }
+        public ValueObservable<Action> onClick { get; set; }
+        public ValueObservable<bool> interactable { get; set; }
+        public ImageProps background { get; set; }
 
         public void Dispose()
         {
@@ -32,7 +22,7 @@ namespace Nessle
     [RequireComponent(typeof(Button))]
     public class ButtonControl : PrimitiveControl<ButtonProps>
     {
-        public Image background;
+        public PrimitiveControl<Image> background;
         private Button _button;
 
         private void Awake()
@@ -43,21 +33,19 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            AddBinding(props.BindTo(_button));
+            props.background = props.background ?? new ImageProps();
+            props.onClick = props.onClick ?? new ValueObservable<Action>();
+            props.interactable = props.interactable ?? new ValueObservable<bool>(_button.interactable);
 
             if (background != null)
-                AddBinding(props.background.BindTo(background));
+                background.Setup(props.background);
+
+            AddBinding(props.interactable.Subscribe(x => _button.interactable = x.currentValue));
         }
 
-        protected override ButtonProps GetDefaultProps()
+        protected override void DisposeInternal()
         {
-            var props = new ButtonProps();
-            props.PopulateFrom(_button);
-
-            if (background != null)
-                props.background.PopulateFrom(background);
-
-            return props;
+            background.Dispose();
         }
     }
 }

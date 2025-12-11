@@ -80,7 +80,7 @@ namespace Nessle
             AddBinding(props.BindTo(_layout));
         }
 
-        protected override LayoutProps GetDefaultProps()
+        protected override LayoutProps CompleteProps()
         {
             var props = new LayoutProps();
             props.PopulateFrom(_layout);

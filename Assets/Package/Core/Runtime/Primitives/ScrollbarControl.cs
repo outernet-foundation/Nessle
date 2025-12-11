@@ -56,7 +56,7 @@ namespace Nessle
             AddBinding(props.BindTo(_scrollbar));
         }
 
-        protected override ScrollbarProps GetDefaultProps()
+        protected override ScrollbarProps CompleteProps()
         {
             var props = new ScrollbarProps();
             props.PopulateFrom(_scrollbar);

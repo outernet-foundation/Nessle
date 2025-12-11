@@ -103,7 +103,7 @@ namespace Nessle
             AddBinding(props.BindTo(_scrollRect, this));
         }
 
-        protected override ScrollRectProps GetDefaultProps()
+        protected override ScrollRectProps CompleteProps()
         {
             var props = new ScrollRectProps();
             props.PopulateFrom(_scrollRect);

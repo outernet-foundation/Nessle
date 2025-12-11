@@ -9,33 +9,33 @@ namespace Nessle
 {
     public class ImageProps : IDisposable, IColorProps
     {
-        public ValueObservable<Sprite> sprite { get; } = new ValueObservable<Sprite>();
-        public ValueObservable<Color> color { get; } = new ValueObservable<Color>();
-        public ValueObservable<ImageType> imageType { get; } = new ValueObservable<ImageType>();
-        public ValueObservable<bool> fillCenter { get; } = new ValueObservable<bool>(true);
-        public ValueObservable<float> pixelsPerUnitMultiplier { get; } = new ValueObservable<float>();
-        public ValueObservable<bool> raycastTarget { get; } = new ValueObservable<bool>(true);
-        public ValueObservable<Vector4> raycastPadding { get; } = new ValueObservable<Vector4>();
-        public ValueObservable<bool> useSpriteMesh { get; } = new ValueObservable<bool>();
-        public ValueObservable<bool> preserveAspect { get; } = new ValueObservable<bool>();
-        public ValueObservable<int> fillOrigin { get; } = new ValueObservable<int>();
-        public ValueObservable<ImageFillMethod> fillMethod { get; } = new ValueObservable<ImageFillMethod>();
-        public ValueObservable<float> fillAmount { get; } = new ValueObservable<float>();
+        public ValueObservable<Sprite> sprite { get; set; }
+        public ValueObservable<Color> color { get; set; }
+        public ValueObservable<ImageType> imageType { get; set; }
+        public ValueObservable<bool> fillCenter { get; set; }
+        public ValueObservable<float> pixelsPerUnitMultiplier { get; set; }
+        public ValueObservable<bool> raycastTarget { get; set; }
+        public ValueObservable<Vector4> raycastPadding { get; set; }
+        public ValueObservable<bool> useSpriteMesh { get; set; }
+        public ValueObservable<bool> preserveAspect { get; set; }
+        public ValueObservable<int> fillOrigin { get; set; }
+        public ValueObservable<ImageFillMethod> fillMethod { get; set; }
+        public ValueObservable<float> fillAmount { get; set; }
 
-        public void PopulateFrom(Image image)
+        public void PopulateMissingPropsFrom(Image image)
         {
-            sprite.From(image.sprite);
-            color.From(image.color);
-            imageType.From(image.type);
-            fillCenter.From(image.fillCenter);
-            pixelsPerUnitMultiplier.From(image.pixelsPerUnitMultiplier);
-            raycastTarget.From(image.raycastTarget);
-            raycastPadding.From(image.raycastPadding);
-            useSpriteMesh.From(image.useSpriteMesh);
-            preserveAspect.From(image.preserveAspect);
-            fillOrigin.From(image.fillOrigin);
-            fillMethod.From(image.fillMethod);
-            fillAmount.From(image.fillAmount);
+            sprite = sprite ?? new ValueObservable<Sprite>(image.sprite);
+            color = color ?? new ValueObservable<Color>(image.color);
+            imageType = imageType ?? new ValueObservable<ImageType>(image.type);
+            fillCenter = fillCenter ?? new ValueObservable<bool>(image.fillCenter);
+            pixelsPerUnitMultiplier = pixelsPerUnitMultiplier ?? new ValueObservable<float>(image.pixelsPerUnitMultiplier);
+            raycastTarget = raycastTarget ?? new ValueObservable<bool>(image.raycastTarget);
+            raycastPadding = raycastPadding ?? new ValueObservable<Vector4>(image.raycastPadding);
+            useSpriteMesh = useSpriteMesh ?? new ValueObservable<bool>(image.useSpriteMesh);
+            preserveAspect = preserveAspect ?? new ValueObservable<bool>(image.preserveAspect);
+            fillOrigin = fillOrigin ?? new ValueObservable<int>(image.fillOrigin);
+            fillMethod = fillMethod ?? new ValueObservable<ImageFillMethod>(image.fillMethod);
+            fillAmount = fillAmount ?? new ValueObservable<float>(image.fillAmount);
         }
 
         public IDisposable BindTo(Image image)
@@ -85,14 +85,8 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.PopulateMissingPropsFrom(_image);
             AddBinding(props.BindTo(_image));
-        }
-
-        protected override ImageProps GetDefaultProps()
-        {
-            var props = new ImageProps();
-            props.PopulateFrom(_image);
-            return props;
         }
     }
 }
