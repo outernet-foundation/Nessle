@@ -7,9 +7,9 @@ namespace Nessle
 {
     public class ButtonProps : IDisposable, IInteractableProps
     {
-        public ImageProps background { get; } = new ImageProps();
-        public ValueObservable<Action> onClick { get; } = new ValueObservable<Action>();
-        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>();
+        public ImageProps background { get; private set; }
+        public ValueObservable<Action> onClick { get; private set; }
+        public ValueObservable<bool> interactable { get; private set; }
 
         public ButtonProps(
             ImageProps background = default,
@@ -17,9 +17,20 @@ namespace Nessle
             ValueObservable<bool> interactable = default
         )
         {
-            this.background = background ?? new ImageProps();
-            this.onClick = onClick ?? new ValueObservable<Action>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
+            this.background = background;
+            this.onClick = onClick;
+            this.interactable = interactable;
+        }
+
+        public void CompleteWith(
+            ImageProps background = default,
+            ValueObservable<Action> onClick = default,
+            ValueObservable<bool> interactable = default
+        )
+        {
+            this.background = this.background ?? background;
+            this.onClick = this.onClick ?? onClick;
+            this.interactable = this.interactable ?? interactable;
         }
 
         public void Dispose()
@@ -44,22 +55,17 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
-            if (background != null)
-                background.Setup(props: props.background);
+            props.CompleteWith(
+                new ImageProps(),
+                new ValueObservable<Action>(),
+                Props.From(_button.interactable)
+            );
 
-            AddBinding(props.interactable.Subscribe(x => _button.interactable = x.currentValue));
-        }
+            background.Setup(props.background);
 
-        protected override void DisposeInternal()
-        {
-            background?.Dispose();
-        }
-
-        public override ButtonProps GetInstanceProps()
-        {
-            return new ButtonProps(
-                background?.GetInstanceProps(),
-                interactable: new ValueObservable<bool>(_button.interactable)
+            AddBinding(
+                props.interactable.Subscribe(x => _button.interactable = x.currentValue),
+                background
             );
         }
     }

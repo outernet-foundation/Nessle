@@ -9,18 +9,18 @@ namespace Nessle
 {
     public class ImageProps : IDisposable, IColorProps
     {
-        public ValueObservable<Sprite> sprite { get; }
-        public ValueObservable<Color> color { get; }
-        public ValueObservable<ImageType> imageType { get; }
-        public ValueObservable<bool> fillCenter { get; }
-        public ValueObservable<float> pixelsPerUnitMultiplier { get; }
-        public ValueObservable<bool> raycastTarget { get; }
-        public ValueObservable<Vector4> raycastPadding { get; }
-        public ValueObservable<bool> useSpriteMesh { get; }
-        public ValueObservable<bool> preserveAspect { get; }
-        public ValueObservable<int> fillOrigin { get; }
-        public ValueObservable<ImageFillMethod> fillMethod { get; }
-        public ValueObservable<float> fillAmount { get; }
+        public ValueObservable<Sprite> sprite { get; private set; }
+        public ValueObservable<Color> color { get; private set; }
+        public ValueObservable<ImageType> imageType { get; private set; }
+        public ValueObservable<bool> fillCenter { get; private set; }
+        public ValueObservable<float> pixelsPerUnitMultiplier { get; private set; }
+        public ValueObservable<bool> raycastTarget { get; private set; }
+        public ValueObservable<Vector4> raycastPadding { get; private set; }
+        public ValueObservable<bool> useSpriteMesh { get; private set; }
+        public ValueObservable<bool> preserveAspect { get; private set; }
+        public ValueObservable<int> fillOrigin { get; private set; }
+        public ValueObservable<ImageFillMethod> fillMethod { get; private set; }
+        public ValueObservable<float> fillAmount { get; private set; }
 
         public ImageProps(
             ValueObservable<Sprite> sprite = default,
@@ -37,18 +37,47 @@ namespace Nessle
             ValueObservable<float> fillAmount = default
         )
         {
-            this.sprite = sprite ?? new ValueObservable<Sprite>();
-            this.color = color ?? new ValueObservable<Color>();
-            this.imageType = imageType ?? new ValueObservable<ImageType>();
-            this.fillCenter = fillCenter ?? new ValueObservable<bool>(true);
-            this.pixelsPerUnitMultiplier = pixelsPerUnitMultiplier ?? new ValueObservable<float>(1);
-            this.raycastTarget = raycastTarget ?? new ValueObservable<bool>(true);
-            this.raycastPadding = raycastPadding ?? new ValueObservable<Vector4>();
-            this.useSpriteMesh = useSpriteMesh ?? new ValueObservable<bool>();
-            this.preserveAspect = preserveAspect ?? new ValueObservable<bool>();
-            this.fillOrigin = fillOrigin ?? new ValueObservable<int>();
-            this.fillMethod = fillMethod ?? new ValueObservable<ImageFillMethod>();
-            this.fillAmount = fillAmount ?? new ValueObservable<float>();
+            this.sprite = sprite;
+            this.color = color;
+            this.imageType = imageType;
+            this.fillCenter = fillCenter;
+            this.pixelsPerUnitMultiplier = pixelsPerUnitMultiplier;
+            this.raycastTarget = raycastTarget;
+            this.raycastPadding = raycastPadding;
+            this.useSpriteMesh = useSpriteMesh;
+            this.preserveAspect = preserveAspect;
+            this.fillOrigin = fillOrigin;
+            this.fillMethod = fillMethod;
+            this.fillAmount = fillAmount;
+        }
+
+        public void CompleteWith(
+            ValueObservable<Sprite> sprite = default,
+            ValueObservable<Color> color = default,
+            ValueObservable<ImageType> imageType = default,
+            ValueObservable<bool> fillCenter = default,
+            ValueObservable<float> pixelsPerUnitMultiplier = default,
+            ValueObservable<bool> raycastTarget = default,
+            ValueObservable<Vector4> raycastPadding = default,
+            ValueObservable<bool> useSpriteMesh = default,
+            ValueObservable<bool> preserveAspect = default,
+            ValueObservable<int> fillOrigin = default,
+            ValueObservable<ImageFillMethod> fillMethod = default,
+            ValueObservable<float> fillAmount = default
+        )
+        {
+            this.sprite = this.sprite ?? sprite;
+            this.color = this.color ?? color;
+            this.imageType = this.imageType ?? imageType;
+            this.fillCenter = this.fillCenter ?? fillCenter;
+            this.pixelsPerUnitMultiplier = this.pixelsPerUnitMultiplier ?? pixelsPerUnitMultiplier;
+            this.raycastTarget = this.raycastTarget ?? raycastTarget;
+            this.raycastPadding = this.raycastPadding ?? raycastPadding;
+            this.useSpriteMesh = this.useSpriteMesh ?? useSpriteMesh;
+            this.preserveAspect = this.preserveAspect ?? preserveAspect;
+            this.fillOrigin = this.fillOrigin ?? fillOrigin;
+            this.fillMethod = this.fillMethod ?? fillMethod;
+            this.fillAmount = this.fillAmount ?? fillAmount;
         }
 
         public void Dispose()
@@ -93,24 +122,6 @@ namespace Nessle
                 props.fillOrigin.Subscribe(x => _image.fillOrigin = x.currentValue),
                 props.fillMethod.Subscribe(x => _image.fillMethod = x.currentValue),
                 props.fillAmount.Subscribe(x => _image.fillAmount = x.currentValue)
-            );
-        }
-
-        public override ImageProps GetInstanceProps()
-        {
-            return new ImageProps(
-                new ValueObservable<Sprite>(_image.sprite),
-                new ValueObservable<Color>(_image.color),
-                new ValueObservable<ImageType>(_image.type),
-                new ValueObservable<bool>(_image.fillCenter),
-                new ValueObservable<float>(_image.pixelsPerUnitMultiplier),
-                new ValueObservable<bool>(_image.raycastTarget),
-                new ValueObservable<Vector4>(_image.raycastPadding),
-                new ValueObservable<bool>(_image.useSpriteMesh),
-                new ValueObservable<bool>(_image.preserveAspect),
-                new ValueObservable<int>(_image.fillOrigin),
-                new ValueObservable<ImageFillMethod>(_image.fillMethod),
-                new ValueObservable<float>(_image.fillAmount)
             );
         }
     }

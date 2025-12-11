@@ -8,13 +8,13 @@ namespace Nessle
 {
     public class DropdownProps : IDisposable, IValueProps<int>, IInteractableProps
     {
-        public ValueObservable<int> value { get; } = new ValueObservable<int>();
-        public ValueObservable<bool> allowMultiselect { get; } = new ValueObservable<bool>();
-        public ListObservable<string> options { get; } = new ListObservable<string>();
-        public ValueObservable<bool> interactable { get; } = new ValueObservable<bool>(true);
+        public ValueObservable<int> value { get; private set; }
+        public ValueObservable<bool> allowMultiselect { get; private set; }
+        public ListObservable<string> options { get; private set; }
+        public ValueObservable<bool> interactable { get; private set; }
 
-        public TextStyleProps captionTextStyle { get; } = new TextStyleProps();
-        public TextStyleProps itemTextStyle { get; } = new TextStyleProps();
+        public TextStyleProps captionTextStyle { get; private set; }
+        public TextStyleProps itemTextStyle { get; private set; }
 
         public DropdownProps(
             ValueObservable<int> value = default,
@@ -25,12 +25,29 @@ namespace Nessle
             TextStyleProps itemTextStyle = default
         )
         {
-            this.value = value ?? new ValueObservable<int>();
-            this.allowMultiselect = allowMultiselect ?? new ValueObservable<bool>();
-            this.options = options ?? new ListObservable<string>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
-            this.captionTextStyle = captionTextStyle ?? new TextStyleProps();
-            this.itemTextStyle = itemTextStyle ?? new TextStyleProps();
+            this.value = value;
+            this.allowMultiselect = allowMultiselect;
+            this.options = options;
+            this.interactable = interactable;
+            this.captionTextStyle = captionTextStyle;
+            this.itemTextStyle = itemTextStyle;
+        }
+
+        public void CompleteWith(
+            ValueObservable<int> value = default,
+            ValueObservable<bool> allowMultiselect = default,
+            ListObservable<string> options = default,
+            ValueObservable<bool> interactable = default,
+            TextStyleProps captionTextStyle = default,
+            TextStyleProps itemTextStyle = default
+        )
+        {
+            this.value = this.value ?? value;
+            this.allowMultiselect = this.allowMultiselect ?? allowMultiselect;
+            this.options = this.options ?? options;
+            this.interactable = this.interactable ?? interactable;
+            this.captionTextStyle = this.captionTextStyle ?? captionTextStyle;
+            this.itemTextStyle = this.itemTextStyle ?? itemTextStyle;
         }
 
         public void Dispose()
@@ -49,33 +66,39 @@ namespace Nessle
     {
         private TMP_Dropdown _dropdown;
 
+        private PrimitiveControl<TextProps> _captionText;
+        private PrimitiveControl<TextProps> _itemText;
+
         private void Awake()
         {
             _dropdown = GetComponent<TMP_Dropdown>();
             _dropdown.onValueChanged.AddListener(x => props?.value.From(x));
+
+            _captionText = _dropdown.captionText.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>>();
+            _itemText = _dropdown.itemText.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>>();
         }
 
         protected override void SetupInternal()
         {
+            props.CompleteWith(
+                Props.From(_dropdown.value),
+                Props.From(_dropdown.MultiSelect),
+                Props.From(_dropdown.options.Select(x => x.text)),
+                Props.From(_dropdown.interactable),
+                new TextStyleProps(),
+                new TextStyleProps()
+            );
+
+            _captionText.Setup(new TextProps(style: props.captionTextStyle));
+            _itemText.Setup(new TextProps(style: props.itemTextStyle));
+
             AddBinding(
                 props.value.Subscribe(x => _dropdown.value = x.currentValue),
                 props.allowMultiselect.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
                 props.options.Subscribe(_ => _dropdown.options = props.options.Select(x => new TMP_Dropdown.OptionData() { text = x }).ToList()),
                 props.interactable.Subscribe(x => _dropdown.interactable = x.currentValue),
-                Utility.BindTextStyle(props.captionTextStyle, _dropdown.captionText),
-                Utility.BindTextStyle(props.itemTextStyle, _dropdown.itemText)
-            );
-        }
-
-        public override DropdownProps GetInstanceProps()
-        {
-            return new DropdownProps(
-                new ValueObservable<int>(_dropdown.value),
-                new ValueObservable<bool>(_dropdown.MultiSelect),
-                new ListObservable<string>(_dropdown.options.Select(x => x.text)),
-                new ValueObservable<bool>(_dropdown.interactable),
-                Utility.StylePropsFromText(_dropdown.captionText),
-                Utility.StylePropsFromText(_dropdown.itemText)
+                _captionText,
+                _itemText
             );
         }
     }

@@ -8,10 +8,10 @@ namespace Nessle
 {
     public class ScrollbarProps : IDisposable, IValueProps<float>, IInteractableProps
     {
-        public ValueObservable<float> value { get; }
-        public ValueObservable<ScrollbarDirection> direction { get; }
-        public ValueObservable<float> size { get; }
-        public ValueObservable<bool> interactable { get; }
+        public ValueObservable<float> value { get; private set; }
+        public ValueObservable<ScrollbarDirection> direction { get; private set; }
+        public ValueObservable<float> size { get; private set; }
+        public ValueObservable<bool> interactable { get; private set; }
 
         public ScrollbarProps(
             ValueObservable<float> value = default,
@@ -20,10 +20,23 @@ namespace Nessle
             ValueObservable<bool> interactable = default
         )
         {
-            this.value = value ?? new ValueObservable<float>();
-            this.direction = direction ?? new ValueObservable<ScrollbarDirection>();
-            this.size = size ?? new ValueObservable<float>();
-            this.interactable = interactable ?? new ValueObservable<bool>(true);
+            this.value = value;
+            this.direction = direction;
+            this.size = size;
+            this.interactable = interactable;
+        }
+
+        public void CompleteWith(
+            ValueObservable<float> value = default,
+            ValueObservable<ScrollbarDirection> direction = default,
+            ValueObservable<float> size = default,
+            ValueObservable<bool> interactable = default
+        )
+        {
+            this.value = this.value ?? value;
+            this.direction = this.direction ?? direction;
+            this.size = this.size ?? size;
+            this.interactable = this.interactable ?? interactable;
         }
 
         public void Dispose()
@@ -48,21 +61,18 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.CompleteWith(
+                Props.From(_scrollbar.value),
+                Props.From(_scrollbar.direction),
+                Props.From(_scrollbar.size),
+                Props.From(_scrollbar.interactable)
+            );
+
             AddBinding(
                 props.value.Subscribe(x => _scrollbar.value = x.currentValue),
                 props.direction.Subscribe(x => _scrollbar.direction = x.currentValue),
                 props.size.Subscribe(x => _scrollbar.size = x.currentValue),
                 props.interactable.Subscribe(x => _scrollbar.interactable = x.currentValue)
-            );
-        }
-
-        public override ScrollbarProps GetInstanceProps()
-        {
-            return new ScrollbarProps(
-                new ValueObservable<float>(_scrollbar.value),
-                new ValueObservable<ScrollbarDirection>(_scrollbar.direction),
-                new ValueObservable<float>(_scrollbar.size),
-                new ValueObservable<bool>(_scrollbar.interactable)
             );
         }
     }

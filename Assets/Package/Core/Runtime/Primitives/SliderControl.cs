@@ -8,12 +8,12 @@ namespace Nessle
 {
     public class SliderProps : IDisposable, IValueProps<float>, IInteractableProps
     {
-        public ValueObservable<float> value { get; }
-        public ValueObservable<float> minValue { get; }
-        public ValueObservable<float> maxValue { get; }
-        public ValueObservable<bool> wholeNumbers { get; }
-        public ValueObservable<SliderDirection> direction { get; }
-        public ValueObservable<bool> interactable { get; }
+        public ValueObservable<float> value { get; private set; }
+        public ValueObservable<float> minValue { get; private set; }
+        public ValueObservable<float> maxValue { get; private set; }
+        public ValueObservable<bool> wholeNumbers { get; private set; }
+        public ValueObservable<SliderDirection> direction { get; private set; }
+        public ValueObservable<bool> interactable { get; private set; }
 
         public SliderProps(
             ValueObservable<float> value = default,
@@ -24,12 +24,29 @@ namespace Nessle
             ValueObservable<bool> interactable = default
         )
         {
-            this.value = value ?? new ValueObservable<float>();
-            this.minValue = minValue ?? new ValueObservable<float>();
-            this.maxValue = maxValue ?? new ValueObservable<float>();
-            this.wholeNumbers = wholeNumbers ?? new ValueObservable<bool>();
-            this.direction = direction ?? new ValueObservable<SliderDirection>();
-            this.interactable = interactable ?? new ValueObservable<bool>();
+            this.value = value;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            this.wholeNumbers = wholeNumbers;
+            this.direction = direction;
+            this.interactable = interactable;
+        }
+
+        public void CompleteWith(
+            ValueObservable<float> value = default,
+            ValueObservable<float> minValue = default,
+            ValueObservable<float> maxValue = default,
+            ValueObservable<bool> wholeNumbers = default,
+            ValueObservable<SliderDirection> direction = default,
+            ValueObservable<bool> interactable = default
+        )
+        {
+            this.value = this.value ?? value;
+            this.minValue = this.minValue ?? minValue;
+            this.maxValue = this.maxValue ?? maxValue;
+            this.wholeNumbers = this.wholeNumbers ?? wholeNumbers;
+            this.direction = this.direction ?? direction;
+            this.interactable = this.interactable ?? interactable;
         }
 
         public void Dispose()
@@ -56,6 +73,15 @@ namespace Nessle
 
         protected override void SetupInternal()
         {
+            props.CompleteWith(
+                Props.From(_slider.value),
+                Props.From(_slider.minValue),
+                Props.From(_slider.maxValue),
+                Props.From(_slider.wholeNumbers),
+                Props.From(_slider.direction),
+                Props.From(_slider.interactable)
+            );
+
             AddBinding(
                 props.value.Subscribe(x => _slider.value = x.currentValue),
                 props.minValue.Subscribe(x => _slider.minValue = x.currentValue),
@@ -63,18 +89,6 @@ namespace Nessle
                 props.wholeNumbers.Subscribe(x => _slider.wholeNumbers = x.currentValue),
                 props.direction.Subscribe(x => _slider.direction = x.currentValue),
                 props.interactable.Subscribe(x => _slider.interactable = x.currentValue)
-            );
-        }
-
-        public override SliderProps GetInstanceProps()
-        {
-            return new SliderProps(
-                new ValueObservable<float>(_slider.value),
-                new ValueObservable<float>(_slider.minValue),
-                new ValueObservable<float>(_slider.maxValue),
-                new ValueObservable<bool>(_slider.wholeNumbers),
-                new ValueObservable<SliderDirection>(_slider.direction),
-                new ValueObservable<bool>(_slider.interactable)
             );
         }
     }
