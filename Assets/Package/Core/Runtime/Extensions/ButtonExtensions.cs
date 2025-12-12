@@ -9,79 +9,38 @@ namespace Nessle
 {
     public static class ButtonExtensions
     {
-        public static T OnClick<T>(this T control, Action onclick)
+        public static T WithLabel<T>(this T control, ValueObservable<string> label)
             where T : IControl<ButtonProps>
         {
-            control.props.onClick.From(onclick);
-            return control;
-        }
-
-        public static T OnClick<T>(this T control, IValueObservable<Action> onclick)
-            where T : IControl<ButtonProps>
-        {
-            control.props.onClick.From(onclick);
-            return control;
-        }
-
-        public static T Label<T>(this T control, IValueObservable<string> label)
-            where T : IControl<ButtonProps>
-        {
-            control.children.Add(
-                Text("label")
-                    .Value(label)
-                    .Style(x =>
-                    {
-                        x.props.style.verticalAlignment.From(TMPro.VerticalAlignmentOptions.Capline);
-                        x.props.style.horizontalAlignment.From(TMPro.HorizontalAlignmentOptions.Center);
-                    })
+            return control.WithLabel(
+                new TextProps(
+                    value: label,
+                    style: new TextStyleProps(
+                        verticalAlignment: Props.From(TMPro.VerticalAlignmentOptions.Capline),
+                        horizontalAlignment: Props.From(TMPro.HorizontalAlignmentOptions.Center)
+                    )
+                )
             );
+        }
 
+        public static T WithLabel<T>(this T control, TextProps label)
+            where T : IControl<ButtonProps>
+        {
+            control.children.Add(Text("label", label));
             return control;
         }
 
-        public static T Label<T, U>(this T control, IValueObservable<U> label)
+        public static T WithIcon<T>(this T control, ValueObservable<Sprite> icon)
             where T : IControl<ButtonProps>
         {
-            control.children.Add(
-                Text("label")
-                    .Value(label.SelectDynamic(x => x.ToString()))
-                    .Style(x =>
-                    {
-                        x.props.style.verticalAlignment.From(TMPro.VerticalAlignmentOptions.Capline);
-                        x.props.style.horizontalAlignment.From(TMPro.HorizontalAlignmentOptions.Center);
-                    })
-            );
-
+            control.WithIcon(new ImageProps(sprite: icon));
             return control;
         }
 
-        public static T Label<T>(this T control, string label)
+        public static T WithIcon<T>(this T control, ImageProps icon)
             where T : IControl<ButtonProps>
         {
-            control.children.Add(
-                Text("label")
-                    .Value(label)
-                    .Style(x =>
-                    {
-                        x.props.style.verticalAlignment.From(TMPro.VerticalAlignmentOptions.Capline);
-                        x.props.style.horizontalAlignment.From(TMPro.HorizontalAlignmentOptions.Center);
-                    })
-            );
-
-            return control;
-        }
-
-        public static T Icon<T>(this T control, Sprite icon)
-            where T : IControl<ButtonProps>
-        {
-            control.children.Add(Image("icon").Sprite(icon));
-            return control;
-        }
-
-        public static T Icon<T>(this T control, IValueObservable<Sprite> icon)
-            where T : IControl<ButtonProps>
-        {
-            control.children.Add(Image("icon").Sprite(icon));
+            control.children.Add(Image("icon", icon));
             return control;
         }
     }

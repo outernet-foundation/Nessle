@@ -6,45 +6,38 @@ using ScrollbarDirection = UnityEngine.UI.Scrollbar.Direction;
 
 namespace Nessle
 {
-    public class ScrollbarProps : IDisposable, IValueProps<float>, IInteractableProps
+    public class ScrollbarProps : IDisposable
     {
-        public ValueObservable<float> value { get; private set; }
-        public ValueObservable<ScrollbarDirection> direction { get; private set; }
-        public ValueObservable<float> size { get; private set; }
-        public ValueObservable<bool> interactable { get; private set; }
+        public ValueObservable<float> value { get; }
+        public ValueObservable<ScrollbarDirection> direction { get; }
+        public ValueObservable<float> size { get; }
+        public ValueObservable<bool> interactable { get; }
+        public ValueObservable<Action<float>> onValueChanged { get; }
+
+        public ScrollbarProps() { }
 
         public ScrollbarProps(
             ValueObservable<float> value = default,
             ValueObservable<ScrollbarDirection> direction = default,
             ValueObservable<float> size = default,
-            ValueObservable<bool> interactable = default
+            ValueObservable<bool> interactable = default,
+            ValueObservable<Action<float>> onValueChanged = default
         )
         {
             this.value = value;
             this.direction = direction;
             this.size = size;
             this.interactable = interactable;
-        }
-
-        public void CompleteWith(
-            ValueObservable<float> value = default,
-            ValueObservable<ScrollbarDirection> direction = default,
-            ValueObservable<float> size = default,
-            ValueObservable<bool> interactable = default
-        )
-        {
-            this.value = this.value ?? value;
-            this.direction = this.direction ?? direction;
-            this.size = this.size ?? size;
-            this.interactable = this.interactable ?? interactable;
+            this.onValueChanged = onValueChanged;
         }
 
         public void Dispose()
         {
-            value.Dispose();
-            direction.Dispose();
-            size.Dispose();
-            interactable.Dispose();
+            value?.Dispose();
+            direction?.Dispose();
+            size?.Dispose();
+            interactable?.Dispose();
+            onValueChanged?.Dispose();
         }
     }
 
@@ -56,14 +49,7 @@ namespace Nessle
         protected override void SetupInternal()
         {
             _scrollbar = GetComponent<Scrollbar>();
-            _scrollbar.onValueChanged.AddListener(x => props?.value.From(x));
-
-            props.CompleteWith(
-                Props.From(_scrollbar.value),
-                Props.From(_scrollbar.direction),
-                Props.From(_scrollbar.size),
-                Props.From(_scrollbar.interactable)
-            );
+            _scrollbar.onValueChanged.AddListener(x => props?.onValueChanged?.value?.Invoke(x));
 
             AddBinding(
                 props.value.Subscribe(x => _scrollbar.value = x.currentValue),

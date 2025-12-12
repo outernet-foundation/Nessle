@@ -12,6 +12,8 @@ namespace Nessle
 
         ValueObservable<Color> IColorProps.color => style.color;
 
+        public TextProps() { }
+
         public TextProps(
             ValueObservable<string> value = default,
             TextStyleProps style = default
@@ -28,6 +30,16 @@ namespace Nessle
         {
             this.value = this.value ?? value;
             this.style = this.style ?? style;
+        }
+
+        public void CompleteWithDefaults()
+        {
+            CompleteWith(
+                new ValueObservable<string>(),
+                new TextStyleProps()
+            );
+
+            style.CompleteWithDefaults();
         }
 
         public void Dispose()
@@ -158,6 +170,34 @@ namespace Nessle
             this.overflowMode = this.overflowMode ?? overflowMode;
             this.horizontalMapping = this.horizontalMapping ?? horizontalMapping;
             this.verticalMapping = this.verticalMapping ?? verticalMapping;
+        }
+
+        public void CompleteWithDefaults()
+        {
+            CompleteWith(
+                new ValueObservable<TMP_FontAsset>(),
+                new ValueObservable<TMP_Style>(),
+                new ValueObservable<TMP_StyleSheet>(),
+                new ValueObservable<Color>(),
+                new ValueObservable<FontStyles>(),
+                new ValueObservable<float>(),
+                new ValueObservable<FontWeight>(),
+                new ValueObservable<bool>(),
+                new ValueObservable<float>(),
+                new ValueObservable<float>(),
+                new ValueObservable<HorizontalAlignmentOptions>(),
+                new ValueObservable<VerticalAlignmentOptions>(),
+                new ValueObservable<float>(),
+                new ValueObservable<float>(),
+                new ValueObservable<float>(),
+                new ValueObservable<float>(),
+                new ValueObservable<float>(),
+                new ValueObservable<float>(),
+                new ValueObservable<TextWrappingModes>(),
+                new ValueObservable<TextOverflowModes>(),
+                new ValueObservable<TextureMappingOptions>(),
+                new ValueObservable<TextureMappingOptions>()
+            );
         }
 
         public void Dispose()

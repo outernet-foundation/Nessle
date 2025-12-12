@@ -5,11 +5,13 @@ using ObserveThing;
 
 namespace Nessle
 {
-    public class ButtonProps : IDisposable, IInteractableProps
+    public class ButtonProps : IDisposable
     {
-        public ImageProps background { get; private set; }
-        public ValueObservable<Action> onClick { get; private set; }
-        public ValueObservable<bool> interactable { get; private set; }
+        public ImageProps background { get; }
+        public ValueObservable<Action> onClick { get; }
+        public ValueObservable<bool> interactable { get; }
+
+        public ButtonProps() { }
 
         public ButtonProps(
             ImageProps background = default,
@@ -22,22 +24,11 @@ namespace Nessle
             this.interactable = interactable;
         }
 
-        public void CompleteWith(
-            ImageProps background = default,
-            ValueObservable<Action> onClick = default,
-            ValueObservable<bool> interactable = default
-        )
-        {
-            this.background = this.background ?? background;
-            this.onClick = this.onClick ?? onClick;
-            this.interactable = this.interactable ?? interactable;
-        }
-
         public void Dispose()
         {
-            background.Dispose();
-            onClick.Dispose();
-            interactable.Dispose();
+            background?.Dispose();
+            onClick?.Dispose();
+            interactable?.Dispose();
         }
     }
 
@@ -50,18 +41,12 @@ namespace Nessle
         protected override void SetupInternal()
         {
             _button = GetComponent<Button>();
-            _button.onClick.AddListener(() => props?.onClick.value?.Invoke());
-
-            props.CompleteWith(
-                new ImageProps(),
-                new ValueObservable<Action>(),
-                Props.From(_button.interactable)
-            );
+            _button.onClick.AddListener(() => props?.onClick?.value?.Invoke());
 
             background.Setup(props.background);
 
             AddBinding(
-                props.interactable.Subscribe(x => _button.interactable = x.currentValue),
+                props.interactable?.Subscribe(x => _button.interactable = x.currentValue),
                 background
             );
         }

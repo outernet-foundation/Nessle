@@ -5,33 +5,30 @@ using ObserveThing;
 
 namespace Nessle
 {
-    public class ToggleProps : IDisposable, IValueProps<bool>, IInteractableProps
+    public class ToggleProps : IDisposable
     {
-        public ValueObservable<bool> value { get; private set; }
-        public ValueObservable<bool> interactable { get; private set; }
+        public ValueObservable<bool> value { get; }
+        public ValueObservable<bool> interactable { get; }
+        public ValueObservable<Action<bool>> onValueChanged { get; }
+
+        public ToggleProps() { }
 
         public ToggleProps(
             ValueObservable<bool> value = default,
-            ValueObservable<bool> interactable = default
+            ValueObservable<bool> interactable = default,
+            ValueObservable<Action<bool>> onValueChanged = default
         )
         {
             this.value = value;
             this.interactable = interactable;
-        }
-
-        public void CompleteWith(
-            ValueObservable<bool> value = default,
-            ValueObservable<bool> interactable = default
-        )
-        {
-            this.value = this.value ?? value;
-            this.interactable = this.interactable ?? interactable;
+            this.onValueChanged = onValueChanged;
         }
 
         public void Dispose()
         {
-            value.Dispose();
-            interactable.Dispose();
+            value?.Dispose();
+            interactable?.Dispose();
+            onValueChanged?.Dispose();
         }
     }
 
@@ -43,12 +40,7 @@ namespace Nessle
         protected override void SetupInternal()
         {
             _toggle = GetComponent<Toggle>();
-            _toggle.onValueChanged.AddListener(x => props?.value.From(x));
-
-            props.CompleteWith(
-                Props.From(_toggle.isOn),
-                Props.From(_toggle.interactable)
-            );
+            _toggle.onValueChanged.AddListener(x => props?.onValueChanged?.value?.Invoke(x));
 
             AddBinding(
                 props.value.Subscribe(x => _toggle.isOn = x.currentValue),

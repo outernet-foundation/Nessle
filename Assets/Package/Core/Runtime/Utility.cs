@@ -20,6 +20,15 @@ namespace Nessle
             return component;
         }
 
+        public static TAbstract GetOrAddComponent<TAbstract, TImplmentation>(this GameObject gameObject)
+            where TAbstract : Component where TImplmentation : TAbstract
+        {
+            if (gameObject.TryGetComponent<TAbstract>(out var abs))
+                return abs;
+
+            return gameObject.AddComponent<TImplmentation>();
+        }
+
         public static Color Alpha(this Color color, float alpha)
             => new Color(color.r, color.g, color.b, alpha);
 

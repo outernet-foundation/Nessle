@@ -68,12 +68,13 @@ namespace Nessle
 
         public void AddBinding(IDisposable binding)
         {
-            _bindings.Add(binding);
+            if (binding != null)
+                _bindings.Add(binding);
         }
 
         public void AddBinding(params IDisposable[] bindings)
         {
-            _bindings.AddRange(bindings);
+            _bindings.AddRange(bindings.Where(x => x != null));
         }
 
         public void RemoveBinding(IDisposable binding)
@@ -129,7 +130,7 @@ namespace Nessle
         }
     }
 
-    public abstract class PrimitiveControl<T> : PrimitiveControl, IControl<T>
+    public abstract class PrimitiveControl<T> : PrimitiveControl, IControl<T> where T : new()
     {
         public T props { get; private set; }
 
@@ -141,7 +142,7 @@ namespace Nessle
 
         public void Setup(string identifier, T props)
         {
-            this.props = props;
+            this.props = props ?? new T();
             base.Setup(identifier);
         }
 
