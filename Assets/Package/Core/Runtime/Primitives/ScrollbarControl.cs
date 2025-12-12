@@ -53,14 +53,11 @@ namespace Nessle
     {
         private Scrollbar _scrollbar;
 
-        private void Awake()
+        protected override void SetupInternal()
         {
             _scrollbar = GetComponent<Scrollbar>();
             _scrollbar.onValueChanged.AddListener(x => props?.value.From(x));
-        }
 
-        protected override void SetupInternal()
-        {
             props.CompleteWith(
                 Props.From(_scrollbar.value),
                 Props.From(_scrollbar.direction),

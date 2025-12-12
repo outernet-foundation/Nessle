@@ -102,13 +102,10 @@ namespace Nessle
     {
         private Image _image;
 
-        private void Awake()
-        {
-            _image = GetComponent<Image>();
-        }
-
         protected override void SetupInternal()
         {
+            _image = GetComponent<Image>();
+
             props.CompleteWith(
                 Props.From(_image.sprite),
                 Props.From(_image.color),

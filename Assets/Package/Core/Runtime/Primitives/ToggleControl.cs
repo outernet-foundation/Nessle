@@ -40,14 +40,11 @@ namespace Nessle
     {
         private Toggle _toggle;
 
-        private void Awake()
+        protected override void SetupInternal()
         {
             _toggle = GetComponent<Toggle>();
             _toggle.onValueChanged.AddListener(x => props?.value.From(x));
-        }
 
-        protected override void SetupInternal()
-        {
             props.CompleteWith(
                 Props.From(_toggle.isOn),
                 Props.From(_toggle.interactable)

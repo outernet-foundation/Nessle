@@ -122,7 +122,7 @@ namespace Nessle
         private PrimitiveControl<TextProps> _placeholderText;
         private PrimitiveControl<ImageProps> _background;
 
-        private void Awake()
+        protected override void SetupInternal()
         {
             _inputField = GetComponent<TMP_InputField>();
             _inputField.onValueChanged.AddListener(x => props.inputText.value.From(x));
@@ -135,10 +135,7 @@ namespace Nessle
 
             if (background != null)
                 _background = background.gameObject.GetOrAddComponent<PrimitiveControl<ImageProps>>();
-        }
 
-        protected override void SetupInternal()
-        {
             props.CompleteWith(
                 new TextProps(),
                 new TextProps(),

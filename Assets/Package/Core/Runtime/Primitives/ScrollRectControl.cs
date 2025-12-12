@@ -52,15 +52,12 @@ namespace Nessle
     {
         private ScrollRect _scrollRect;
 
-        private void Awake()
+        protected override void SetupInternal()
         {
             _scrollRect = GetComponent<ScrollRect>();
             _scrollRect.onValueChanged.AddListener(x => props?.value.From(x));
             _childParentOverride = _scrollRect.viewport;
-        }
 
-        protected override void SetupInternal()
-        {
             var content = _scrollRect.content;
             var contentControl = default(IControl);
 

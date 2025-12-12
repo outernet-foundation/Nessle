@@ -47,14 +47,11 @@ namespace Nessle
         public PrimitiveControl<ImageProps> background;
         private Button _button;
 
-        private void Awake()
+        protected override void SetupInternal()
         {
             _button = GetComponent<Button>();
             _button.onClick.AddListener(() => props?.onClick.value?.Invoke());
-        }
 
-        protected override void SetupInternal()
-        {
             props.CompleteWith(
                 new ImageProps(),
                 new ValueObservable<Action>(),

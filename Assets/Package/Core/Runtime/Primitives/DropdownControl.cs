@@ -69,17 +69,14 @@ namespace Nessle
         private PrimitiveControl<TextProps> _captionText;
         private PrimitiveControl<TextProps> _itemText;
 
-        private void Awake()
+        protected override void SetupInternal()
         {
             _dropdown = GetComponent<TMP_Dropdown>();
             _dropdown.onValueChanged.AddListener(x => props?.value.From(x));
 
             _captionText = _dropdown.captionText.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>>();
             _itemText = _dropdown.itemText.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>>();
-        }
 
-        protected override void SetupInternal()
-        {
             props.CompleteWith(
                 Props.From(_dropdown.value),
                 Props.From(_dropdown.MultiSelect),

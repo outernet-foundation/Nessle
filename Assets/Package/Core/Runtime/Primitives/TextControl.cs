@@ -192,13 +192,10 @@ namespace Nessle
     {
         private TextMeshProUGUI _text;
 
-        private void Awake()
-        {
-            _text = GetComponent<TextMeshProUGUI>();
-        }
-
         protected override void SetupInternal()
         {
+            _text = GetComponent<TextMeshProUGUI>();
+
             props.CompleteWith(
                 Props.From(_text.text),
                 new TextStyleProps()

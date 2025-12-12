@@ -65,14 +65,11 @@ namespace Nessle
     {
         private Slider _slider;
 
-        private void Awake()
+        protected override void SetupInternal()
         {
             _slider = GetComponent<Slider>();
             _slider.onValueChanged.AddListener(x => props?.value.From(x));
-        }
 
-        protected override void SetupInternal()
-        {
             props.CompleteWith(
                 Props.From(_slider.value),
                 Props.From(_slider.minValue),

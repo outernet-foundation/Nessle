@@ -90,13 +90,10 @@ namespace Nessle
     {
         private HorizontalOrVerticalLayoutGroup _layout;
 
-        private void Awake()
-        {
-            _layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
-        }
-
         protected override void SetupInternal()
         {
+            _layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
+
             props.CompleteWith(
                 Props.From(_layout.padding),
                 Props.From(_layout.spacing),
