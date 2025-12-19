@@ -13,6 +13,8 @@ namespace Nessle
         public IValueObservable<Vector2> anchorMax;
         public IValueObservable<Vector2> offsetMin;
         public IValueObservable<Vector2> offsetMax;
+        public IValueObservable<Vector2> anchoredPosition;
+        public IValueObservable<Vector2> sizeDelta;
         public IValueObservable<Vector2> pivot;
         public IValueObservable<Vector2> position;
         public IValueObservable<float> rotation;

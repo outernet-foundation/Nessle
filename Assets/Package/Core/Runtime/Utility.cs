@@ -33,6 +33,21 @@ namespace Nessle
 
         public static IDisposable Subscribe(this ElementProps props, IControl control)
         {
+            if (props.anchoredPosition != null)
+            {
+                if (props.position != null)
+                    Debug.LogWarning("Both anchoredPosition and position values are set in ElementProps. This may cause errors.");
+
+                if (props.offsetMin != null || props.offsetMax != null)
+                    Debug.LogWarning("Both anchoredPosition and offset values are set in ElementProps. This may cause errors.");
+            }
+
+            if (props.sizeDelta != null)
+            {
+                if (props.offsetMin != null || props.offsetMax != null)
+                    Debug.LogWarning("Both sizeDelta and offset values are set in ElementProps. This may cause errors.");
+            }
+
             return new ComposedDisposable(
                 props.name?.Subscribe(x => control.gameObject.name = x.currentValue),
                 props.active?.Subscribe(x => control.gameObject.SetActive(x.currentValue)),
@@ -40,6 +55,8 @@ namespace Nessle
                 props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x.currentValue),
                 props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x.currentValue),
                 props.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x.currentValue),
+                props.anchoredPosition?.Subscribe(x => control.rectTransform.anchoredPosition = x.currentValue),
+                props.sizeDelta?.Subscribe(x => control.rectTransform.sizeDelta = x.currentValue),
                 props.pivot?.Subscribe(x => control.rectTransform.pivot = x.currentValue),
                 props.position?.Subscribe(x => control.rectTransform.localPosition = x.currentValue),
                 props.rotation?.Subscribe(x => control.rectTransform.localRotation = Quaternion.AngleAxis(x.currentValue, Vector3.forward)),
