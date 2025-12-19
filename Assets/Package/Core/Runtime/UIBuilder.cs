@@ -10,8 +10,11 @@ namespace Nessle
         public static UIPrimitiveSet primitives { get; set; }
 
         public static IControl Control(string name, UIElementProps props)
+            => Control(new GameObject(name), props);
+
+        public static IControl Control(GameObject gameObject, UIElementProps props)
         {
-            var control = new GameObject(name).GetOrAddComponent<UIElementControl>();
+            var control = gameObject.GetOrAddComponent<UIElementControl>();
             control.Setup(props);
             return control;
         }
