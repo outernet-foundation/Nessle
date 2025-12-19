@@ -35,6 +35,8 @@ namespace Nessle
         public IValueObservable<TextOverflowModes> overflowMode;
         public IValueObservable<TextureMappingOptions> horizontalMapping;
         public IValueObservable<TextureMappingOptions> verticalMapping;
+        public IValueObservable<Color> outlineColor;
+        public IValueObservable<float> outlineThickness;
     }
 
     [RequireComponent(typeof(TextMeshProUGUI))]
@@ -69,7 +71,9 @@ namespace Nessle
                 props.style.textWrappingMode?.Subscribe(x => _text.textWrappingMode = x.currentValue),
                 props.style.overflowMode?.Subscribe(x => _text.overflowMode = x.currentValue),
                 props.style.horizontalMapping?.Subscribe(x => _text.horizontalMapping = x.currentValue),
-                props.style.verticalMapping?.Subscribe(x => _text.verticalMapping = x.currentValue)
+                props.style.verticalMapping?.Subscribe(x => _text.verticalMapping = x.currentValue),
+                props.style.outlineColor?.Subscribe(x => _text.outlineColor = x.currentValue),
+                props.style.outlineThickness?.Subscribe(x => _text.outlineWidth = x.currentValue)
             );
         }
     }
