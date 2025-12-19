@@ -1,0 +1,43 @@
+using System;
+using UnityEngine;
+using UnityEngine.UI;
+using ObserveThing;
+using SliderDirection = UnityEngine.UI.Slider.Direction;
+using UnityEngine.Events;
+
+namespace Nessle
+{
+    public struct SliderProps
+    {
+        public IValueObservable<float> value;
+        public IValueObservable<float> minValue;
+        public IValueObservable<float> maxValue;
+        public IValueObservable<bool> wholeNumbers;
+        public IValueObservable<SliderDirection> direction;
+        public IValueObservable<bool> interactable;
+        public UnityAction<float> onValueChanged;
+    }
+
+    [RequireComponent(typeof(Slider))]
+    public class SliderControl : PrimitiveControl<SliderProps>
+    {
+        private Slider _slider;
+
+        protected override void SetupInternal()
+        {
+            _slider = GetComponent<Slider>();
+
+            if (props.onValueChanged != null)
+                _slider.onValueChanged.AddListener(props.onValueChanged);
+
+            AddBinding(
+                props.value?.Subscribe(x => _slider.value = x.currentValue),
+                props.minValue?.Subscribe(x => _slider.minValue = x.currentValue),
+                props.maxValue?.Subscribe(x => _slider.maxValue = x.currentValue),
+                props.wholeNumbers?.Subscribe(x => _slider.wholeNumbers = x.currentValue),
+                props.direction?.Subscribe(x => _slider.direction = x.currentValue),
+                props.interactable?.Subscribe(x => _slider.interactable = x.currentValue)
+            );
+        }
+    }
+}
