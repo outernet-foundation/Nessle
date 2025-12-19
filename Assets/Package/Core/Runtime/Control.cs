@@ -2,20 +2,21 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using ObserveThing;
 
 namespace Nessle
 {
     [RequireComponent(typeof(RectTransform))]
-    public class Control : MonoBehaviour, IControl
+    public class Control<T> : MonoBehaviour, IControl
     {
+        public T props { get; private set; }
         public RectTransform rectTransform { get; private set; }
 
         private List<IDisposable> _bindings = new List<IDisposable>();
 
-        public virtual void Setup()
+        public void Setup(T props)
         {
             rectTransform = gameObject.GetComponent<RectTransform>();
+            this.props = props;
             SetupInternal();
         }
 
@@ -44,12 +45,7 @@ namespace Nessle
                 _bindings.Remove(binding);
         }
 
-        public void SetSiblingIndex(int index)
-        {
-            rectTransform.SetSiblingIndex(index);
-        }
-
-        public virtual void Dispose()
+        public void Dispose()
         {
             if (Application.isPlaying)
             {
@@ -61,31 +57,6 @@ namespace Nessle
             }
 
             DisposeInternal();
-        }
-    }
-
-    public abstract class Control<T> : Control where T : new()
-    {
-        public T props { get; private set; }
-
-        public void Setup(T props)
-        {
-            this.props = props;
-            base.Setup();
-        }
-
-        public override void Setup()
-        {
-            props = new T();
-            base.Setup();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            if (props is IDisposable propsDisposable)
-                propsDisposable.Dispose();
         }
     }
 }
