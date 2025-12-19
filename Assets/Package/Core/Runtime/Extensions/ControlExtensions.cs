@@ -73,122 +73,122 @@ namespace Nessle
         public static T FillParent<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(0, 0);
-            control.transform.anchorMax = new Vector2(1, 1);
-            control.transform.offsetMin = new Vector2(0, 0);
-            control.transform.offsetMax = new Vector2(0, 0);
+            control.rectTransform.anchorMin = new Vector2(0, 0);
+            control.rectTransform.anchorMax = new Vector2(1, 1);
+            control.rectTransform.offsetMin = new Vector2(0, 0);
+            control.rectTransform.offsetMax = new Vector2(0, 0);
             return control;
         }
 
         public static T FillParentWidth<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(0, control.transform.anchorMin.y);
-            control.transform.anchorMax = new Vector2(1, control.transform.anchorMax.y);
-            control.transform.offsetMin = new Vector2(0, control.transform.offsetMin.y);
-            control.transform.offsetMax = new Vector2(0, control.transform.offsetMax.y);
+            control.rectTransform.anchorMin = new Vector2(0, control.rectTransform.anchorMin.y);
+            control.rectTransform.anchorMax = new Vector2(1, control.rectTransform.anchorMax.y);
+            control.rectTransform.offsetMin = new Vector2(0, control.rectTransform.offsetMin.y);
+            control.rectTransform.offsetMax = new Vector2(0, control.rectTransform.offsetMax.y);
             return control;
         }
 
         public static T FillParentHeight<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(control.transform.anchorMin.x, 0);
-            control.transform.anchorMax = new Vector2(control.transform.anchorMax.x, 1);
-            control.transform.offsetMin = new Vector2(control.transform.offsetMin.x, 0);
-            control.transform.offsetMax = new Vector2(control.transform.offsetMax.x, 0);
+            control.rectTransform.anchorMin = new Vector2(control.rectTransform.anchorMin.x, 0);
+            control.rectTransform.anchorMax = new Vector2(control.rectTransform.anchorMax.x, 1);
+            control.rectTransform.offsetMin = new Vector2(control.rectTransform.offsetMin.x, 0);
+            control.rectTransform.offsetMax = new Vector2(control.rectTransform.offsetMax.x, 0);
             return control;
         }
 
         public static T AnchorToTop<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(control.transform.anchorMin.x, 1);
-            control.transform.anchorMax = new Vector2(control.transform.anchorMax.x, 1);
+            control.rectTransform.anchorMin = new Vector2(control.rectTransform.anchorMin.x, 1);
+            control.rectTransform.anchorMax = new Vector2(control.rectTransform.anchorMax.x, 1);
             return control;
         }
 
         public static T AnchorToBottom<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(control.transform.anchorMin.x, 0);
-            control.transform.anchorMax = new Vector2(control.transform.anchorMax.x, 0);
+            control.rectTransform.anchorMin = new Vector2(control.rectTransform.anchorMin.x, 0);
+            control.rectTransform.anchorMax = new Vector2(control.rectTransform.anchorMax.x, 0);
             return control;
         }
 
         public static T AnchorToLeft<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(0, control.transform.anchorMin.y);
-            control.transform.anchorMax = new Vector2(0, control.transform.anchorMax.y);
+            control.rectTransform.anchorMin = new Vector2(0, control.rectTransform.anchorMin.y);
+            control.rectTransform.anchorMax = new Vector2(0, control.rectTransform.anchorMax.y);
             return control;
         }
 
         public static T AnchorToRight<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(1, control.transform.anchorMin.y);
-            control.transform.anchorMax = new Vector2(1, control.transform.anchorMax.y);
+            control.rectTransform.anchorMin = new Vector2(1, control.rectTransform.anchorMin.y);
+            control.rectTransform.anchorMax = new Vector2(1, control.rectTransform.anchorMax.y);
             return control;
         }
 
         public static T AnchorToTopLeft<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(0, 1);
-            control.transform.anchorMax = new Vector2(0, 1);
+            control.rectTransform.anchorMin = new Vector2(0, 1);
+            control.rectTransform.anchorMax = new Vector2(0, 1);
             return control;
         }
 
         public static T AnchorToTopRight<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(1, 1);
-            control.transform.anchorMax = new Vector2(1, 1);
+            control.rectTransform.anchorMin = new Vector2(1, 1);
+            control.rectTransform.anchorMax = new Vector2(1, 1);
             return control;
         }
 
         public static T AnchorToBottomLeft<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(0, 0);
-            control.transform.anchorMax = new Vector2(0, 0);
+            control.rectTransform.anchorMin = new Vector2(0, 0);
+            control.rectTransform.anchorMax = new Vector2(0, 0);
             return control;
         }
 
         public static T AnchorToBottomRight<T>(this T control)
             where T : IControl
         {
-            control.transform.anchorMin = new Vector2(1, 0);
-            control.transform.anchorMax = new Vector2(1, 0);
+            control.rectTransform.anchorMin = new Vector2(1, 0);
+            control.rectTransform.anchorMax = new Vector2(1, 0);
             return control;
         }
 
         public static T SetPivot<T>(this T control, Vector2 pivot)
             where T : IControl
         {
-            control.transform.pivot = pivot;
+            control.rectTransform.pivot = pivot;
             return control;
         }
 
         public static T SetPivot<T>(this T control, IValueObservable<Vector2> pivot)
             where T : IControl
         {
-            control.AddBinding(pivot.Subscribe(x => control.transform.pivot = x.currentValue));
+            control.AddBinding(pivot.Subscribe(x => control.rectTransform.pivot = x.currentValue));
             return control;
         }
 
         public static T LocalPosition<T>(this T control, Vector3 localPosition)
             where T : IControl
         {
-            control.transform.localPosition = localPosition;
+            control.rectTransform.localPosition = localPosition;
             return control;
         }
 
         public static T LocalPosition<T>(this T control, IValueObservable<Vector2> localPosition)
             where T : IControl
         {
-            control.AddBinding(localPosition.Subscribe(x => control.transform.localPosition = x.currentValue));
+            control.AddBinding(localPosition.Subscribe(x => control.rectTransform.localPosition = x.currentValue));
             return control;
         }
 
@@ -211,98 +211,84 @@ namespace Nessle
         public static T AnchorMin<T>(this T control, Vector2 anchorMin)
             where T : IControl
         {
-            control.transform.anchorMin = anchorMin;
+            control.rectTransform.anchorMin = anchorMin;
             return control;
         }
 
         public static T AnchorMin<T>(this T control, IValueObservable<Vector2> anchorMin)
             where T : IControl
         {
-            control.AddBinding(anchorMin.Subscribe(x => control.transform.anchorMin = x.currentValue));
+            control.AddBinding(anchorMin.Subscribe(x => control.rectTransform.anchorMin = x.currentValue));
             return control;
         }
 
         public static T AnchorMax<T>(this T control, Vector2 anchorMax)
             where T : IControl
         {
-            control.transform.anchorMax = anchorMax;
+            control.rectTransform.anchorMax = anchorMax;
             return control;
         }
 
         public static T AnchorMax<T>(this T control, IValueObservable<Vector2> anchorMax)
             where T : IControl
         {
-            control.AddBinding(anchorMax.Subscribe(x => control.transform.anchorMax = x.currentValue));
+            control.AddBinding(anchorMax.Subscribe(x => control.rectTransform.anchorMax = x.currentValue));
             return control;
         }
 
         public static T OffsetMin<T>(this T control, Vector2 offsetMin)
             where T : IControl
         {
-            control.transform.offsetMin = offsetMin;
+            control.rectTransform.offsetMin = offsetMin;
             return control;
         }
 
         public static T OffsetMin<T>(this T control, IValueObservable<Vector2> offsetMin)
             where T : IControl
         {
-            control.AddBinding(offsetMin.Subscribe(x => control.transform.offsetMin = x.currentValue));
+            control.AddBinding(offsetMin.Subscribe(x => control.rectTransform.offsetMin = x.currentValue));
             return control;
         }
 
         public static T OffsetMax<T>(this T control, Vector2 offsetMax)
             where T : IControl
         {
-            control.transform.offsetMax = offsetMax;
+            control.rectTransform.offsetMax = offsetMax;
             return control;
         }
 
         public static T OffsetMax<T>(this T control, IValueObservable<Vector2> offsetMax)
             where T : IControl
         {
-            control.AddBinding(offsetMax.Subscribe(x => control.transform.offsetMax = x.currentValue));
+            control.AddBinding(offsetMax.Subscribe(x => control.rectTransform.offsetMax = x.currentValue));
             return control;
         }
 
         public static T AnchoredPosition<T>(this T control, Vector2 anchoredPosition)
             where T : IControl
         {
-            control.transform.anchoredPosition = anchoredPosition;
+            control.rectTransform.anchoredPosition = anchoredPosition;
             return control;
         }
 
         public static T AnchoredPosition<T>(this T control, IValueObservable<Vector2> anchoredPosition)
             where T : IControl
         {
-            control.AddBinding(anchoredPosition.Subscribe(x => control.transform.anchoredPosition = x.currentValue));
+            control.AddBinding(anchoredPosition.Subscribe(x => control.rectTransform.anchoredPosition = x.currentValue));
             return control;
         }
 
         public static T SizeDelta<T>(this T control, Vector2 sizeDelta)
             where T : IControl
         {
-            control.transform.sizeDelta = sizeDelta;
+            control.rectTransform.sizeDelta = sizeDelta;
             return control;
         }
 
         public static T SizeDelta<T>(this T control, IValueObservable<Vector2> sizeDelta)
             where T : IControl
         {
-            control.AddBinding(sizeDelta.Subscribe(x => control.transform.sizeDelta = x.currentValue));
-            return control;
-        }
-
-        public static T ChildParentOverride<T>(this T control, RectTransform childParentOverride)
-            where T : IControl
-        {
-            control.childParentOverride.From(childParentOverride);
-            return control;
-        }
-
-        public static T ChildParentOverride<T>(this T control, IValueObservable<RectTransform> childParentOverride)
-            where T : IControl
-        {
-            control.childParentOverride.From(childParentOverride);
+            control.AddBinding(sizeDelta.Subscribe(x => control.rectTransform.sizeDelta = x.currentValue));
             return control;
         }
 

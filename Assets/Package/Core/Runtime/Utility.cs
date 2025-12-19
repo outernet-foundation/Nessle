@@ -1,5 +1,11 @@
+using System;
 using UnityEngine;
 using ObserveThing;
+using TMPro;
+using UnityEngine.UI;
+
+using ImageType = UnityEngine.UI.Image.Type;
+using ImageFillMethod = UnityEngine.UI.Image.FillMethod;
 
 namespace Nessle
 {
@@ -12,6 +18,15 @@ namespace Nessle
                 component = gameObject.AddComponent<T>();
 
             return component;
+        }
+
+        public static TAbstract GetOrAddComponent<TAbstract, TImplmentation>(this GameObject gameObject)
+            where TAbstract : Component where TImplmentation : TAbstract
+        {
+            if (gameObject.TryGetComponent<TAbstract>(out var abs))
+                return abs;
+
+            return gameObject.AddComponent<TImplmentation>();
         }
 
         public static Color Alpha(this Color color, float alpha)
