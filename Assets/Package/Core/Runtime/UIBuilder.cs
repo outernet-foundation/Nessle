@@ -19,34 +19,56 @@ namespace Nessle
             return control;
         }
 
-        public static IControl Control<T>(T props, Control<T> prefab) where T : new()
+        public static IControl Control<T>(Control<T> prefab, T props) where T : new()
         {
             var control = UnityEngine.Object.Instantiate(prefab);
             control.Setup(props);
             return control;
         }
 
-        public static IControl Text(TextProps props, Control<TextProps> prefab = default)
-            => Control(props, prefab == null ? primitives.text : prefab);
+        public static IControl Text(TextProps props)
+            => Control(primitives.text, props);
 
-        public static IControl Image(ImageProps props, Control<ImageProps> prefab = default)
-            => Control(props, prefab == null ? primitives.image : prefab);
+        public static IControl Text(Control<TextProps> prefab, TextProps props)
+            => Control(prefab, props);
 
-        public static IControl Button(ButtonProps props, Control<ButtonProps> prefab = default)
-            => Control(props, prefab == null ? primitives.button : prefab);
+        public static IControl Image(ImageProps props)
+            => Control(primitives.image, props);
 
-        public static IControl HorizontalLayout(LayoutProps props, Control<LayoutProps> prefab = default)
-            => Control(props, prefab == null ? primitives.horizontalLayout : prefab);
+        public static IControl Image(Control<ImageProps> prefab, ImageProps props)
+            => Control(prefab, props);
 
-        public static IControl VerticalLayout(LayoutProps props, Control<LayoutProps> prefab = default)
-            => Control(props, prefab == null ? primitives.verticalLayout : prefab);
+        public static IControl Button(ButtonProps props)
+            => Control(primitives.button, props);
 
-        public static IControl InputField(InputFieldProps props, Control<InputFieldProps> prefab = default)
-            => Control(props, prefab == null ? primitives.inputField : prefab);
+        public static IControl Button(Control<ButtonProps> prefab, ButtonProps props)
+            => Control(prefab, props);
 
-        public static IControl FloatField(InputFieldProps<float> props, Control<InputFieldProps> prefab = default)
+        public static IControl HorizontalLayout(LayoutProps props)
+            => Control(primitives.horizontalLayout, props);
+
+        public static IControl HorizontalLayout(Control<LayoutProps> prefab, LayoutProps props)
+            => Control(prefab, props);
+
+        public static IControl VerticalLayout(LayoutProps props)
+            => Control(primitives.verticalLayout, props);
+
+        public static IControl VerticalLayout(Control<LayoutProps> prefab, LayoutProps props)
+            => Control(prefab, props);
+
+        public static IControl InputField(InputFieldProps props)
+            => Control(primitives.inputField, props);
+
+        public static IControl InputField(Control<InputFieldProps> prefab, InputFieldProps props)
+            => Control(prefab, props);
+
+        public static IControl FloatField(InputFieldProps<float> props)
+            => FloatField(primitives.inputField, props);
+
+        public static IControl FloatField(Control<InputFieldProps> prefab, InputFieldProps<float> props)
         {
-            return InputField(
+            return Control(
+                prefab,
                 new InputFieldProps()
                 {
                     element = props.element,
@@ -61,14 +83,17 @@ namespace Nessle
                     interactable = props.interactable,
                     onEndEdit = x => props.onValueChanged?.Invoke(float.TryParse(x, out var result) ? result : 0),
                     background = props.background
-                },
-                prefab
+                }
             );
         }
 
-        public static IControl IntField(InputFieldProps<int> props, Control<InputFieldProps> prefab = default)
+        public static IControl IntField(InputFieldProps<int> props)
+            => IntField(primitives.inputField, props);
+
+        public static IControl IntField(Control<InputFieldProps> prefab, InputFieldProps<int> props)
         {
-            return InputField(
+            return Control(
+                prefab,
                 new InputFieldProps()
                 {
                     element = props.element,
@@ -83,14 +108,17 @@ namespace Nessle
                     interactable = props.interactable,
                     onEndEdit = x => props.onValueChanged?.Invoke(int.TryParse(x, out var result) ? result : 0),
                     background = props.background
-                },
-                prefab
+                }
             );
         }
 
-        public static IControl DoubleField(InputFieldProps<double> props, Control<InputFieldProps> prefab = default)
+        public static IControl DoubleField(InputFieldProps<double> props)
+            => DoubleField(primitives.inputField, props);
+
+        public static IControl DoubleField(Control<InputFieldProps> prefab, InputFieldProps<double> props)
         {
-            return InputField(
+            return Control(
+                prefab,
                 new InputFieldProps()
                 {
                     element = props.element,
@@ -105,27 +133,41 @@ namespace Nessle
                     interactable = props.interactable,
                     onEndEdit = x => props.onValueChanged?.Invoke(double.TryParse(x, out var result) ? result : 0),
                     background = props.background
-                },
-                prefab
+                }
             );
         }
 
         public static IControl Space()
             => Control("Space", new());
 
-        public static IControl Scrollbar(ScrollbarProps props, Control<ScrollbarProps> prefab = default)
-            => Control(props, prefab == null ? primitives.scrollbar : prefab);
+        public static IControl Scrollbar(ScrollbarProps props)
+            => Control(primitives.scrollbar, props);
 
-        public static IControl ScrollRect(ScrollRectProps props, Control<ScrollRectProps> prefab = default)
-            => Control(props, prefab == null ? primitives.scrollRect : prefab);
+        public static IControl Scrollbar(Control<ScrollbarProps> prefab, ScrollbarProps props)
+            => Control(prefab, props);
 
-        public static IControl Dropdown(DropdownProps props, Control<DropdownProps> prefab = default)
-            => Control(props, prefab == null ? primitives.dropdown : prefab);
+        public static IControl ScrollRect(ScrollRectProps props)
+            => Control(primitives.scrollRect, props);
 
-        public static IControl Toggle(ToggleProps props, Control<ToggleProps> prefab = default)
-            => Control(props, prefab == null ? primitives.toggle : prefab);
+        public static IControl ScrollRect(Control<ScrollRectProps> prefab, ScrollRectProps props)
+            => Control(prefab, props);
 
-        public static IControl Slider(SliderProps props, Control<SliderProps> prefab = default)
-            => Control(props, prefab == null ? primitives.slider : prefab);
+        public static IControl Dropdown(DropdownProps props)
+            => Control(primitives.dropdown, props);
+
+        public static IControl Dropdown(Control<DropdownProps> prefab, DropdownProps props)
+            => Control(prefab, props);
+
+        public static IControl Toggle(ToggleProps props)
+            => Control(primitives.toggle, props);
+
+        public static IControl Toggle(Control<ToggleProps> prefab, ToggleProps props)
+            => Control(prefab, props);
+
+        public static IControl Slider(SliderProps props)
+            => Control(primitives.slider, props);
+
+        public static IControl Slider(Control<SliderProps> prefab, SliderProps props)
+            => Control(prefab, props);
     }
 }
