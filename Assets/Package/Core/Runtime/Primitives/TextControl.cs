@@ -36,7 +36,7 @@ namespace Nessle
         public IValueObservable<TextureMappingOptions> horizontalMapping;
         public IValueObservable<TextureMappingOptions> verticalMapping;
         public IValueObservable<Color> outlineColor;
-        public IValueObservable<float> outlineThickness;
+        public IValueObservable<float> outlineWidth;
     }
 
     [RequireComponent(typeof(TextMeshProUGUI))]
@@ -73,7 +73,7 @@ namespace Nessle
                 props.style.horizontalMapping?.Subscribe(x => _text.horizontalMapping = x.currentValue),
                 props.style.verticalMapping?.Subscribe(x => _text.verticalMapping = x.currentValue),
                 props.style.outlineColor?.Subscribe(x => _text.outlineColor = x.currentValue),
-                props.style.outlineThickness?.Subscribe(x => _text.outlineWidth = x.currentValue)
+                props.style.outlineWidth?.Subscribe(x => _text.outlineWidth = x.currentValue)
             );
         }
     }
