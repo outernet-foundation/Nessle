@@ -7,6 +7,7 @@ namespace Nessle
 {
     public struct LayoutProps
     {
+        public ElementProps element;
         public IValueObservable<RectOffset> padding;
         public IValueObservable<float> spacing;
         public IValueObservable<TextAnchor> childAlignment;
@@ -17,10 +18,11 @@ namespace Nessle
         public IValueObservable<bool> childControlHeight;
         public IValueObservable<bool> childScaleWidth;
         public IValueObservable<bool> childScaleHeight;
+        public IListObservable<IControl> children;
     }
 
     [RequireComponent(typeof(HorizontalOrVerticalLayoutGroup))]
-    public class LayoutControl : PrimitiveControl<LayoutProps>
+    public class LayoutControl : Control<LayoutProps>
     {
         private HorizontalOrVerticalLayoutGroup _layout;
 
@@ -29,6 +31,7 @@ namespace Nessle
             _layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
 
             AddBinding(
+                props.element.Subscribe(this),
                 props.padding?.Subscribe(x => _layout.padding = x.currentValue),
                 props.spacing?.Subscribe(x => _layout.spacing = x.currentValue),
                 props.childAlignment?.Subscribe(x => _layout.childAlignment = x.currentValue),
@@ -38,7 +41,8 @@ namespace Nessle
                 props.childControlWidth?.Subscribe(x => _layout.childControlWidth = x.currentValue),
                 props.childControlHeight?.Subscribe(x => _layout.childControlHeight = x.currentValue),
                 props.childScaleWidth?.Subscribe(x => _layout.childScaleWidth = x.currentValue),
-                props.childScaleHeight?.Subscribe(x => _layout.childScaleHeight = x.currentValue)
+                props.childScaleHeight?.Subscribe(x => _layout.childScaleHeight = x.currentValue),
+                props.children?.SubscribeAsChildren(rectTransform)
             );
         }
     }

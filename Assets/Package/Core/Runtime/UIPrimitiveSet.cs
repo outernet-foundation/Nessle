@@ -5,28 +5,28 @@ namespace Nessle
     [CreateAssetMenu(fileName = "UIPrimitiveSet", menuName = "Nessle/UI Primitive Set")]
     public class UIPrimitiveSet : ScriptableObject
     {
-        public PrimitiveControl<TextProps> text => _text;
-        public PrimitiveControl<ImageProps> image => _image;
-        public PrimitiveControl<InputFieldProps> inputField => _inputField;
-        public PrimitiveControl<ScrollbarProps> scrollbar => _scrollbar;
-        public PrimitiveControl<ScrollRectProps> scrollRect => _scrollRect;
-        public PrimitiveControl<DropdownProps> dropdown => _dropdown;
-        public PrimitiveControl<ButtonProps> button => _button;
-        public PrimitiveControl<LayoutProps> horizontalLayout => _horizontalLayout;
-        public PrimitiveControl<LayoutProps> verticalLayout => _verticalLayout;
-        public PrimitiveControl<ToggleProps> toggle => _toggle;
-        public PrimitiveControl<SliderProps> slider => _slider;
+        public Control<TextProps> text => _text;
+        public Control<ImageProps> image => _image;
+        public Control<InputFieldProps> inputField => _inputField;
+        public Control<ScrollbarProps> scrollbar => _scrollbar;
+        public Control<ScrollRectProps> scrollRect => _scrollRect;
+        public Control<DropdownProps> dropdown => _dropdown;
+        public Control<ButtonProps> button => _button;
+        public Control<LayoutProps> horizontalLayout => _horizontalLayout;
+        public Control<LayoutProps> verticalLayout => _verticalLayout;
+        public Control<ToggleProps> toggle => _toggle;
+        public Control<SliderProps> slider => _slider;
 
-        [SerializeField] private PrimitiveControl<TextProps> _text;
-        [SerializeField] private PrimitiveControl<ImageProps> _image;
-        [SerializeField] private PrimitiveControl<InputFieldProps> _inputField;
-        [SerializeField] private PrimitiveControl<ScrollbarProps> _scrollbar;
-        [SerializeField] private PrimitiveControl<ScrollRectProps> _scrollRect;
-        [SerializeField] private PrimitiveControl<DropdownProps> _dropdown;
-        [SerializeField] private PrimitiveControl<ButtonProps> _button;
-        [SerializeField] private PrimitiveControl<LayoutProps> _horizontalLayout;
-        [SerializeField] private PrimitiveControl<LayoutProps> _verticalLayout;
-        [SerializeField] private PrimitiveControl<ToggleProps> _toggle;
-        [SerializeField] private PrimitiveControl<SliderProps> _slider;
+        [SerializeField] private Control<TextProps> _text;
+        [SerializeField] private Control<ImageProps> _image;
+        [SerializeField] private Control<InputFieldProps> _inputField;
+        [SerializeField] private Control<ScrollbarProps> _scrollbar;
+        [SerializeField] private Control<ScrollRectProps> _scrollRect;
+        [SerializeField] private Control<DropdownProps> _dropdown;
+        [SerializeField] private Control<ButtonProps> _button;
+        [SerializeField] private Control<LayoutProps> _horizontalLayout;
+        [SerializeField] private Control<LayoutProps> _verticalLayout;
+        [SerializeField] private Control<ToggleProps> _toggle;
+        [SerializeField] private Control<SliderProps> _slider;
     }
 }

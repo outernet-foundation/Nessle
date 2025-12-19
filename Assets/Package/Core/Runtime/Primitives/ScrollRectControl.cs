@@ -8,6 +8,7 @@ namespace Nessle
 {
     public struct ScrollRectProps
     {
+        public ElementProps element;
         public IValueObservable<Vector2> value;
         public IValueObservable<bool> horizontal;
         public IValueObservable<bool> vertical;
@@ -16,7 +17,7 @@ namespace Nessle
     }
 
     [RequireComponent(typeof(ScrollRect))]
-    public class ScrollRectControl : PrimitiveControl<ScrollRectProps>
+    public class ScrollRectControl : Control<ScrollRectProps>
     {
         private ScrollRect _scrollRect;
 
@@ -27,12 +28,12 @@ namespace Nessle
         protected override void SetupInternal()
         {
             _scrollRect = GetComponent<ScrollRect>();
-            _childParentOverride = _scrollRect.viewport;
 
             if (props.onValueChanged != null)
                 _scrollRect.onValueChanged.AddListener(props.onValueChanged);
 
             AddBinding(
+                props.element.Subscribe(this),
                 props.value?.Subscribe(x =>
                 {
                     _value = x.currentValue;
@@ -62,15 +63,14 @@ namespace Nessle
                 }),
                 props.content?.Subscribe(x =>
                 {
-                    x.previousValue?.parent.From(default(IControl));
+                    if (x.previousValue != null)
+                        x.previousValue.rectTransform.parent = null;
 
                     if (x.currentValue == null)
                         return;
 
-                    x.currentValue.parent.From(this);
+                    x.currentValue.rectTransform.SetParent(_scrollRect.viewport, false);
                     _scrollRect.content = x.currentValue.rectTransform;
-                    x.currentValue.SetPivot(new Vector2(0, 1));
-                    x.currentValue.AnchorToTop();
 
                     _scrollRect.normalizedPosition = _value;
                     _scrollRect.horizontal = _horizontal;

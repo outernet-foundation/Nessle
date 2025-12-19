@@ -10,6 +10,7 @@ namespace Nessle
 {
     public struct DropdownProps
     {
+        public ElementProps element;
         public IValueObservable<int> value;
         public IValueObservable<bool> allowMultiselect;
         public IListObservable<string> options;
@@ -22,12 +23,12 @@ namespace Nessle
     }
 
     [RequireComponent(typeof(TMP_Dropdown))]
-    public class DropdownControl : PrimitiveControl<DropdownProps>
+    public class DropdownControl : Control<DropdownProps>
     {
         private TMP_Dropdown _dropdown;
 
-        private PrimitiveControl<TextProps> _captionText;
-        private PrimitiveControl<TextProps> _itemText;
+        private Control<TextProps> _captionText;
+        private Control<TextProps> _itemText;
 
         private List<string> _options = new List<string>();
 
@@ -38,13 +39,14 @@ namespace Nessle
             if (props.onValueChanged != null)
                 _dropdown.onValueChanged.AddListener(props.onValueChanged);
 
-            _captionText = _dropdown.captionText.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>, TextControl>();
-            _itemText = _dropdown.itemText.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>, TextControl>();
+            _captionText = _dropdown.captionText.gameObject.GetOrAddComponent<Control<TextProps>, TextControl>();
+            _itemText = _dropdown.itemText.gameObject.GetOrAddComponent<Control<TextProps>, TextControl>();
 
             _captionText.Setup(new TextProps() { style = props.captionTextStyle });
             _itemText.Setup(new TextProps() { style = props.itemTextStyle });
 
             AddBinding(
+                props.element.Subscribe(this),
                 props.value?.Subscribe(x => _dropdown.value = x.currentValue),
                 props.allowMultiselect?.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
                 props.options?.Subscribe(x =>

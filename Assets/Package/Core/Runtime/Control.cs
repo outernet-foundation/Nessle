@@ -6,60 +6,31 @@ using ObserveThing;
 
 namespace Nessle
 {
-    public class Control : IControl
+    [RequireComponent(typeof(RectTransform))]
+    public class Control : MonoBehaviour, IControl
     {
-        public GameObject gameObject { get; private set; }
         public RectTransform rectTransform { get; private set; }
 
-        public ValueObservable<IControl> parent { get; } = new ValueObservable<IControl>();
-        public ListObservable<IControl> children { get; } = new ListObservable<IControl>();
-        public IValueObservable<Rect> rect => _rect;
-
-        private ValueObservable<Rect> _rect = new ValueObservable<Rect>();
         private List<IDisposable> _bindings = new List<IDisposable>();
 
-        private RectTransform _childParentOverride;
-
-        public Control(GameObject gameObject, RectTransform childParentOverride = default)
+        public virtual void Setup()
         {
-            _childParentOverride = childParentOverride;
-
-            this.gameObject = gameObject;
-            rectTransform = gameObject.GetOrAddComponent<RectTransform>();
-            gameObject.GetOrAddComponent<RectTransformChangedHandler>().onReceivedEvent += x => _rect.From(x);
-
-            children.Subscribe(x =>
-            {
-                if (x.operationType == OpType.Add)
-                {
-                    x.element.parent.From(this);
-                    x.element.rectTransform.SetParent(_childParentOverride == null ? rectTransform : _childParentOverride, false);
-                    x.element.rectTransform.SetSiblingIndex(x.index);
-                }
-                else if (x.operationType == OpType.Remove && x.element.parent.value == this)
-                {
-                    x.element.parent.From(default(IControl));
-                }
-            });
-
-            parent.Subscribe(x =>
-            {
-                if (x.previousValue != null && x.previousValue.children.Contains(this))
-                    x.previousValue.children.Remove(this);
-
-                if (x.currentValue != null && !x.currentValue.children.Contains(this))
-                    x.currentValue.children.Add(this);
-            });
+            rectTransform = gameObject.GetComponent<RectTransform>();
+            SetupInternal();
         }
+
+        protected virtual void SetupInternal() { }
+        protected virtual void DisposeInternal() { }
 
         public void AddBinding(IDisposable binding)
         {
-            _bindings.Add(binding);
+            if (binding != null)
+                _bindings.Add(binding);
         }
 
         public void AddBinding(params IDisposable[] bindings)
         {
-            _bindings.AddRange(bindings);
+            _bindings.AddRange(bindings.Where(x => x != null));
         }
 
         public void RemoveBinding(IDisposable binding)
@@ -80,28 +51,41 @@ namespace Nessle
 
         public virtual void Dispose()
         {
-            _rect.Dispose();
-
-            if (parent.value != null)
-                parent.value.children.Remove(this);
-
-            while (children.count > 0)
-                children[children.count - 1].Dispose();
-
-            foreach (var binding in _bindings)
-                binding.Dispose();
-
-            parent.Dispose();
-            children.Dispose();
-
             if (Application.isPlaying)
             {
-                UnityEngine.Object.Destroy(gameObject);
+                Destroy(gameObject);
             }
             else
             {
-                UnityEngine.Object.DestroyImmediate(gameObject);
+                DestroyImmediate(gameObject);
             }
+
+            DisposeInternal();
+        }
+    }
+
+    public abstract class Control<T> : Control where T : new()
+    {
+        public T props { get; private set; }
+
+        public void Setup(T props)
+        {
+            this.props = props;
+            base.Setup();
+        }
+
+        public override void Setup()
+        {
+            props = new T();
+            base.Setup();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (props is IDisposable propsDisposable)
+                propsDisposable.Dispose();
         }
     }
 }

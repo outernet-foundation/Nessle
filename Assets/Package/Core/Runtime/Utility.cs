@@ -1,11 +1,7 @@
-using System;
 using UnityEngine;
 using ObserveThing;
-using TMPro;
+using System;
 using UnityEngine.UI;
-
-using ImageType = UnityEngine.UI.Image.Type;
-using ImageFillMethod = UnityEngine.UI.Image.FillMethod;
 
 namespace Nessle
 {
@@ -29,22 +25,62 @@ namespace Nessle
             return gameObject.AddComponent<TImplmentation>();
         }
 
-        public static Color Alpha(this Color color, float alpha)
-            => new Color(color.r, color.g, color.b, alpha);
-
-        public static void From<T>(this ValueObservable<string> observable, IValueObservable<T> source)
-            => observable.From(source.SelectDynamic(x => x.ToString()));
-
-        public static void AlphaFrom<T>(this ValueObservable<Color> observable, float alpha)
-            => observable.From(observable.value.Alpha(alpha));
-
-        public static void AlphaFrom<T>(this ValueObservable<Color> observable, IValueObservable<float> alpha)
-            => observable.From(alpha.SelectDynamic(x => observable.value.Alpha(x)));
-
         public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, U> create)
             where U : IControl => new CreateListObservable<U>(source.SelectDynamic(create));
 
         public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, IValueObservable<U>> create)
             where U : IControl => new CreateListObservable<U>(source.SelectDynamic(create));
+
+        public static IDisposable Subscribe(this ElementProps props, IControl control)
+        {
+            return new ComposedDisposable(
+                props.name?.Subscribe(x => control.gameObject.name = x.currentValue),
+                props.active?.Subscribe(x => control.gameObject.SetActive(x.currentValue)),
+                props.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x.currentValue),
+                props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x.currentValue),
+                props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x.currentValue),
+                props.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x.currentValue),
+                props.pivot?.Subscribe(x => control.rectTransform.pivot = x.currentValue),
+                props.position?.Subscribe(x => control.rectTransform.localPosition = x.currentValue),
+                props.rotation?.Subscribe(x => control.rectTransform.localRotation = Quaternion.AngleAxis(x.currentValue, Vector3.forward)),
+                props.scale?.Subscribe(x => control.rectTransform.localScale = new Vector3(x.currentValue.x, x.currentValue.y, control.rectTransform.localScale.z)),
+                props.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x.currentValue),
+                props.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x.currentValue),
+                props.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x.currentValue),
+                props.preferredWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x.currentValue),
+                props.preferredHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x.currentValue),
+                props.flexibleWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x.currentValue ? 1 : 0),
+                props.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x.currentValue ? 1 : 0),
+                props.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x.currentValue),
+                props.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x.currentValue),
+                props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x.currentValue),
+                props.bindings?.Subscribe(x =>
+                {
+                    if (x.operationType == OpType.Add)
+                    {
+                        control.AddBinding(x.element);
+                    }
+                    else if (x.operationType == OpType.Remove)
+                    {
+                        control.RemoveBinding(x.element);
+                    }
+                })
+            );
+        }
+
+        public static IDisposable SubscribeAsChildren(this IListObservable<IControl> children, RectTransform parent)
+        {
+            return children?.Subscribe(x =>
+            {
+                if (x.operationType == OpType.Add)
+                {
+                    x.element.rectTransform.SetParent(parent, false);
+                }
+                else if (x.operationType == OpType.Remove)
+                {
+                    x.element.rectTransform.SetParent(null, false);
+                }
+            });
+        }
     }
 }

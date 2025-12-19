@@ -40,25 +40,25 @@ namespace Nessle
     }
 
     [RequireComponent(typeof(TMP_InputField))]
-    public class InputFieldControl : PrimitiveControl<InputFieldProps>
+    public class InputFieldControl : Control<InputFieldProps>
     {
         public Image background;
         private TMP_InputField _inputField;
 
-        private PrimitiveControl<TextProps> _inputText;
-        private PrimitiveControl<TextProps> _placeholderText;
-        private PrimitiveControl<ImageProps> _background;
+        private Control<TextProps> _inputText;
+        private Control<TextProps> _placeholderText;
+        private Control<ImageProps> _background;
 
         protected override void SetupInternal()
         {
             _inputField = GetComponent<TMP_InputField>();
-            _inputText = _inputField.textComponent.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>, TextControl>();
+            _inputText = _inputField.textComponent.gameObject.GetOrAddComponent<Control<TextProps>, TextControl>();
 
             if (_inputField.placeholder != null && _inputField.placeholder is TMP_Text placeholder)
-                _placeholderText = placeholder.gameObject.GetOrAddComponent<PrimitiveControl<TextProps>, TextControl>();
+                _placeholderText = placeholder.gameObject.GetOrAddComponent<Control<TextProps>, TextControl>();
 
             if (background != null)
-                _background = background.gameObject.GetOrAddComponent<PrimitiveControl<ImageProps>, ImageControl>();
+                _background = background.gameObject.GetOrAddComponent<Control<ImageProps>, ImageControl>();
 
             _inputText.Setup(new TextProps() { style = props.inputTextStyle });
 
