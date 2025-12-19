@@ -45,6 +45,7 @@ namespace Nessle
             return InputField(
                 new InputFieldProps()
                 {
+                    element = props.element,
                     value = props.value.SelectDynamic(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
@@ -66,6 +67,7 @@ namespace Nessle
             return InputField(
                 new InputFieldProps()
                 {
+                    element = props.element,
                     value = props.value.SelectDynamic(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
@@ -87,6 +89,7 @@ namespace Nessle
             return InputField(
                 new InputFieldProps()
                 {
+                    element = props.element,
                     value = props.value.SelectDynamic(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
