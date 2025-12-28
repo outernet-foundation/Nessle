@@ -11,6 +11,7 @@ namespace Nessle
     public struct DropdownProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<int> value;
         public IValueObservable<bool> allowMultiselect;
         public IListObservable<string> options;
@@ -47,6 +48,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.value?.Subscribe(x => _dropdown.value = x.currentValue),
                 props.allowMultiselect?.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
                 props.options?.Subscribe(x =>

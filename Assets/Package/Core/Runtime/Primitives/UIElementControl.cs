@@ -1,13 +1,11 @@
-using UnityEngine;
-using UnityEngine.UI;
 using ObserveThing;
-using UnityEngine.Events;
 
 namespace Nessle
 {
     public struct UIElementProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IListObservable<IControl> children;
     }
 
@@ -17,6 +15,7 @@ namespace Nessle
         {
             AddBinding(
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.children?.SubscribeAsChildren(rectTransform)
             );
         }

@@ -8,6 +8,7 @@ namespace Nessle
     public struct ToggleProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<bool> value;
         public IValueObservable<bool> interactable;
         public UnityAction<bool> onValueChanged;
@@ -27,6 +28,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.value?.Subscribe(x => _toggle.isOn = x.currentValue),
                 props.interactable?.Subscribe(x => _toggle.interactable = x.currentValue)
             );

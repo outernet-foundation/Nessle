@@ -33,6 +33,25 @@ namespace Nessle
 
         public static IDisposable Subscribe(this ElementProps props, IControl control)
         {
+            return new ComposedDisposable(
+                props.name?.Subscribe(x => control.gameObject.name = x.currentValue),
+                props.active?.Subscribe(x => control.gameObject.SetActive(x.currentValue)),
+                props.bindings?.Subscribe(x =>
+                {
+                    if (x.operationType == OpType.Add)
+                    {
+                        control.AddBinding(x.element);
+                    }
+                    else if (x.operationType == OpType.Remove)
+                    {
+                        control.RemoveBinding(x.element);
+                    }
+                })
+            );
+        }
+
+        public static IDisposable Subscribe(this TransformProps props, IControl control)
+        {
             if (props.anchoredPosition != null)
             {
                 if (props.position != null)
@@ -49,8 +68,6 @@ namespace Nessle
             }
 
             return new ComposedDisposable(
-                props.name?.Subscribe(x => control.gameObject.name = x.currentValue),
-                props.active?.Subscribe(x => control.gameObject.SetActive(x.currentValue)),
                 props.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x.currentValue),
                 props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x.currentValue),
                 props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x.currentValue),
@@ -70,18 +87,7 @@ namespace Nessle
                 props.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x.currentValue ? 1 : 0),
                 props.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x.currentValue),
                 props.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x.currentValue),
-                props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x.currentValue),
-                props.bindings?.Subscribe(x =>
-                {
-                    if (x.operationType == OpType.Add)
-                    {
-                        control.AddBinding(x.element);
-                    }
-                    else if (x.operationType == OpType.Remove)
-                    {
-                        control.RemoveBinding(x.element);
-                    }
-                })
+                props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x.currentValue)
             );
         }
 

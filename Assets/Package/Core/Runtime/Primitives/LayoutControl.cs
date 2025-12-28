@@ -8,6 +8,7 @@ namespace Nessle
     public struct LayoutProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<RectOffset> padding;
         public IValueObservable<float> spacing;
         public IValueObservable<TextAnchor> childAlignment;
@@ -32,6 +33,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.padding?.Subscribe(x => _layout.padding = x.currentValue),
                 props.spacing?.Subscribe(x => _layout.spacing = x.currentValue),
                 props.childAlignment?.Subscribe(x => _layout.childAlignment = x.currentValue),

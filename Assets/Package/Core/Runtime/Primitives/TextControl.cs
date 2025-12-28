@@ -8,6 +8,7 @@ namespace Nessle
     public struct TextProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<string> value;
         public TextStyleProps style;
     }
@@ -51,6 +52,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.value?.Subscribe(x => _text.text = x.currentValue),
                 props.style.font?.Subscribe(x => _text.font = x.currentValue),
                 props.style.textStyle?.Subscribe(x => _text.textStyle = x.currentValue),

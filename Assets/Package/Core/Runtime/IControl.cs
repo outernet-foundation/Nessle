@@ -9,6 +9,11 @@ namespace Nessle
     {
         public IValueObservable<string> name;
         public IValueObservable<bool> active;
+        public IListObservable<IDisposable> bindings;
+    }
+
+    public struct TransformProps
+    {
         public IValueObservable<Vector2> anchorMin;
         public IValueObservable<Vector2> anchorMax;
         public IValueObservable<Vector2> offsetMin;
@@ -29,7 +34,6 @@ namespace Nessle
         public IValueObservable<int> layoutPriority;
         public IValueObservable<FitMode> fitContentHorizontal;
         public IValueObservable<FitMode> fitContentVertical;
-        public IListObservable<IDisposable> bindings;
     }
 
     public interface IControl : IDisposable

@@ -10,6 +10,7 @@ namespace Nessle
     public struct ScrollbarProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<float> value;
         public IValueObservable<ScrollbarDirection> direction;
         public IValueObservable<float> size;
@@ -31,6 +32,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.value?.Subscribe(x => _scrollbar.value = x.currentValue),
                 props.direction?.Subscribe(x => _scrollbar.direction = x.currentValue),
                 props.size?.Subscribe(x => _scrollbar.size = x.currentValue),

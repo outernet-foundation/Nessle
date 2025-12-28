@@ -12,6 +12,7 @@ namespace Nessle
     public struct InputFieldProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<string> value;
         public IValueObservable<string> placeholderValue;
         public TextStyleProps inputTextStyle;
@@ -29,6 +30,7 @@ namespace Nessle
     public struct InputFieldProps<T>
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<T> value;
         public IValueObservable<string> placeholderValue;
         public TextStyleProps inputTextStyle;
@@ -85,6 +87,7 @@ namespace Nessle
             AddBinding(
                 _inputText,
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.value?.Subscribe(x => _inputField.text = x.currentValue),
                 props.contentType?.Subscribe(x => _inputField.contentType = x.currentValue),
                 props.readOnly?.Subscribe(x => _inputField.readOnly = x.currentValue),

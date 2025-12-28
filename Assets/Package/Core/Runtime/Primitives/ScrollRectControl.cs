@@ -9,6 +9,7 @@ namespace Nessle
     public struct ScrollRectProps
     {
         public ElementProps element;
+        public TransformProps transform;
         public IValueObservable<Vector2> value;
         public IValueObservable<bool> horizontal;
         public IValueObservable<bool> vertical;
@@ -34,6 +35,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
+                props.transform.Subscribe(this),
                 props.value?.Subscribe(x =>
                 {
                     _value = x.currentValue;
