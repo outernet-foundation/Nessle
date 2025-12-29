@@ -49,7 +49,6 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.transform.Subscribe(this),
-                props.value?.Subscribe(x => _dropdown.value = x.currentValue),
                 props.allowMultiselect?.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
                 props.options?.Subscribe(x =>
                 {
@@ -65,6 +64,7 @@ namespace Nessle
                     _dropdown.ClearOptions();
                     _dropdown.AddOptions(_options);
                 }),
+                props.value?.Subscribe(x => _dropdown.value = x.currentValue),
                 props.interactable?.Subscribe(x => _dropdown.interactable = x.currentValue),
                 _captionText,
                 _itemText
