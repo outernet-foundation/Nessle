@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Nessle
 {
-    [RequireComponent(typeof(RectTransform))]
     public class Control<T> : MonoBehaviour, IControl
     {
         public T props { get; private set; }

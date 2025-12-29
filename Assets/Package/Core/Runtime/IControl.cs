@@ -40,6 +40,7 @@ namespace Nessle
     {
         GameObject gameObject { get; }
         RectTransform rectTransform { get; }
+        Transform transform { get; }
 
         void AddBinding(IDisposable binding);
         void AddBinding(params IDisposable[] bindings);
