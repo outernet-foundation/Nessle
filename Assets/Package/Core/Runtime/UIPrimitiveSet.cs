@@ -12,8 +12,8 @@ namespace Nessle
         public Control<ScrollRectProps> scrollRect => _scrollRect;
         public Control<DropdownProps> dropdown => _dropdown;
         public Control<ButtonProps> button => _button;
-        public Control<LayoutProps> horizontalLayout => _horizontalLayout;
-        public Control<LayoutProps> verticalLayout => _verticalLayout;
+        public Control<LayoutGroupProps> horizontalLayout => _horizontalLayout;
+        public Control<LayoutGroupProps> verticalLayout => _verticalLayout;
         public Control<ToggleProps> toggle => _toggle;
         public Control<SliderProps> slider => _slider;
         public Control<FullscreenUIProps> fullscreenUI => _fullscreenUI;
@@ -25,8 +25,8 @@ namespace Nessle
         [SerializeField] private Control<ScrollRectProps> _scrollRect;
         [SerializeField] private Control<DropdownProps> _dropdown;
         [SerializeField] private Control<ButtonProps> _button;
-        [SerializeField] private Control<LayoutProps> _horizontalLayout;
-        [SerializeField] private Control<LayoutProps> _verticalLayout;
+        [SerializeField] private Control<LayoutGroupProps> _horizontalLayout;
+        [SerializeField] private Control<LayoutGroupProps> _verticalLayout;
         [SerializeField] private Control<ToggleProps> _toggle;
         [SerializeField] private Control<SliderProps> _slider;
         [SerializeField] private Control<FullscreenUIProps> _fullscreenUI;

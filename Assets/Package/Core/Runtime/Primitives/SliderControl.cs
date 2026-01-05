@@ -10,7 +10,7 @@ namespace Nessle
     public struct SliderProps
     {
         public ElementProps element;
-        public TransformProps transform;
+        public LayoutProps layout;
         public IValueObservable<float> value;
         public IValueObservable<float> minValue;
         public IValueObservable<float> maxValue;
@@ -34,7 +34,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
-                props.transform.Subscribe(this),
+                props.layout.Subscribe(this),
                 props.value?.Subscribe(x => _slider.value = x.currentValue),
                 props.minValue?.Subscribe(x => _slider.minValue = x.currentValue),
                 props.maxValue?.Subscribe(x => _slider.maxValue = x.currentValue),

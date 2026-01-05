@@ -9,12 +9,12 @@ namespace Nessle
     {
         public static UIPrimitiveSet primitives { get; set; }
 
-        public static IControl Control(string name, UIElementProps props)
+        public static IControl Control(string name, ControlProps props)
             => Control(new GameObject(name), props);
 
-        public static IControl Control(GameObject gameObject, UIElementProps props)
+        public static IControl Control(GameObject gameObject, ControlProps props)
         {
-            var control = gameObject.GetOrAddComponent<UIElementControl>();
+            var control = gameObject.GetOrAddComponent<Control>();
             control.Setup(props);
             return control;
         }
@@ -44,16 +44,16 @@ namespace Nessle
         public static IControl Button(Control<ButtonProps> prefab, ButtonProps props)
             => Control(prefab, props);
 
-        public static IControl HorizontalLayout(LayoutProps props)
+        public static IControl HorizontalLayout(LayoutGroupProps props)
             => Control(primitives.horizontalLayout, props);
 
-        public static IControl HorizontalLayout(Control<LayoutProps> prefab, LayoutProps props)
+        public static IControl HorizontalLayout(Control<LayoutGroupProps> prefab, LayoutGroupProps props)
             => Control(prefab, props);
 
-        public static IControl VerticalLayout(LayoutProps props)
+        public static IControl VerticalLayout(LayoutGroupProps props)
             => Control(primitives.verticalLayout, props);
 
-        public static IControl VerticalLayout(Control<LayoutProps> prefab, LayoutProps props)
+        public static IControl VerticalLayout(Control<LayoutGroupProps> prefab, LayoutGroupProps props)
             => Control(prefab, props);
 
         public static IControl InputField(InputFieldProps props)
@@ -72,6 +72,7 @@ namespace Nessle
                 new InputFieldProps()
                 {
                     element = props.element,
+                    layout = props.layout,
                     value = props.value.SelectDynamic(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
@@ -97,6 +98,7 @@ namespace Nessle
                 new InputFieldProps()
                 {
                     element = props.element,
+                    layout = props.layout,
                     value = props.value.SelectDynamic(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
@@ -122,6 +124,7 @@ namespace Nessle
                 new InputFieldProps()
                 {
                     element = props.element,
+                    layout = props.layout,
                     value = props.value.SelectDynamic(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,

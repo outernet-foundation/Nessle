@@ -5,10 +5,10 @@ using ObserveThing;
 
 namespace Nessle
 {
-    public struct LayoutProps
+    public struct LayoutGroupProps
     {
         public ElementProps element;
-        public TransformProps transform;
+        public LayoutProps layout;
         public IValueObservable<RectOffset> padding;
         public IValueObservable<float> spacing;
         public IValueObservable<TextAnchor> childAlignment;
@@ -23,7 +23,7 @@ namespace Nessle
     }
 
     [RequireComponent(typeof(HorizontalOrVerticalLayoutGroup))]
-    public class LayoutControl : Control<LayoutProps>
+    public class LayoutGroupControl : Control<LayoutGroupProps>
     {
         private HorizontalOrVerticalLayoutGroup _layout;
 
@@ -33,7 +33,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
-                props.transform.Subscribe(this),
+                props.layout.Subscribe(this),
                 props.padding?.Subscribe(x => _layout.padding = x.currentValue),
                 props.spacing?.Subscribe(x => _layout.spacing = x.currentValue),
                 props.childAlignment?.Subscribe(x => _layout.childAlignment = x.currentValue),

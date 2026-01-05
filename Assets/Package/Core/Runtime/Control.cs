@@ -3,8 +3,29 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+using ObserveThing;
+
 namespace Nessle
 {
+    public struct ControlProps
+    {
+        public ElementProps element;
+        public LayoutProps layout;
+        public IListObservable<IControl> children;
+    }
+
+    public class Control : Control<ControlProps>
+    {
+        protected override void SetupInternal()
+        {
+            AddBinding(
+                props.element.Subscribe(this),
+                props.layout.Subscribe(this),
+                props.children?.SubscribeAsChildren(rectTransform)
+            );
+        }
+    }
+
     public class Control<T> : MonoBehaviour, IControl
     {
         public T props { get; private set; }

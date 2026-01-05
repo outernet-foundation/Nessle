@@ -10,7 +10,7 @@ namespace Nessle
     public struct ImageProps
     {
         public ElementProps element;
-        public TransformProps transform;
+        public LayoutProps layout;
         public IValueObservable<Sprite> sprite;
         public IValueObservable<Color> color;
         public IValueObservable<ImageType> imageType;
@@ -36,7 +36,7 @@ namespace Nessle
 
             AddBinding(
                 props.element.Subscribe(this),
-                props.transform.Subscribe(this),
+                props.layout.Subscribe(this),
                 props.sprite?.Subscribe(x => _image.sprite = x.currentValue),
                 props.color?.Subscribe(x => _image.color = x.currentValue),
                 props.imageType?.Subscribe(x => _image.type = x.currentValue),

@@ -12,7 +12,7 @@ namespace Nessle
         public IListObservable<IDisposable> bindings;
     }
 
-    public struct TransformProps
+    public struct LayoutProps
     {
         public IValueObservable<Vector2> anchorMin;
         public IValueObservable<Vector2> anchorMax;

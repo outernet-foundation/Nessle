@@ -50,7 +50,7 @@ namespace Nessle
             );
         }
 
-        public static IDisposable Subscribe(this TransformProps props, IControl control)
+        public static IDisposable Subscribe(this LayoutProps props, IControl control)
         {
             if (props.anchoredPosition != null)
             {
