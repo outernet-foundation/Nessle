@@ -10,10 +10,13 @@ namespace Nessle
         public static UIPrimitiveSet primitives { get; set; }
 
         public static IControl Control(string name, ControlProps props)
-            => Control(new GameObject(name), props);
+            => Control(new GameObject(name, typeof(RectTransform)), props);
 
         public static IControl Control(GameObject gameObject, ControlProps props)
         {
+            if (!gameObject.TryGetComponent<RectTransform>(out var _))
+                gameObject.AddComponent<RectTransform>();
+
             var control = gameObject.GetOrAddComponent<Control>();
             control.Setup(props);
             return control;
