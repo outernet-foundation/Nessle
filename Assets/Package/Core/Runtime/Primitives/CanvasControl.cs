@@ -6,6 +6,10 @@ namespace Nessle
 {
     public struct CanvasProps
     {
+        public ElementProps element;
+        public LayoutProps layout;
+        public IListObservable<IControl> children;
+
         public IValueObservable<RenderMode> renderMode;
         public IValueObservable<float> scaleFactor;
         public IValueObservable<float> referencePixelsPerUnit;
@@ -65,8 +69,11 @@ namespace Nessle
             {
                 _canvasScaler = gameObject.GetOrAddComponent<CanvasScaler>();
             }
-            
+
             AddBinding(
+                props.element.Subscribe(this),
+                props.layout.Subscribe(this),
+                props.children?.SubscribeAsChildren(rectTransform),
                 props.renderMode?.Subscribe(x => _canvas.renderMode = x.currentValue),
                 props.scaleFactor?.Subscribe(x => _canvas.scaleFactor = x.currentValue),
                 props.referencePixelsPerUnit?.Subscribe(x => _canvas.referencePixelsPerUnit = x.currentValue),
