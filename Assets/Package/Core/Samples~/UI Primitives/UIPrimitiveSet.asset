@@ -23,3 +23,4 @@ MonoBehaviour:
   _verticalLayout: {fileID: 7927537176307428804, guid: 48f401ea8579f4e448d56eccfe1043a3, type: 3}
   _toggle: {fileID: 1892092277378279610, guid: 306499c1b0649b443bed890421dbd780, type: 3}
   _slider: {fileID: 1815645580299293480, guid: b45c299b27bbced40a51a3f4f9873278, type: 3}
+  _canvas: {fileID: 1797365827774971887, guid: f0353bd1b1f06484d88b737d25cff434, type: 3}

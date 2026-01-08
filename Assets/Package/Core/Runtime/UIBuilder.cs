@@ -176,10 +176,10 @@ namespace Nessle
         public static IControl Slider(Control<SliderProps> prefab, SliderProps props)
             => Control(prefab, props);
 
-        public static IControl FullscreenUI(FullscreenUIProps props)
-            => Control(primitives.fullscreenUI, props);
+        public static IControl Canvas(CanvasProps props)
+            => Control(primitives.canvas, props);
 
-        public static IControl FullscreenUI(Control<FullscreenUIProps> prefab, FullscreenUIProps props)
+        public static IControl Canvas(Control<CanvasProps> prefab, CanvasProps props)
             => Control(prefab, props);
     }
 }

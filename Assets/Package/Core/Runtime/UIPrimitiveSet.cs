@@ -16,7 +16,7 @@ namespace Nessle
         public Control<LayoutGroupProps> verticalLayout => _verticalLayout;
         public Control<ToggleProps> toggle => _toggle;
         public Control<SliderProps> slider => _slider;
-        public Control<FullscreenUIProps> fullscreenUI => _fullscreenUI;
+        public Control<CanvasProps> canvas => _canvas;
 
         [SerializeField] private Control<TextProps> _text;
         [SerializeField] private Control<ImageProps> _image;
@@ -29,6 +29,6 @@ namespace Nessle
         [SerializeField] private Control<LayoutGroupProps> _verticalLayout;
         [SerializeField] private Control<ToggleProps> _toggle;
         [SerializeField] private Control<SliderProps> _slider;
-        [SerializeField] private Control<FullscreenUIProps> _fullscreenUI;
+        [SerializeField] private Control<CanvasProps> _canvas;
     }
 }
