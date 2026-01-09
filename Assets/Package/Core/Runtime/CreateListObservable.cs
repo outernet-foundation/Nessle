@@ -95,12 +95,16 @@ namespace Nessle
                 index = args.index;
                 element = _create(args.element);
                 opType = OpType.Add;
+
+                _currentList.Insert(args.index, element);
             }
             else if (args.operationType == OpType.Remove)
             {
                 index = args.index;
                 element = _currentList[args.index];
                 opType = OpType.Remove;
+
+                _currentList.RemoveAt(args.index);
             }
 
             var opArgs = AllocateArgs();
