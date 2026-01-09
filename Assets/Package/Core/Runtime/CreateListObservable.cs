@@ -4,76 +4,132 @@ using ObserveThing;
 
 namespace Nessle
 {
-    public class CreateListObservable<T> : IListObservable<T> where T : IControl
+    public class CreateListObservable<T, U> : IListObservable<U> where U : IControl
     {
         private IListObservable<T> _list;
+        private Func<T, U> _create;
+        private IDisposable _listStream;
+        private List<U> _currentList = new List<U>();
+        private Queue<ListEventArgs<U>> _argsPool = new Queue<ListEventArgs<U>>();
+        private List<ObserverData> _observers = new List<ObserverData>();
 
-        public CreateListObservable(IListObservable<T> list)
+        public CreateListObservable(IListObservable<T> list, Func<T, U> create)
         {
             _list = list;
+            _create = create;
         }
 
-        public IDisposable Subscribe(ObserveThing.IObserver<IListEventArgs<T>> observer)
-            => new Instance(this, _list, observer);
-
-        private class Instance : IDisposable
+        private class ObserverData
         {
-            private ListEventArgs<T> _args = new ListEventArgs<T>();
-            private ObserveThing.IObserver<IListEventArgs<T>> _observer;
-            private IDisposable _listStream;
-            private bool _disposed;
+            public bool disposed;
+            public ObserveThing.IObserver<IListEventArgs<U>> observer;
+        }
 
-            private List<T> _currentList = new List<T>();
-
-            public Instance(IObservable source, IListObservable<T> list, ObserveThing.IObserver<IListEventArgs<T>> observer)
+        public IDisposable Subscribe(ObserveThing.IObserver<IListEventArgs<U>> observer)
+        {
+            if (_observers.Count == 0)
             {
-                _args.source = source;
-                _observer = observer;
-                _listStream = list.Subscribe(
+                _listStream = _list.Subscribe(
                     HandleSourceChanged,
                     HandleSourceError,
                     HandleSourceDisposed
                 );
             }
 
-            private void HandleSourceChanged(IListEventArgs<T> args)
+            var observerData = new ObserverData() { observer = observer };
+            _observers.Add(observerData);
+
+            var args = AllocateArgs();
+
+            args.source = this;
+
+            for (int i = 0; i < _currentList.Count; i++)
             {
-                if (args.operationType == OpType.Add)
+                args.element = _currentList[i];
+                args.index = i;
+                observer.OnNext(args);
+            }
+
+            DeallocateArgs(args);
+
+            return new Disposable(() =>
+            {
+                observerData.disposed = true;
+                _observers.Remove(observerData);
+
+                if (_observers.Count == 0)
                 {
-                    _currentList.Add(args.element);
-                    _observer.OnNext(args);
+                    _listStream?.Dispose();
+                    _listStream = null;
                 }
-                else if (args.operationType == OpType.Remove)
-                {
-                    _currentList.Remove(args.element);
-                    _observer.OnNext(args);
-                    args.element.Dispose();
-                }
-            }
+            });
+        }
 
-            private void HandleSourceError(Exception error)
+        private ListEventArgs<U> AllocateArgs()
+            => _argsPool.Count == 0 ? new ListEventArgs<U>() : _argsPool.Dequeue();
+
+        private void DeallocateArgs(ListEventArgs<U> args)
+            => _argsPool.Enqueue(args);
+
+        private void SafeNotifyObservers(Action<ObserveThing.IObserver<IListEventArgs<U>>> notify)
+        {
+            var observers = _observers.ToArray();
+
+            foreach (var observerData in observers)
             {
-                _observer.OnError(error);
-            }
+                if (observerData.disposed)
+                    continue;
 
-            private void HandleSourceDisposed()
+                notify(observerData.observer);
+            }
+        }
+
+        private void HandleSourceChanged(IListEventArgs<T> args)
+        {
+            int index = -1;
+            U element = default;
+            OpType opType = default;
+
+            if (args.operationType == OpType.Add)
             {
-                Dispose();
+                index = args.index;
+                element = _create(args.element);
+                opType = OpType.Add;
             }
-
-            public void Dispose()
+            else if (args.operationType == OpType.Remove)
             {
-                if (_disposed)
-                    return;
-
-                _disposed = true;
-
-                foreach (var element in _currentList)
-                    element.Dispose();
-
-                _listStream.Dispose();
-                _observer.OnDispose();
+                index = args.index;
+                element = _currentList[args.index];
+                opType = OpType.Remove;
             }
+
+            var opArgs = AllocateArgs();
+
+            opArgs.index = index;
+            opArgs.element = element;
+            opArgs.operationType = opType;
+
+            SafeNotifyObservers(x => x.OnNext(opArgs));
+
+            DeallocateArgs(opArgs);
+
+            if (opType == OpType.Remove)
+                element.Dispose();
+        }
+
+        private void HandleSourceError(Exception error)
+        {
+            SafeNotifyObservers(x => x.OnError(error));
+        }
+
+        private void HandleSourceDisposed()
+        {
+            SafeNotifyObservers(x => x.OnDispose());
+
+            foreach (var element in _currentList)
+                element.Dispose();
+
+            _currentList.Clear();
         }
     }
 }

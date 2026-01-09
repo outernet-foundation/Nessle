@@ -26,10 +26,10 @@ namespace Nessle
         }
 
         public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, U> create)
-            where U : IControl => new CreateListObservable<U>(source.SelectDynamic(create));
+            where U : IControl => new CreateListObservable<T, U>(source, create);
 
         public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, IValueObservable<U>> create)
-            where U : IControl => new CreateListObservable<U>(source.SelectDynamic(create));
+            where U : IControl => source.SelectDynamic(create).CreateDynamic(x => x);
 
         public static IDisposable Subscribe(this ElementProps props, IControl control)
         {
