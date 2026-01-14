@@ -31,6 +31,12 @@ namespace Nessle
         public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, IValueObservable<U>> create)
             where U : IControl => source.SelectDynamic(create).CreateDynamic(x => x);
 
+        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, System.Func<T, U> create)
+            where U : IControl => new CreateValueObservable<T, U>(source, create);
+
+        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, System.Func<T, IValueObservable<U>> create)
+            where U : IControl => source.SelectDynamic(create).CreateDynamic(x => x);
+
         public static IDisposable Subscribe(this ElementProps props, IControl control)
         {
             return new ComposedDisposable(
