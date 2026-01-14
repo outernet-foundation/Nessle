@@ -9,6 +9,8 @@ namespace Nessle
 {
     public struct ScrollbarProps
     {
+        public ElementProps element;
+        public LayoutProps layout;
         public IValueObservable<float> value;
         public IValueObservable<ScrollbarDirection> direction;
         public IValueObservable<float> size;
@@ -17,7 +19,7 @@ namespace Nessle
     }
 
     [RequireComponent(typeof(Scrollbar))]
-    public class ScrollbarControl : PrimitiveControl<ScrollbarProps>
+    public class ScrollbarControl : Control<ScrollbarProps>
     {
         private Scrollbar _scrollbar;
 
@@ -29,6 +31,8 @@ namespace Nessle
                 _scrollbar.onValueChanged.AddListener(props.onValueChanged);
 
             AddBinding(
+                props.element.Subscribe(this),
+                props.layout.Subscribe(this),
                 props.value?.Subscribe(x => _scrollbar.value = x.currentValue),
                 props.direction?.Subscribe(x => _scrollbar.direction = x.currentValue),
                 props.size?.Subscribe(x => _scrollbar.size = x.currentValue),

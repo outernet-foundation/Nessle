@@ -7,13 +7,15 @@ namespace Nessle
 {
     public struct ToggleProps
     {
+        public ElementProps element;
+        public LayoutProps layout;
         public IValueObservable<bool> value;
         public IValueObservable<bool> interactable;
         public UnityAction<bool> onValueChanged;
     }
 
     [RequireComponent(typeof(Toggle))]
-    public class ToggleControl : PrimitiveControl<ToggleProps>
+    public class ToggleControl : Control<ToggleProps>
     {
         private Toggle _toggle;
 
@@ -25,6 +27,8 @@ namespace Nessle
                 _toggle.onValueChanged.AddListener(props.onValueChanged);
 
             AddBinding(
+                props.element.Subscribe(this),
+                props.layout.Subscribe(this),
                 props.value?.Subscribe(x => _toggle.isOn = x.currentValue),
                 props.interactable?.Subscribe(x => _toggle.interactable = x.currentValue)
             );

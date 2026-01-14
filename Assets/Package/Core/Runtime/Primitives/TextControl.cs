@@ -7,6 +7,8 @@ namespace Nessle
 {
     public struct TextProps
     {
+        public ElementProps element;
+        public LayoutProps layout;
         public IValueObservable<string> value;
         public TextStyleProps style;
     }
@@ -40,7 +42,7 @@ namespace Nessle
     }
 
     [RequireComponent(typeof(TextMeshProUGUI))]
-    public class TextControl : PrimitiveControl<TextProps>
+    public class TextControl : Control<TextProps>
     {
         private TextMeshProUGUI _text;
 
@@ -49,6 +51,8 @@ namespace Nessle
             _text = GetComponent<TextMeshProUGUI>();
 
             AddBinding(
+                props.element.Subscribe(this),
+                props.layout.Subscribe(this),
                 props.value?.Subscribe(x => _text.text = x.currentValue),
                 props.style.font?.Subscribe(x => _text.font = x.currentValue),
                 props.style.textStyle?.Subscribe(x => _text.textStyle = x.currentValue),

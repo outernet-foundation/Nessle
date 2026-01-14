@@ -9,6 +9,8 @@ namespace Nessle
 {
     public struct SliderProps
     {
+        public ElementProps element;
+        public LayoutProps layout;
         public IValueObservable<float> value;
         public IValueObservable<float> minValue;
         public IValueObservable<float> maxValue;
@@ -19,7 +21,7 @@ namespace Nessle
     }
 
     [RequireComponent(typeof(Slider))]
-    public class SliderControl : PrimitiveControl<SliderProps>
+    public class SliderControl : Control<SliderProps>
     {
         private Slider _slider;
 
@@ -31,6 +33,8 @@ namespace Nessle
                 _slider.onValueChanged.AddListener(props.onValueChanged);
 
             AddBinding(
+                props.element.Subscribe(this),
+                props.layout.Subscribe(this),
                 props.value?.Subscribe(x => _slider.value = x.currentValue),
                 props.minValue?.Subscribe(x => _slider.minValue = x.currentValue),
                 props.maxValue?.Subscribe(x => _slider.maxValue = x.currentValue),
