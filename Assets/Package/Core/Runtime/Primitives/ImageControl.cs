@@ -12,6 +12,11 @@ namespace Nessle
         public ElementProps element;
         public LayoutProps layout;
         public IValueObservable<Sprite> sprite;
+        public ImageStyleProps style;
+    }
+
+    public struct ImageStyleProps
+    {
         public IValueObservable<Color> color;
         public IValueObservable<ImageType> imageType;
         public IValueObservable<bool> fillCenter;
@@ -38,17 +43,17 @@ namespace Nessle
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
                 props.sprite?.Subscribe(x => _image.sprite = x.currentValue),
-                props.color?.Subscribe(x => _image.color = x.currentValue),
-                props.imageType?.Subscribe(x => _image.type = x.currentValue),
-                props.fillCenter?.Subscribe(x => _image.fillCenter = x.currentValue),
-                props.pixelsPerUnitMultiplier?.Subscribe(x => _image.pixelsPerUnitMultiplier = x.currentValue),
-                props.raycastTarget?.Subscribe(x => _image.raycastTarget = x.currentValue),
-                props.raycastPadding?.Subscribe(x => _image.raycastPadding = x.currentValue),
-                props.useSpriteMesh?.Subscribe(x => _image.useSpriteMesh = x.currentValue),
-                props.preserveAspect?.Subscribe(x => _image.preserveAspect = x.currentValue),
-                props.fillOrigin?.Subscribe(x => _image.fillOrigin = x.currentValue),
-                props.fillMethod?.Subscribe(x => _image.fillMethod = x.currentValue),
-                props.fillAmount?.Subscribe(x => _image.fillAmount = x.currentValue)
+                props.style.color?.Subscribe(x => _image.color = x.currentValue),
+                props.style.imageType?.Subscribe(x => _image.type = x.currentValue),
+                props.style.fillCenter?.Subscribe(x => _image.fillCenter = x.currentValue),
+                props.style.pixelsPerUnitMultiplier?.Subscribe(x => _image.pixelsPerUnitMultiplier = x.currentValue),
+                props.style.raycastTarget?.Subscribe(x => _image.raycastTarget = x.currentValue),
+                props.style.raycastPadding?.Subscribe(x => _image.raycastPadding = x.currentValue),
+                props.style.useSpriteMesh?.Subscribe(x => _image.useSpriteMesh = x.currentValue),
+                props.style.preserveAspect?.Subscribe(x => _image.preserveAspect = x.currentValue),
+                props.style.fillOrigin?.Subscribe(x => _image.fillOrigin = x.currentValue),
+                props.style.fillMethod?.Subscribe(x => _image.fillMethod = x.currentValue),
+                props.style.fillAmount?.Subscribe(x => _image.fillAmount = x.currentValue)
             );
         }
     }
