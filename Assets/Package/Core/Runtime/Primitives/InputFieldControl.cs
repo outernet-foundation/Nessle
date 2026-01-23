@@ -68,7 +68,12 @@ namespace Nessle
 
             if (_placeholderText != null)
             {
-                _placeholderText.Setup(new TextProps() { style = props.placeholderTextStyle });
+                _placeholderText.Setup(new TextProps()
+                {
+                    value = props.placeholderValue,
+                    style = props.placeholderTextStyle
+                });
+
                 AddBinding(_placeholderText);
             }
 
