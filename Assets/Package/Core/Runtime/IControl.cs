@@ -9,7 +9,7 @@ namespace Nessle
     {
         public IValueObservable<string> name;
         public IValueObservable<bool> active;
-        public IListObservable<IDisposable> bindings;
+        public ICollectionObservable<IDisposable> bindings;
     }
 
     public struct LayoutProps
