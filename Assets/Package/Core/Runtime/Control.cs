@@ -32,6 +32,7 @@ namespace Nessle
         public RectTransform rectTransform { get; private set; }
 
         private List<IDisposable> _bindings = new List<IDisposable>();
+        private bool _destroyed = false;
 
         public void Setup(T props)
         {
@@ -65,16 +66,30 @@ namespace Nessle
                 _bindings.Remove(binding);
         }
 
+        protected virtual void OnDestroy()
+        {
+            _destroyed = true;
+            Dispose();
+        }
+
         public void Dispose()
         {
-            if (Application.isPlaying)
+            if (!_destroyed)
             {
-                Destroy(gameObject);
+                if (Application.isPlaying)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    DestroyImmediate(gameObject);
+                }
+
+                return;
             }
-            else
-            {
-                DestroyImmediate(gameObject);
-            }
+
+            foreach (var binding in _bindings)
+                binding.Dispose();
 
             DisposeInternal();
         }
