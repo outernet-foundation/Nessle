@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b9574aa6fadef64a8bdb52129045287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _childParentOverride: {fileID: 2258243988040214601}
   background: {fileID: 7472108529778521191}
+  childParent: {fileID: 2258243988040214601}
 --- !u!1 &8184064278794825501
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,4 +325,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d1133b2fafc995449af0fb9d9811782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _childParentOverride: {fileID: 0}
