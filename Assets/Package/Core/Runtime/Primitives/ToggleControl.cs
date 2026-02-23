@@ -29,8 +29,8 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.value?.Subscribe(x => _toggle.isOn = x.currentValue),
-                props.interactable?.Subscribe(x => _toggle.interactable = x.currentValue)
+                props.value?.Subscribe(x => _toggle.isOn = x),
+                props.interactable?.Subscribe(x => _toggle.interactable = x)
             );
         }
     }

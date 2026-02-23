@@ -49,23 +49,23 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.allowMultiselect?.Subscribe(x => _dropdown.MultiSelect = x.currentValue),
-                props.options?.Subscribe(x =>
-                {
-                    if (x.operationType == OpType.Add)
+                props.allowMultiselect?.Subscribe(x => _dropdown.MultiSelect = x),
+                props.options?.Subscribe(
+                    onAdd: (index, x) =>
                     {
-                        _options.Add(x.element);
-                    }
-                    else if (x.operationType == OpType.Remove)
+                        _options.Insert(index, x);
+                        _dropdown.ClearOptions();
+                        _dropdown.AddOptions(_options);
+                    },
+                    onRemove: (index, x) =>
                     {
-                        _options.Remove(x.element);
+                        _options.RemoveAt(index);
+                        _dropdown.ClearOptions();
+                        _dropdown.AddOptions(_options);
                     }
-
-                    _dropdown.ClearOptions();
-                    _dropdown.AddOptions(_options);
-                }),
-                props.value?.Subscribe(x => _dropdown.value = x.currentValue),
-                props.interactable?.Subscribe(x => _dropdown.interactable = x.currentValue),
+                ),
+                props.value?.Subscribe(x => _dropdown.value = x),
+                props.interactable?.Subscribe(x => _dropdown.interactable = x),
                 _captionText,
                 _itemText
             );

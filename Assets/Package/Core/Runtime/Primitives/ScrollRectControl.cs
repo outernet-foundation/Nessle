@@ -38,46 +38,48 @@ namespace Nessle
                 props.layout.Subscribe(this),
                 props.value?.Subscribe(x =>
                 {
-                    _value = x.currentValue;
+                    _value = x;
 
                     if (_scrollRect.content == null)
                         return;
 
-                    _scrollRect.normalizedPosition = x.currentValue;
+                    _scrollRect.normalizedPosition = x;
                 }),
                 props.horizontal?.Subscribe(x =>
                 {
-                    _horizontal = x.currentValue;
+                    _horizontal = x;
 
                     if (_scrollRect.content == null)
                         return;
 
-                    _scrollRect.horizontal = x.currentValue;
+                    _scrollRect.horizontal = x;
                 }),
                 props.vertical?.Subscribe(x =>
                 {
-                    _vertical = x.currentValue;
+                    _vertical = x;
 
                     if (_scrollRect.content == null)
                         return;
 
-                    _scrollRect.vertical = x.currentValue;
+                    _scrollRect.vertical = x;
                 }),
-                props.content?.Subscribe(x =>
-                {
-                    if (x.previousValue != null)
-                        x.previousValue.rectTransform.parent = null;
+                props.content?
+                    .ObservableWithPrevious()
+                    .Subscribe(x =>
+                    {
+                        if (x.previous != null)
+                            x.previous.rectTransform.parent = null;
 
-                    if (x.currentValue == null)
-                        return;
+                        if (x.current == null)
+                            return;
 
-                    x.currentValue.rectTransform.SetParent(_scrollRect.viewport, false);
-                    _scrollRect.content = x.currentValue.rectTransform;
+                        x.current.rectTransform.SetParent(_scrollRect.viewport, false);
+                        _scrollRect.content = x.current.rectTransform;
 
-                    _scrollRect.normalizedPosition = _value;
-                    _scrollRect.horizontal = _horizontal;
-                    _scrollRect.vertical = _vertical;
-                })
+                        _scrollRect.normalizedPosition = _value;
+                        _scrollRect.horizontal = _horizontal;
+                        _scrollRect.vertical = _vertical;
+                    })
             );
         }
     }

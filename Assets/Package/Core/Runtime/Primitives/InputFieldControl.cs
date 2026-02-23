@@ -93,12 +93,12 @@ namespace Nessle
                 _inputText,
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.value?.Subscribe(x => _inputField.text = x.currentValue),
-                props.contentType?.Subscribe(x => _inputField.contentType = x.currentValue),
-                props.readOnly?.Subscribe(x => _inputField.readOnly = x.currentValue),
-                props.lineType?.Subscribe(x => _inputField.lineType = x.currentValue),
-                props.characterLimit?.Subscribe(x => _inputField.characterLimit = x.currentValue),
-                props.interactable?.Subscribe(x => _inputField.interactable = x.currentValue)
+                props.value?.Subscribe(x => _inputField.text = x),
+                props.contentType?.Subscribe(x => _inputField.contentType = x),
+                props.readOnly?.Subscribe(x => _inputField.readOnly = x),
+                props.lineType?.Subscribe(x => _inputField.lineType = x),
+                props.characterLimit?.Subscribe(x => _inputField.characterLimit = x),
+                props.interactable?.Subscribe(x => _inputField.interactable = x)
             );
         }
     }

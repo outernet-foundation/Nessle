@@ -16,6 +16,6 @@ namespace Nessle
             => new ListObservable<T>(values);
 
         public static IListObservable<T> List<T>(params IValueObservable<T>[] values)
-            => new ListObservable<IValueObservable<T>>(values).ShallowCopyDynamic();
+            => new ListObservable<IValueObservable<T>>(values).ObservableShallowCopy();
     }
 }

@@ -76,7 +76,7 @@ namespace Nessle
                 {
                     element = props.element,
                     layout = props.layout,
-                    value = props.value.SelectDynamic(x => x.ToString()),
+                    value = props.value.ObservableSelect(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
                     placeholderTextStyle = props.placeholderTextStyle,
@@ -102,7 +102,7 @@ namespace Nessle
                 {
                     element = props.element,
                     layout = props.layout,
-                    value = props.value.SelectDynamic(x => x.ToString()),
+                    value = props.value.ObservableSelect(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
                     placeholderTextStyle = props.placeholderTextStyle,
@@ -128,7 +128,7 @@ namespace Nessle
                 {
                     element = props.element,
                     layout = props.layout,
-                    value = props.value.SelectDynamic(x => x.ToString()),
+                    value = props.value.ObservableSelect(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
                     placeholderTextStyle = props.placeholderTextStyle,

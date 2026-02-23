@@ -42,18 +42,18 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.sprite?.Subscribe(x => _image.sprite = x.currentValue),
-                props.style.color?.Subscribe(x => _image.color = x.currentValue),
-                props.style.imageType?.Subscribe(x => _image.type = x.currentValue),
-                props.style.fillCenter?.Subscribe(x => _image.fillCenter = x.currentValue),
-                props.style.pixelsPerUnitMultiplier?.Subscribe(x => _image.pixelsPerUnitMultiplier = x.currentValue),
-                props.style.raycastTarget?.Subscribe(x => _image.raycastTarget = x.currentValue),
-                props.style.raycastPadding?.Subscribe(x => _image.raycastPadding = x.currentValue),
-                props.style.useSpriteMesh?.Subscribe(x => _image.useSpriteMesh = x.currentValue),
-                props.style.preserveAspect?.Subscribe(x => _image.preserveAspect = x.currentValue),
-                props.style.fillOrigin?.Subscribe(x => _image.fillOrigin = x.currentValue),
-                props.style.fillMethod?.Subscribe(x => _image.fillMethod = x.currentValue),
-                props.style.fillAmount?.Subscribe(x => _image.fillAmount = x.currentValue)
+                props.sprite?.Subscribe(x => _image.sprite = x),
+                props.style.color?.Subscribe(x => _image.color = x),
+                props.style.imageType?.Subscribe(x => _image.type = x),
+                props.style.fillCenter?.Subscribe(x => _image.fillCenter = x),
+                props.style.pixelsPerUnitMultiplier?.Subscribe(x => _image.pixelsPerUnitMultiplier = x),
+                props.style.raycastTarget?.Subscribe(x => _image.raycastTarget = x),
+                props.style.raycastPadding?.Subscribe(x => _image.raycastPadding = x),
+                props.style.useSpriteMesh?.Subscribe(x => _image.useSpriteMesh = x),
+                props.style.preserveAspect?.Subscribe(x => _image.preserveAspect = x),
+                props.style.fillOrigin?.Subscribe(x => _image.fillOrigin = x),
+                props.style.fillMethod?.Subscribe(x => _image.fillMethod = x),
+                props.style.fillAmount?.Subscribe(x => _image.fillAmount = x)
             );
         }
     }

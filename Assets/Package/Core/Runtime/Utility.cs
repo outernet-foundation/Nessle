@@ -25,34 +25,44 @@ namespace Nessle
             return gameObject.AddComponent<TImplmentation>();
         }
 
-        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, U> create)
-            where U : IControl => new CreateListObservable<T, U>(source, create);
+        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, Func<T, U> create)
+            where U : IControl => source.CreateDynamic(x => new ValueObservable<U>(create(x)));
 
-        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, System.Func<T, IValueObservable<U>> create)
-            where U : IControl => source.SelectDynamic(create).CreateDynamic(x => x);
+        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, Func<T, IValueObservable<U>> create) where U : IControl
+        {
+            return source
+                .ObservableSelect(x => create(x).ObservableWithPrevious())
+                .ObservableSelect(x =>
+                {
+                    x.previous?.Dispose();
+                    return x.current;
+                });
+        }
 
-        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, System.Func<T, U> create)
-            where U : IControl => new CreateValueObservable<T, U>(source, create);
+        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, Func<T, U> create)
+            where U : IControl => source.CreateDynamic(x => new ValueObservable<U>(create(x)));
 
-        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, System.Func<T, IValueObservable<U>> create)
-            where U : IControl => source.SelectDynamic(create).CreateDynamic(x => x);
+        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, Func<T, IValueObservable<U>> create)
+            where U : IControl
+        {
+            return source
+                .ObservableSelect(x => create(x).ObservableWithPrevious())
+                .ObservableSelect(x =>
+                {
+                    x.previous?.Dispose();
+                    return x.current;
+                });
+        }
 
         public static IDisposable Subscribe(this ElementProps props, IControl control)
         {
             return new ComposedDisposable(
-                props.name?.Subscribe(x => control.gameObject.name = x.currentValue),
-                props.active?.Subscribe(x => control.gameObject.SetActive(x.currentValue)),
-                props.bindings?.Subscribe(x =>
-                {
-                    if (x.operationType == OpType.Add)
-                    {
-                        control.AddBinding(x.element);
-                    }
-                    else if (x.operationType == OpType.Remove)
-                    {
-                        control.RemoveBinding(x.element);
-                    }
-                })
+                props.name?.Subscribe(x => control.gameObject.name = x),
+                props.active?.Subscribe(x => control.gameObject.SetActive(x)),
+                props.bindings?.Subscribe(
+                    onAdd: control.AddBinding,
+                    onRemove: control.RemoveBinding
+                )
             );
         }
 
@@ -74,43 +84,39 @@ namespace Nessle
             }
 
             return new ComposedDisposable(
-                props.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x.currentValue),
-                props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x.currentValue),
-                props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x.currentValue),
-                props.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x.currentValue),
-                props.anchoredPosition?.Subscribe(x => control.rectTransform.anchoredPosition = x.currentValue),
-                props.sizeDelta?.Subscribe(x => control.rectTransform.sizeDelta = x.currentValue),
-                props.pivot?.Subscribe(x => control.rectTransform.pivot = x.currentValue),
-                props.position?.Subscribe(x => control.rectTransform.localPosition = x.currentValue),
-                props.rotation?.Subscribe(x => control.rectTransform.localRotation = Quaternion.AngleAxis(x.currentValue, Vector3.forward)),
-                props.scale?.Subscribe(x => control.rectTransform.localScale = new Vector3(x.currentValue.x, x.currentValue.y, control.rectTransform.localScale.z)),
-                props.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x.currentValue),
-                props.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x.currentValue),
-                props.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x.currentValue),
-                props.preferredWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x.currentValue),
-                props.preferredHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x.currentValue),
-                props.flexibleWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x.currentValue ? 1 : 0),
-                props.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x.currentValue ? 1 : 0),
-                props.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x.currentValue),
-                props.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x.currentValue),
-                props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x.currentValue)
+                props.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x),
+                props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x),
+                props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x),
+                props.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x),
+                props.anchoredPosition?.Subscribe(x => control.rectTransform.anchoredPosition = x),
+                props.sizeDelta?.Subscribe(x => control.rectTransform.sizeDelta = x),
+                props.pivot?.Subscribe(x => control.rectTransform.pivot = x),
+                props.position?.Subscribe(x => control.rectTransform.localPosition = x),
+                props.rotation?.Subscribe(x => control.rectTransform.localRotation = Quaternion.AngleAxis(x, Vector3.forward)),
+                props.scale?.Subscribe(x => control.rectTransform.localScale = new Vector3(x.x, x.y, control.rectTransform.localScale.z)),
+                props.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x),
+                props.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x),
+                props.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x),
+                props.preferredWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x),
+                props.preferredHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x),
+                props.flexibleWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x ? 1 : 0),
+                props.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x ? 1 : 0),
+                props.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x),
+                props.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x),
+                props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x)
             );
         }
 
         public static IDisposable SubscribeAsChildren(this IListObservable<IControl> children, RectTransform parent)
         {
-            return children?.Subscribe(x =>
-            {
-                if (x.operationType == OpType.Add)
+            return children?.Subscribe(
+                onAdd: (index, x) =>
                 {
-                    x.element.rectTransform.SetParent(parent, false);
-                    x.element.rectTransform.SetSiblingIndex(x.index);
-                }
-                else if (x.operationType == OpType.Remove)
-                {
-                    x.element.rectTransform.SetParent(null, false);
-                }
-            });
+                    x.rectTransform.SetParent(parent, false);
+                    x.rectTransform.SetSiblingIndex(index);
+                },
+                onRemove: (index, x) => x.rectTransform.SetParent(null, false)
+            );
         }
     }
 }

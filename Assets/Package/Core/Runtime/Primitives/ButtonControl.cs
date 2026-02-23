@@ -35,7 +35,7 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.interactable?.Subscribe(x => _button.interactable = x.currentValue),
+                props.interactable?.Subscribe(x => _button.interactable = x),
                 background,
                 props.content?.SubscribeAsChildren(childParent)
             );

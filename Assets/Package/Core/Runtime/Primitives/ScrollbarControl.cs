@@ -33,10 +33,10 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.value?.Subscribe(x => _scrollbar.value = x.currentValue),
-                props.direction?.Subscribe(x => _scrollbar.direction = x.currentValue),
-                props.size?.Subscribe(x => _scrollbar.size = x.currentValue),
-                props.interactable?.Subscribe(x => _scrollbar.interactable = x.currentValue)
+                props.value?.Subscribe(x => _scrollbar.value = x),
+                props.direction?.Subscribe(x => _scrollbar.direction = x),
+                props.size?.Subscribe(x => _scrollbar.size = x),
+                props.interactable?.Subscribe(x => _scrollbar.interactable = x)
             );
         }
     }

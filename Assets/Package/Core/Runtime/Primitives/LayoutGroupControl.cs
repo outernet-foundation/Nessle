@@ -34,16 +34,16 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.padding?.Subscribe(x => _layout.padding = x.currentValue),
-                props.spacing?.Subscribe(x => _layout.spacing = x.currentValue),
-                props.childAlignment?.Subscribe(x => _layout.childAlignment = x.currentValue),
-                props.reverseArrangement?.Subscribe(x => _layout.reverseArrangement = x.currentValue),
-                props.childForceExpandHeight?.Subscribe(x => _layout.childForceExpandHeight = x.currentValue),
-                props.childForceExpandWidth?.Subscribe(x => _layout.childForceExpandWidth = x.currentValue),
-                props.childControlWidth?.Subscribe(x => _layout.childControlWidth = x.currentValue),
-                props.childControlHeight?.Subscribe(x => _layout.childControlHeight = x.currentValue),
-                props.childScaleWidth?.Subscribe(x => _layout.childScaleWidth = x.currentValue),
-                props.childScaleHeight?.Subscribe(x => _layout.childScaleHeight = x.currentValue),
+                props.padding?.Subscribe(x => _layout.padding = x),
+                props.spacing?.Subscribe(x => _layout.spacing = x),
+                props.childAlignment?.Subscribe(x => _layout.childAlignment = x),
+                props.reverseArrangement?.Subscribe(x => _layout.reverseArrangement = x),
+                props.childForceExpandHeight?.Subscribe(x => _layout.childForceExpandHeight = x),
+                props.childForceExpandWidth?.Subscribe(x => _layout.childForceExpandWidth = x),
+                props.childControlWidth?.Subscribe(x => _layout.childControlWidth = x),
+                props.childControlHeight?.Subscribe(x => _layout.childControlHeight = x),
+                props.childScaleWidth?.Subscribe(x => _layout.childScaleWidth = x),
+                props.childScaleHeight?.Subscribe(x => _layout.childScaleHeight = x),
                 props.children?.SubscribeAsChildren(rectTransform)
             );
         }

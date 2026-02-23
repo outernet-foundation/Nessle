@@ -35,12 +35,12 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.value?.Subscribe(x => _slider.value = x.currentValue),
-                props.minValue?.Subscribe(x => _slider.minValue = x.currentValue),
-                props.maxValue?.Subscribe(x => _slider.maxValue = x.currentValue),
-                props.wholeNumbers?.Subscribe(x => _slider.wholeNumbers = x.currentValue),
-                props.direction?.Subscribe(x => _slider.direction = x.currentValue),
-                props.interactable?.Subscribe(x => _slider.interactable = x.currentValue)
+                props.value?.Subscribe(x => _slider.value = x),
+                props.minValue?.Subscribe(x => _slider.minValue = x),
+                props.maxValue?.Subscribe(x => _slider.maxValue = x),
+                props.wholeNumbers?.Subscribe(x => _slider.wholeNumbers = x),
+                props.direction?.Subscribe(x => _slider.direction = x),
+                props.interactable?.Subscribe(x => _slider.interactable = x)
             );
         }
     }
