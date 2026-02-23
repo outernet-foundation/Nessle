@@ -7,23 +7,6 @@
       "dependencies": {},
       "hash": "de24de97b9c7d04d2a6d72b733ed930b03def5be"
     },
-    "com.fofx.observething.statefulextensions": {
-      "version": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/StatefulExtensions",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.fofx.stateful": "1.0.0",
-        "com.fofx.observething": "1.0.0"
-      },
-      "hash": "de24de97b9c7d04d2a6d72b733ed930b03def5be"
-    },
-    "com.fofx.stateful": {
-      "version": "https://github.com/epjecha/StatefulUnity.git?path=Assets/Package",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "bcb69950dc4796e60d8b7d4a99ab80a032e2c2e0"
-    },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
       "depth": 0,
