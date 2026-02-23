@@ -1,21 +1,21 @@
 {
   "dependencies": {
     "com.fofx.observething": {
-      "version": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/Core#feature/operator-composition",
+      "version": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/Core",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "1c0ec1397ebe167a04ad9b28cb1b95beb5bee368"
+      "hash": "de24de97b9c7d04d2a6d72b733ed930b03def5be"
     },
     "com.fofx.observething.statefulextensions": {
-      "version": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/StatefulExtensions#feature/operator-composition",
+      "version": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/StatefulExtensions",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.fofx.stateful": "1.0.0",
         "com.fofx.observething": "1.0.0"
       },
-      "hash": "1c0ec1397ebe167a04ad9b28cb1b95beb5bee368"
+      "hash": "de24de97b9c7d04d2a6d72b733ed930b03def5be"
     },
     "com.fofx.stateful": {
       "version": "https://github.com/epjecha/StatefulUnity.git?path=Assets/Package",
