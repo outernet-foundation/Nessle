@@ -25,10 +25,10 @@ namespace Nessle
             return gameObject.AddComponent<TImplmentation>();
         }
 
-        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, Func<T, U> create)
-            where U : IControl => source.CreateDynamic(x => new ValueObservable<U>(create(x)));
+        public static IListObservable<U> ObservableCreate<T, U>(this IListObservable<T> source, Func<T, U> create)
+            where U : IControl => source.ObservableCreate(x => new ValueObservable<U>(create(x)));
 
-        public static IListObservable<U> CreateDynamic<T, U>(this IListObservable<T> source, Func<T, IValueObservable<U>> create) where U : IControl
+        public static IListObservable<U> ObservableCreate<T, U>(this IListObservable<T> source, Func<T, IValueObservable<U>> create) where U : IControl
         {
             return source
                 .ObservableSelect(x => create(x).ObservableWithPrevious())
@@ -39,10 +39,10 @@ namespace Nessle
                 });
         }
 
-        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, Func<T, U> create)
-            where U : IControl => source.CreateDynamic(x => new ValueObservable<U>(create(x)));
+        public static IValueObservable<U> ObservableCreate<T, U>(this IValueObservable<T> source, Func<T, U> create)
+            where U : IControl => source.ObservableCreate(x => new ValueObservable<U>(create(x)));
 
-        public static IValueObservable<U> CreateDynamic<T, U>(this IValueObservable<T> source, Func<T, IValueObservable<U>> create)
+        public static IValueObservable<U> ObservableCreate<T, U>(this IValueObservable<T> source, Func<T, IValueObservable<U>> create)
             where U : IControl
         {
             return source
