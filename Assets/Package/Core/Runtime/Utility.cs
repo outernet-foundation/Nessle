@@ -2,6 +2,7 @@ using UnityEngine;
 using ObserveThing;
 using System;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Nessle
 {
@@ -109,20 +110,33 @@ namespace Nessle
 
         public static IDisposable SubscribeAsChildren(this IListObservable<IControl> children, RectTransform parent)
         {
+            List<IControl> childrenActual = new List<IControl>();
+
             return children?.Subscribe(
                 onAdd: (index, x) =>
                 {
+                    childrenActual.Insert(index, x);
+
                     if (x == null)
                         return;
 
+                    int siblingIndex = 0;
+
+                    for (int i = 0; i < index; i++)
+                    {
+                        if (childrenActual[i] != null)
+                            siblingIndex++;
+                    }
+
                     x.rectTransform.SetParent(parent, false);
-                    x.rectTransform.SetSiblingIndex(index);
+                    x.rectTransform.SetSiblingIndex(siblingIndex);
                 },
                 onRemove: (index, x) =>
                 {
                     if (x == null)
                         return;
 
+                    childrenActual.RemoveAt(index);
                     x.rectTransform.SetParent(null, false);
                 }
             );
