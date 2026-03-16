@@ -112,10 +112,19 @@ namespace Nessle
             return children?.Subscribe(
                 onAdd: (index, x) =>
                 {
+                    if (x == null)
+                        return;
+
                     x.rectTransform.SetParent(parent, false);
                     x.rectTransform.SetSiblingIndex(index);
                 },
-                onRemove: (index, x) => x.rectTransform.SetParent(null, false)
+                onRemove: (index, x) =>
+                {
+                    if (x == null)
+                        return;
+
+                    x.rectTransform.SetParent(null, false);
+                }
             );
         }
     }
