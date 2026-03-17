@@ -29,8 +29,8 @@ namespace Nessle
         public IValueObservable<float> minHeight;
         public IValueObservable<float> preferredWidth;
         public IValueObservable<float> preferredHeight;
-        public IValueObservable<bool> flexibleWidth;
-        public IValueObservable<bool> flexibleHeight;
+        public IValueObservable<bool?> flexibleWidth;
+        public IValueObservable<bool?> flexibleHeight;
         public IValueObservable<int> layoutPriority;
         public IValueObservable<FitMode> fitContentHorizontal;
         public IValueObservable<FitMode> fitContentVertical;

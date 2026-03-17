@@ -100,12 +100,20 @@ namespace Nessle
                 props.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x),
                 props.preferredWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x),
                 props.preferredHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x),
-                props.flexibleWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x ? 1 : 0),
-                props.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x ? 1 : 0),
+                props.flexibleWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = ToFlexibleLayoutValue(x)),
+                props.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = ToFlexibleLayoutValue(x)),
                 props.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x),
                 props.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x),
                 props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x)
             );
+        }
+
+        private static float ToFlexibleLayoutValue(bool? value)
+        {
+            if (!value.HasValue)
+                return -1;
+
+            return value.Value ? 1 : 0;
         }
 
         public static IDisposable SubscribeAsChildren(this IListObservable<IControl> children, RectTransform parent)
