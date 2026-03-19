@@ -1,13 +1,22 @@
-// using UnityEngine;
+using UnityEngine;
 
-// using NUnit.Framework;
-// using ObserveThing;
-// using static Nessle.UIBuilder;
-// using System.Linq;
-// using System.Collections.Generic;
+using NUnit.Framework;
+using ObserveThing;
+using static Nessle.UIBuilder;
+using System.Linq;
+using System.Collections.Generic;
 
-// namespace Nessle.Tests
-// {
+namespace Nessle.Tests
+{
+    public class ControlTests
+    {
+        [Test]
+        public void TestAThing()
+        {
+
+        }
+    }
+}
 //     public class ControlTests
 //     {
 //         [Test]
