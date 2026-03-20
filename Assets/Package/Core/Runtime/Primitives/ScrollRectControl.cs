@@ -43,13 +43,13 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
-                props.movementType.Subscribe(x => _scrollRect.movementType = x),
-                props.elasticity.Subscribe(x => _scrollRect.elasticity = x),
-                props.inertia.Subscribe(x => _scrollRect.inertia = x),
-                props.decelerationRate.Subscribe(x => _scrollRect.decelerationRate = x),
-                props.scrollSensitivity.Subscribe(x => _scrollRect.scrollSensitivity = x),
-                props.verticalScrollbarVisibility.Subscribe(x => _scrollRect.verticalScrollbarVisibility = x),
-                props.horizontalScrollbarVisibility.Subscribe(x => _scrollRect.horizontalScrollbarVisibility = x),
+                props.movementType?.Subscribe(x => _scrollRect.movementType = x),
+                props.elasticity?.Subscribe(x => _scrollRect.elasticity = x),
+                props.inertia?.Subscribe(x => _scrollRect.inertia = x),
+                props.decelerationRate?.Subscribe(x => _scrollRect.decelerationRate = x),
+                props.scrollSensitivity?.Subscribe(x => _scrollRect.scrollSensitivity = x),
+                props.verticalScrollbarVisibility?.Subscribe(x => _scrollRect.verticalScrollbarVisibility = x),
+                props.horizontalScrollbarVisibility?.Subscribe(x => _scrollRect.horizontalScrollbarVisibility = x),
                 props.value?.Subscribe(x =>
                 {
                     _value = x;
