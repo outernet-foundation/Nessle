@@ -13,6 +13,13 @@ namespace Nessle
         public IValueObservable<Vector2> value;
         public IValueObservable<bool> horizontal;
         public IValueObservable<bool> vertical;
+        public IValueObservable<ScrollRect.MovementType> movementType;
+        public IValueObservable<float> elasticity;
+        public IValueObservable<bool> inertia;
+        public IValueObservable<float> decelerationRate;
+        public IValueObservable<float> scrollSensitivity;
+        public IValueObservable<ScrollRect.ScrollbarVisibility> verticalScrollbarVisibility;
+        public IValueObservable<ScrollRect.ScrollbarVisibility> horizontalScrollbarVisibility;
         public IValueObservable<IControl> content;
         public UnityAction<Vector2> onValueChanged;
     }
@@ -36,6 +43,13 @@ namespace Nessle
             AddBinding(
                 props.element.Subscribe(this),
                 props.layout.Subscribe(this),
+                props.movementType.Subscribe(x => _scrollRect.movementType = x),
+                props.elasticity.Subscribe(x => _scrollRect.elasticity = x),
+                props.inertia.Subscribe(x => _scrollRect.inertia = x),
+                props.decelerationRate.Subscribe(x => _scrollRect.decelerationRate = x),
+                props.scrollSensitivity.Subscribe(x => _scrollRect.scrollSensitivity = x),
+                props.verticalScrollbarVisibility.Subscribe(x => _scrollRect.verticalScrollbarVisibility = x),
+                props.horizontalScrollbarVisibility.Subscribe(x => _scrollRect.horizontalScrollbarVisibility = x),
                 props.value?.Subscribe(x =>
                 {
                     _value = x;
