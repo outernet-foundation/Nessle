@@ -32,12 +32,9 @@ namespace Nessle
         public static IListObservable<U> ObservableCreate<T, U>(this IListObservable<T> source, Func<T, IValueObservable<U>> create) where U : IControl
         {
             return source
-                .ObservableSelect(x => create(x).ObservableWithPrevious())
-                .ObservableSelect(x =>
-                {
-                    x.previous?.Dispose();
-                    return x.current;
-                });
+                .ObservableSelect(x => create(x).ObservableWithPrevious().ObservableThen(onNext: x => x.previous?.Dispose()))
+                .ObservableForEach(onRemove: (index, item) => item.current?.Dispose())
+                .ObservableSelect(x => x.current);
         }
 
         public static IValueObservable<U> ObservableCreate<T, U>(this IValueObservable<T> source, Func<T, U> create)
@@ -47,12 +44,8 @@ namespace Nessle
             where U : IControl
         {
             return source
-                .ObservableSelect(x => create(x).ObservableWithPrevious())
-                .ObservableSelect(x =>
-                {
-                    x.previous?.Dispose();
-                    return x.current;
-                });
+                .ObservableSelect(x => create(x).ObservableWithPrevious().ObservableThen(onNext: x => x.previous?.Dispose()))
+                .ObservableSelect(x => x.current);
         }
 
         public static IDisposable Subscribe(this ElementProps props, IControl control)
