@@ -27,7 +27,7 @@ namespace Nessle
         }
 
         public static IListObservable<U> ObservableCreate<T, U>(this IListObservable<T> source, Func<T, U> create)
-            where U : IControl => source.ObservableCreate(x => new ValueObservable<U>(create(x)));
+            where U : IControl => source.ObservableCreate(x => new ObservableValue<U>(create(x)));
 
         public static IListObservable<U> ObservableCreate<T, U>(this IListObservable<T> source, Func<T, IValueObservable<U>> create) where U : IControl
         {
@@ -38,7 +38,7 @@ namespace Nessle
         }
 
         public static IValueObservable<U> ObservableCreate<T, U>(this IValueObservable<T> source, Func<T, U> create)
-            where U : IControl => source.ObservableCreate(x => new ValueObservable<U>(create(x)));
+            where U : IControl => source.ObservableCreate(x => new ObservableValue<U>(create(x)));
 
         public static IValueObservable<U> ObservableCreate<T, U>(this IValueObservable<T> source, Func<T, IValueObservable<U>> create)
             where U : IControl
