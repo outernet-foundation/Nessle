@@ -31,6 +31,8 @@ namespace Nessle
         public T props { get; private set; }
         public RectTransform rectTransform { get; private set; }
 
+        public bool destroyOnDispose = true;
+
         private List<IDisposable> _bindings = new List<IDisposable>();
         private bool _destroyed = false;
 
@@ -74,7 +76,7 @@ namespace Nessle
 
         public void Dispose()
         {
-            if (!_destroyed)
+            if (!_destroyed && destroyOnDispose)
             {
                 if (Application.isPlaying)
                 {
