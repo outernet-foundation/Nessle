@@ -122,7 +122,7 @@ namespace Nessle
             );
         }
 
-        public static IDisposable SubscribeAsChildren(this IListObservable<IControl> children, RectTransform parent)
+        public static IDisposable SubscribeAsChildren(this IListObservable<IControl> children, Transform parent)
         {
             List<IControl> childrenActual = new List<IControl>();
 
