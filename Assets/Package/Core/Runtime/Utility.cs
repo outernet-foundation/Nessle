@@ -142,8 +142,8 @@ namespace Nessle
                             siblingIndex++;
                     }
 
-                    x.rectTransform.SetParent(parent, false);
-                    x.rectTransform.SetSiblingIndex(siblingIndex);
+                    x.transform.SetParent(parent, false);
+                    x.transform.SetSiblingIndex(siblingIndex);
                 },
                 onRemove: (index, x) =>
                 {
@@ -151,7 +151,7 @@ namespace Nessle
                         return;
 
                     childrenActual.RemoveAt(index);
-                    x.rectTransform.SetParent(null, false);
+                    x.transform.SetParent(null, false);
                 }
             );
         }
