@@ -15,9 +15,9 @@ namespace Nessle
 
     public struct LayoutProps
     {
-        public IValueObservable<Vector3> position;
-        public IValueObservable<Quaternion> rotation;
-        public IValueObservable<Vector3> scale;
+        public IValueObservable<Vector3> localPosition;
+        public IValueObservable<Quaternion> localRotation;
+        public IValueObservable<Vector3> localScale;
 
         public IValueObservable<Vector2> anchorMin;
         public IValueObservable<Vector2> anchorMax;

@@ -80,7 +80,7 @@ namespace Nessle
 
             if (props.anchoredPosition != null)
             {
-                if (props.position != null)
+                if (props.localPosition != null)
                     Debug.LogWarning("Both anchoredPosition and position values are set in LayoutProps. This may cause errors.");
 
                 if (props.offsetMin != null || props.offsetMax != null)
@@ -94,9 +94,9 @@ namespace Nessle
             }
 
             var binding = new ComposedDisposable(
-                props.position?.Subscribe(x => control.transform.localPosition = x),
-                props.rotation?.Subscribe(x => control.transform.localRotation = x),
-                props.scale?.Subscribe(x => control.transform.localScale = x),
+                props.localPosition?.Subscribe(x => control.transform.localPosition = x),
+                props.localRotation?.Subscribe(x => control.transform.localRotation = x),
+                props.localScale?.Subscribe(x => control.transform.localScale = x),
                 props.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x),
                 props.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x),
                 props.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x),
