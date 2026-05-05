@@ -44,7 +44,9 @@ namespace Nessle
             where U : IControl
         {
             return source
-                .ObservableSelect(x => create(x).ObservableWithPrevious().ObservableThen(onNext: x => x.previous?.Dispose()))
+                .ObservableSelect(x => create(x))
+                .ObservableWithPrevious()
+                .ObservableThen(onNext: x => x.previous?.Dispose())
                 .ObservableSelect(x => x.current);
         }
 
@@ -93,7 +95,7 @@ namespace Nessle
 
             var binding = new ComposedDisposable(
                 props.position?.Subscribe(x => control.transform.localPosition = x),
-                props.rotation?.Subscribe(x => control.transform.localRotation = Quaternion.AngleAxis(x, Vector3.forward)),
+                props.rotation?.Subscribe(x => control.transform.localRotation = x),
                 props.scale?.Subscribe(x => control.transform.localScale = x),
                 props.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x),
                 props.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x),

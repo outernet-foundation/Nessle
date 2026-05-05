@@ -15,6 +15,10 @@ namespace Nessle
 
     public struct LayoutProps
     {
+        public IValueObservable<Vector3> position;
+        public IValueObservable<Quaternion> rotation;
+        public IValueObservable<Vector3> scale;
+
         public IValueObservable<Vector2> anchorMin;
         public IValueObservable<Vector2> anchorMax;
         public IValueObservable<Vector2> offsetMin;
@@ -22,9 +26,7 @@ namespace Nessle
         public IValueObservable<Vector2> anchoredPosition;
         public IValueObservable<Vector2> sizeDelta;
         public IValueObservable<Vector2> pivot;
-        public IValueObservable<Vector2> position;
-        public IValueObservable<float> rotation;
-        public IValueObservable<Vector2> scale;
+
         public IValueObservable<bool> ignoreLayout;
         public IValueObservable<float> minWidth;
         public IValueObservable<float> minHeight;
@@ -33,6 +35,7 @@ namespace Nessle
         public IValueObservable<float> flexibleWidth;
         public IValueObservable<float> flexibleHeight;
         public IValueObservable<int> layoutPriority;
+
         public IValueObservable<FitMode> fitContentHorizontal;
         public IValueObservable<FitMode> fitContentVertical;
     }
