@@ -9,6 +9,7 @@ namespace Nessle
     {
         public IValueObservable<string> name;
         public IValueObservable<bool> active;
+        public IValueObservable<bool> destroyOnDispose;
         public ICollectionObservable<IDisposable> bindings;
     }
 
@@ -41,6 +42,7 @@ namespace Nessle
         GameObject gameObject { get; }
         RectTransform rectTransform { get; }
         Transform transform { get; }
+        bool destroyOnDispose { get; set; }
 
         void AddBinding(IDisposable binding);
         void AddBinding(params IDisposable[] bindings);

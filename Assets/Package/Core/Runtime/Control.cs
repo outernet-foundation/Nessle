@@ -31,7 +31,14 @@ namespace Nessle
         public T props { get; private set; }
         public RectTransform rectTransform { get; private set; }
 
-        public bool destroyOnDispose = true;
+        public bool destroyOnDispose
+        {
+            get => _destroyOnDispose;
+            set => _destroyOnDispose = value;
+        }
+
+        [SerializeField]
+        private bool _destroyOnDispose = true;
 
         private List<IDisposable> _bindings = new List<IDisposable>();
         private bool _destroyed = false;

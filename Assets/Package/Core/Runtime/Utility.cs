@@ -53,6 +53,7 @@ namespace Nessle
             return new ComposedDisposable(
                 props.name?.Subscribe(x => control.gameObject.name = x),
                 props.active?.Subscribe(x => control.gameObject.SetActive(x)),
+                props.destroyOnDispose?.Subscribe(x => control.destroyOnDispose = x),
                 props.bindings?.Subscribe(
                     onAdd: control.AddBinding,
                     onRemove: control.RemoveBinding
@@ -62,32 +63,38 @@ namespace Nessle
 
         public static IDisposable Subscribe(this LayoutProps props, IControl control)
         {
+            if (control.rectTransform == null && (
+                props.anchorMin != null ||
+                props.anchorMax != null ||
+                props.offsetMin != null ||
+                props.offsetMax != null ||
+                props.anchoredPosition != null ||
+                props.sizeDelta != null ||
+                props.pivot != null
+            ))
+            {
+                Debug.LogWarning("RectTransform properties set in LayoutProps but control.rectTransform is null. These properties will be ignored.");
+            }
+
             if (props.anchoredPosition != null)
             {
                 if (props.position != null)
-                    Debug.LogWarning("Both anchoredPosition and position values are set in ElementProps. This may cause errors.");
+                    Debug.LogWarning("Both anchoredPosition and position values are set in LayoutProps. This may cause errors.");
 
                 if (props.offsetMin != null || props.offsetMax != null)
-                    Debug.LogWarning("Both anchoredPosition and offset values are set in ElementProps. This may cause errors.");
+                    Debug.LogWarning("Both anchoredPosition and offset values are set in LayoutProps. This may cause errors.");
             }
 
             if (props.sizeDelta != null)
             {
                 if (props.offsetMin != null || props.offsetMax != null)
-                    Debug.LogWarning("Both sizeDelta and offset values are set in ElementProps. This may cause errors.");
+                    Debug.LogWarning("Both sizeDelta and offset values are set in LayoutProps. This may cause errors.");
             }
 
-            return new ComposedDisposable(
-                props.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x),
-                props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x),
-                props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x),
-                props.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x),
-                props.anchoredPosition?.Subscribe(x => control.rectTransform.anchoredPosition = x),
-                props.sizeDelta?.Subscribe(x => control.rectTransform.sizeDelta = x),
-                props.pivot?.Subscribe(x => control.rectTransform.pivot = x),
-                props.position?.Subscribe(x => control.rectTransform.localPosition = x),
-                props.rotation?.Subscribe(x => control.rectTransform.localRotation = Quaternion.AngleAxis(x, Vector3.forward)),
-                props.scale?.Subscribe(x => control.rectTransform.localScale = new Vector3(x.x, x.y, control.rectTransform.localScale.z)),
+            var binding = new ComposedDisposable(
+                props.position?.Subscribe(x => control.transform.localPosition = x),
+                props.rotation?.Subscribe(x => control.transform.localRotation = Quaternion.AngleAxis(x, Vector3.forward)),
+                props.scale?.Subscribe(x => control.transform.localScale = x),
                 props.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x),
                 props.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x),
                 props.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x),
@@ -98,6 +105,20 @@ namespace Nessle
                 props.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x),
                 props.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x),
                 props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x)
+            );
+
+            if (control.rectTransform == null)
+                return binding;
+
+            return new ComposedDisposable(
+                binding,
+                props.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x),
+                props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x),
+                props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x),
+                props.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x),
+                props.anchoredPosition?.Subscribe(x => control.rectTransform.anchoredPosition = x),
+                props.sizeDelta?.Subscribe(x => control.rectTransform.sizeDelta = x),
+                props.pivot?.Subscribe(x => control.rectTransform.pivot = x)
             );
         }
 
