@@ -33,7 +33,7 @@ namespace Nessle
         {
             return source
                 .ObservableSelect(x => create(x).ObservableWithPrevious().ObservableThen(onNext: x => x.previous?.Dispose()))
-                .ObservableForEach(onRemove: (index, item) => item.current?.Dispose())
+                .ObservableThen(onRemove: (index, item) => item.current?.Dispose())
                 .ObservableSelect(x => x.current);
         }
 
