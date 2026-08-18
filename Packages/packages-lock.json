@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.fofx.observething": {
-      "version": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/Core#fb81ea26e4bd1c3d27800a0f329ad986a1f8cc8e",
+      "version": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/Core",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "fb81ea26e4bd1c3d27800a0f329ad986a1f8cc8e"
+      "hash": "05c81a3d69d9b10d0e9dd3936e0fccd9513781ea"
     },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
