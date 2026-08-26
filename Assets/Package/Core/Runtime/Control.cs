@@ -45,9 +45,9 @@ namespace Nessle
         protected virtual void SetupInternal() { }
         protected virtual void DisposeInternal() { }
 
-        protected void AddBinding(params IDisposable[] bindings)
+        public void AddBinding(params IDisposable[] bindings)
         {
-            _bindings.AddRange(bindings.Where(x => x != null));
+            _bindings.AddRange(bindings);
         }
 
         protected virtual void OnDestroy()
