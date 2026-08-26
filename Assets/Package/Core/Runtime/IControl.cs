@@ -5,12 +5,32 @@ using FitMode = UnityEngine.UI.ContentSizeFitter.FitMode;
 
 namespace Nessle
 {
+    public class BindingCollection : IDisposable
+    {
+        private bool _disposed;
+        private IDisposable[] _bindings;
+
+        public BindingCollection(params IDisposable[] bindings)
+            => _bindings = bindings;
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            foreach (var binding in _bindings)
+                binding?.Dispose();
+        }
+    }
+
     public struct ElementProps
     {
         public IValueObservable<string> name;
         public IValueObservable<bool> active;
         public IValueObservable<bool> destroyOnDispose;
-        public ICollectionObservable<IDisposable> bindings;
+        public BindingCollection bindings;
     }
 
     public struct LayoutProps
@@ -46,10 +66,5 @@ namespace Nessle
         RectTransform rectTransform { get; }
         Transform transform { get; }
         bool destroyOnDispose { get; set; }
-
-        void AddBinding(IDisposable binding);
-        void AddBinding(params IDisposable[] bindings);
-        void RemoveBinding(IDisposable binding);
-        void RemoveBinding(params IDisposable[] bindings);
     }
 }

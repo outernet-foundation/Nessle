@@ -50,63 +50,60 @@ namespace Nessle
                 .ObservableSelect(x => x.current);
         }
 
-        public static IDisposable Subscribe(this ElementProps props, IControl control)
+        public static IDisposable Subscribe(this ElementProps element, IControl control)
         {
             return new ComposedDisposable(
-                props.name?.Subscribe(x => control.gameObject.name = x),
-                props.active?.Subscribe(x => control.gameObject.SetActive(x)),
-                props.destroyOnDispose?.Subscribe(x => control.destroyOnDispose = x),
-                props.bindings?.Subscribe(
-                    onAdd: control.AddBinding,
-                    onRemove: control.RemoveBinding
-                )
+                element.name?.Subscribe(x => control.gameObject.name = x),
+                element.active?.Subscribe(x => control.gameObject.SetActive(x)),
+                element.destroyOnDispose?.Subscribe(x => control.destroyOnDispose = x),
+                element.bindings
             );
         }
 
-        public static IDisposable Subscribe(this LayoutProps props, IControl control)
+        public static IDisposable Subscribe(this LayoutProps layout, IControl control)
         {
             if (control.rectTransform == null && (
-                props.anchorMin != null ||
-                props.anchorMax != null ||
-                props.offsetMin != null ||
-                props.offsetMax != null ||
-                props.anchoredPosition != null ||
-                props.sizeDelta != null ||
-                props.pivot != null
+                layout.anchorMin != null ||
+                layout.anchorMax != null ||
+                layout.offsetMin != null ||
+                layout.offsetMax != null ||
+                layout.anchoredPosition != null ||
+                layout.sizeDelta != null ||
+                layout.pivot != null
             ))
             {
                 Debug.LogWarning("RectTransform properties set in LayoutProps but control.rectTransform is null. These properties will be ignored.");
             }
 
-            if (props.anchoredPosition != null)
+            if (layout.anchoredPosition != null)
             {
-                if (props.localPosition != null)
+                if (layout.localPosition != null)
                     Debug.LogWarning("Both anchoredPosition and position values are set in LayoutProps. This may cause errors.");
 
-                if (props.offsetMin != null || props.offsetMax != null)
+                if (layout.offsetMin != null || layout.offsetMax != null)
                     Debug.LogWarning("Both anchoredPosition and offset values are set in LayoutProps. This may cause errors.");
             }
 
-            if (props.sizeDelta != null)
+            if (layout.sizeDelta != null)
             {
-                if (props.offsetMin != null || props.offsetMax != null)
+                if (layout.offsetMin != null || layout.offsetMax != null)
                     Debug.LogWarning("Both sizeDelta and offset values are set in LayoutProps. This may cause errors.");
             }
 
             var binding = new ComposedDisposable(
-                props.localPosition?.Subscribe(x => control.transform.localPosition = x),
-                props.localRotation?.Subscribe(x => control.transform.localRotation = x),
-                props.localScale?.Subscribe(x => control.transform.localScale = x),
-                props.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x),
-                props.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x),
-                props.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x),
-                props.preferredWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x),
-                props.preferredHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x),
-                props.flexibleWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x),
-                props.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x),
-                props.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x),
-                props.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x),
-                props.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x)
+                layout.localPosition?.Subscribe(x => control.transform.localPosition = x),
+                layout.localRotation?.Subscribe(x => control.transform.localRotation = x),
+                layout.localScale?.Subscribe(x => control.transform.localScale = x),
+                layout.ignoreLayout?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().ignoreLayout = x),
+                layout.minWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minWidth = x),
+                layout.minHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().minHeight = x),
+                layout.preferredWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredWidth = x),
+                layout.preferredHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().preferredHeight = x),
+                layout.flexibleWidth?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleWidth = x),
+                layout.flexibleHeight?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().flexibleHeight = x),
+                layout.layoutPriority?.Subscribe(x => control.gameObject.GetOrAddComponent<LayoutElement>().layoutPriority = x),
+                layout.fitContentHorizontal?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().horizontalFit = x),
+                layout.fitContentVertical?.Subscribe(x => control.gameObject.GetOrAddComponent<ContentSizeFitter>().verticalFit = x)
             );
 
             if (control.rectTransform == null)
@@ -114,13 +111,13 @@ namespace Nessle
 
             return new ComposedDisposable(
                 binding,
-                props.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x),
-                props.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x),
-                props.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x),
-                props.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x),
-                props.anchoredPosition?.Subscribe(x => control.rectTransform.anchoredPosition = x),
-                props.sizeDelta?.Subscribe(x => control.rectTransform.sizeDelta = x),
-                props.pivot?.Subscribe(x => control.rectTransform.pivot = x)
+                layout.anchorMin?.Subscribe(x => control.rectTransform.anchorMin = x),
+                layout.anchorMax?.Subscribe(x => control.rectTransform.anchorMax = x),
+                layout.offsetMin?.Subscribe(x => control.rectTransform.offsetMin = x),
+                layout.offsetMax?.Subscribe(x => control.rectTransform.offsetMax = x),
+                layout.anchoredPosition?.Subscribe(x => control.rectTransform.anchoredPosition = x),
+                layout.sizeDelta?.Subscribe(x => control.rectTransform.sizeDelta = x),
+                layout.pivot?.Subscribe(x => control.rectTransform.pivot = x)
             );
         }
 
