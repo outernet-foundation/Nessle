@@ -27,8 +27,6 @@ namespace Nessle
 
     public struct InputFieldProps<T>
     {
-        public ElementProps element;
-        public LayoutProps layout;
         public IValueObservable<T> value;
         public IValueObservable<string> placeholderValue;
         public TextStyleProps inputTextStyle;
