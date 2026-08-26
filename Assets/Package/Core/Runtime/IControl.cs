@@ -2,16 +2,29 @@ using System;
 using UnityEngine;
 using ObserveThing;
 using FitMode = UnityEngine.UI.ContentSizeFitter.FitMode;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Nessle
 {
-    public class BindingCollection : IDisposable
+    public struct BindingCollection : IDisposable, IEnumerable<IDisposable>
     {
         private bool _disposed;
-        private IDisposable[] _bindings;
+        private List<IDisposable> _bindings;
 
         public BindingCollection(params IDisposable[] bindings)
-            => _bindings = bindings;
+        {
+            _disposed = false;
+            _bindings = bindings != null && bindings.Length > 0 ? new List<IDisposable>(bindings) : null;
+        }
+
+        public void Add(params IDisposable[] bindings)
+        {
+            if (_bindings == null)
+                _bindings = new List<IDisposable>();
+
+            _bindings.AddRange(bindings);
+        }
 
         public void Dispose()
         {
@@ -20,9 +33,21 @@ namespace Nessle
 
             _disposed = true;
 
-            foreach (var binding in _bindings)
+            foreach (var binding in this)
                 binding?.Dispose();
         }
+
+        public IEnumerator<IDisposable> GetEnumerator()
+        {
+            if (_bindings == null)
+                yield break;
+
+            foreach (var binding in _bindings)
+                yield return binding;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
     }
 
     public struct ElementProps
