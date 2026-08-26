@@ -6,10 +6,6 @@ namespace Nessle
 {
     public struct CanvasProps
     {
-        public ElementProps element;
-        public LayoutProps layout;
-        public IListObservable<IControl> children;
-
         public IValueObservable<RenderMode> renderMode;
         public IValueObservable<float> scaleFactor;
         public IValueObservable<float> referencePixelsPerUnit;
@@ -26,8 +22,8 @@ namespace Nessle
         public IValueObservable<StandaloneRenderResize> updateRectTransformForStandalone;
         public IValueObservable<Camera> worldCamera;
         public IValueObservable<float> normalizedSortingGridSize;
-
         public CanvasScalerProps canvasScaler;
+        public IListObservable<IControl> children;
     }
 
     public struct CanvasScalerProps
@@ -71,8 +67,6 @@ namespace Nessle
             }
 
             AddBinding(
-                props.element.Subscribe(this),
-                props.layout.Subscribe(this),
                 props.children?.SubscribeAsChildren(rectTransform),
                 props.renderMode?.Subscribe(x => _canvas.renderMode = x),
                 props.scaleFactor?.Subscribe(x => _canvas.scaleFactor = x),

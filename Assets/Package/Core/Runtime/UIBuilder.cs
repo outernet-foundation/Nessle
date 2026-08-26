@@ -45,8 +45,6 @@ namespace Nessle
                 prefab ?? primitives.inputField,
                 new InputFieldProps()
                 {
-                    element = props.element,
-                    layout = props.layout,
                     value = props.value.ObservableSelect(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
@@ -70,8 +68,6 @@ namespace Nessle
                 prefab ?? primitives.inputField,
                 new InputFieldProps()
                 {
-                    element = props.element,
-                    layout = props.layout,
                     value = props.value.ObservableSelect(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,
@@ -95,8 +91,6 @@ namespace Nessle
                 prefab ?? primitives.inputField,
                 new InputFieldProps()
                 {
-                    element = props.element,
-                    layout = props.layout,
                     value = props.value.ObservableSelect(x => x.ToString()),
                     placeholderValue = props.placeholderValue,
                     inputTextStyle = props.inputTextStyle,

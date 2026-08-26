@@ -10,8 +10,6 @@ namespace Nessle
 {
     public struct DropdownProps
     {
-        public ElementProps element;
-        public LayoutProps layout;
         public IValueObservable<int> value;
         public IValueObservable<bool> allowMultiselect;
         public IListObservable<string> options;
@@ -47,8 +45,6 @@ namespace Nessle
             _itemText.Setup(new TextProps() { style = props.itemTextStyle });
 
             AddBinding(
-                props.element.Subscribe(this),
-                props.layout.Subscribe(this),
                 props.allowMultiselect?.Subscribe(x => _dropdown.MultiSelect = x),
                 props.options?.Subscribe(
                     onAdd: (index, x) =>

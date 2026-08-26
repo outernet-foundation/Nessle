@@ -9,8 +9,6 @@ namespace Nessle
 {
     public struct ImageProps
     {
-        public ElementProps element;
-        public LayoutProps layout;
         public IValueObservable<Sprite> sprite;
         public ImageStyleProps style;
     }
@@ -40,8 +38,6 @@ namespace Nessle
             _image = GetComponent<Image>();
 
             AddBinding(
-                props.element.Subscribe(this),
-                props.layout.Subscribe(this),
                 props.sprite?.Subscribe(x => _image.sprite = x),
                 props.style.color?.Subscribe(x => _image.color = x),
                 props.style.imageType?.Subscribe(x => _image.type = x),
