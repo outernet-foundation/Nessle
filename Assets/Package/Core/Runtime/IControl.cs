@@ -91,5 +91,7 @@ namespace Nessle
         RectTransform rectTransform { get; }
         Transform transform { get; }
         bool destroyOnDispose { get; set; }
+
+        void AddBinding(params IDisposable[] bindings);
     }
 }
