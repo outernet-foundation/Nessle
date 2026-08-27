@@ -11,7 +11,7 @@ namespace Nessle
     {
         protected override void SetupInternal()
         {
-            AddBinding(props.SubscribeAsChildren(rectTransform));
+            AddBinding(props.SubscribeAsChildren(transform));
         }
     }
 
