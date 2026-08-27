@@ -19,7 +19,11 @@ namespace Nessle
         }
 
         public static IControl Control(ElementProps element = default, LayoutProps layout = default, IListObservable<IControl> children = default)
-            => Control(new GameObject("Control", typeof(RectTransform)).AddComponent<Control>(), children, element, layout);
+        {
+            var control = new GameObject("Control", typeof(RectTransform)).AddComponent<Control>();
+            control.Setup(children, element, layout);
+            return control;
+        }
 
         public static IControl Text(TextProps props = default, ElementProps element = default, LayoutProps layout = default, Control<TextProps> prefab = default)
             => Control(prefab ?? primitives.text, props, element, layout);
