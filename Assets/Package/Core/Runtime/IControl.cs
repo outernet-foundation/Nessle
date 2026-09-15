@@ -2,15 +2,60 @@ using System;
 using UnityEngine;
 using ObserveThing;
 using FitMode = UnityEngine.UI.ContentSizeFitter.FitMode;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Nessle
 {
+    public struct BindingCollection : IDisposable, IEnumerable<IDisposable>
+    {
+        private bool _disposed;
+        private List<IDisposable> _bindings;
+
+        public BindingCollection(params IDisposable[] bindings)
+        {
+            _disposed = false;
+            _bindings = bindings != null && bindings.Length > 0 ? new List<IDisposable>(bindings) : null;
+        }
+
+        public void Add(params IDisposable[] bindings)
+        {
+            if (_bindings == null)
+                _bindings = new List<IDisposable>();
+
+            _bindings.AddRange(bindings);
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            foreach (var binding in this)
+                binding?.Dispose();
+        }
+
+        public IEnumerator<IDisposable> GetEnumerator()
+        {
+            if (_bindings == null)
+                yield break;
+
+            foreach (var binding in _bindings)
+                yield return binding;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
+    }
+
     public struct ElementProps
     {
         public IValueObservable<string> name;
         public IValueObservable<bool> active;
         public IValueObservable<bool> destroyOnDispose;
-        public ICollectionObservable<IDisposable> bindings;
+        public BindingCollection bindings;
     }
 
     public struct LayoutProps
@@ -47,9 +92,6 @@ namespace Nessle
         Transform transform { get; }
         bool destroyOnDispose { get; set; }
 
-        void AddBinding(IDisposable binding);
         void AddBinding(params IDisposable[] bindings);
-        void RemoveBinding(IDisposable binding);
-        void RemoveBinding(params IDisposable[] bindings);
     }
 }

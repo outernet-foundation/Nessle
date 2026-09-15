@@ -7,8 +7,6 @@ namespace Nessle
 {
     public struct LayoutGroupProps
     {
-        public ElementProps element;
-        public LayoutProps layout;
         public IValueObservable<RectOffset> padding;
         public IValueObservable<float> spacing;
         public IValueObservable<TextAnchor> childAlignment;
@@ -32,8 +30,6 @@ namespace Nessle
             _layout = GetComponent<HorizontalOrVerticalLayoutGroup>();
 
             AddBinding(
-                props.element.Subscribe(this),
-                props.layout.Subscribe(this),
                 props.padding?.Subscribe(x => _layout.padding = x),
                 props.spacing?.Subscribe(x => _layout.spacing = x),
                 props.childAlignment?.Subscribe(x => _layout.childAlignment = x),

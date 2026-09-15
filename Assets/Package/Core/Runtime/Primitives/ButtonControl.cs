@@ -8,8 +8,6 @@ namespace Nessle
 {
     public struct ButtonProps
     {
-        public ElementProps element;
-        public LayoutProps layout;
         public ImageProps background;
         public IValueObservable<bool> interactable;
         public UnityAction onClick;
@@ -33,8 +31,6 @@ namespace Nessle
             background.Setup(props.background);
 
             AddBinding(
-                props.element.Subscribe(this),
-                props.layout.Subscribe(this),
                 props.interactable?.Subscribe(x => _button.interactable = x),
                 background,
                 props.content?.SubscribeAsChildren(childParent)
