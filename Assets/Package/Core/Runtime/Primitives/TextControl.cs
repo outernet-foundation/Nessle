@@ -1,7 +1,7 @@
-using System;
 using UnityEngine;
 using ObserveThing;
 using TMPro;
+using UnityEngine.TextCore;
 
 namespace Nessle
 {
@@ -37,6 +37,19 @@ namespace Nessle
         public IValueObservable<TextureMappingOptions> verticalMapping;
         public IValueObservable<Color> outlineColor;
         public IValueObservable<float> outlineWidth;
+        public IValueObservable<Vector4> margin;
+        public IValueObservable<VertexSortingOrder> geometrySorting;
+        public IValueObservable<bool> isScaleStatic;
+        public IValueObservable<bool> richText;
+        public IValueObservable<bool> raycastTarget;
+        public IValueObservable<bool> maskable;
+        public IValueObservable<bool> parseEscapeCharacters;
+        public IValueObservable<bool> visibleDescender;
+        public IValueObservable<bool> emojiFallbackSupport;
+        public IValueObservable<TMP_SpriteAsset> spriteAsset;
+        public IValueObservable<TMP_StyleSheet> styleAsset;
+        public IValueObservable<OTL_FeatureTag> fontFeatures;
+        public IValueObservable<bool> extraPadding;
     }
 
     [RequireComponent(typeof(TextMeshProUGUI))]
@@ -73,7 +86,20 @@ namespace Nessle
                 props.style.horizontalMapping?.Subscribe(x => _text.horizontalMapping = x),
                 props.style.verticalMapping?.Subscribe(x => _text.verticalMapping = x),
                 props.style.outlineColor?.Subscribe(x => _text.outlineColor = x),
-                props.style.outlineWidth?.Subscribe(x => _text.outlineWidth = x)
+                props.style.outlineWidth?.Subscribe(x => _text.outlineWidth = x),
+                props.style.margin?.Subscribe(x => _text.margin = x),
+                props.style.geometrySorting?.Subscribe(x => _text.geometrySortingOrder = x),
+                props.style.isScaleStatic?.Subscribe(x => _text.isTextObjectScaleStatic = x),
+                props.style.richText?.Subscribe(x => _text.richText = x),
+                props.style.raycastTarget?.Subscribe(x => _text.raycastTarget = x),
+                props.style.maskable?.Subscribe(x => _text.maskable = x),
+                props.style.parseEscapeCharacters?.Subscribe(x => _text.parseCtrlCharacters = x),
+                props.style.visibleDescender?.Subscribe(x => _text.useMaxVisibleDescender = x),
+                props.style.emojiFallbackSupport?.Subscribe(x => _text.emojiFallbackSupport = x),
+                props.style.spriteAsset?.Subscribe(x => _text.spriteAsset = x),
+                props.style.styleAsset?.Subscribe(x => _text.styleSheet = x),
+                props.style.fontFeatures?.Subscribe(x => _text.fontFeatures = new() { x }),
+                props.style.extraPadding?.Subscribe(x => _text.extraPadding = x)
             );
         }
     }
