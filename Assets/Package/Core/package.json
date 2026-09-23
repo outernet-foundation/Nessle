@@ -1,9 +1,10 @@
 {
   "name": "com.fofx.nessle",
-  "version": "1.0.0",
+  "version": "0.0.0-local",
   "displayName": "Nessle",
   "description": "Declarative UI Framework for Unity.",
   "unity": "6000.0",
+  "license": "MIT",
   "author": {
     "name": "Elliot Pjecha",
     "email": "epjecha@gmail.com"
