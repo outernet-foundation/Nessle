@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [dev]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish-stable:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Publish stable
+        id: publish-stable
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uvx --from release-devkit==0.1.10 publish-stable --config publish-config.json
+
+      # No-op events (nothing published) must not cut a release
+      - name: Create GitHub Release
+        if: steps.publish-stable.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uvx --from release-devkit==0.1.10 create-release --config publish-config.json
+
+  publish-dev:
+    # workflow_run fires for every CI completion on dev — publish only green runs of pushes.
+    # Must stay in this workflow file: npm binds each package to one publisher workflow filename.
+    if: >-
+      github.event.workflow_run.event == 'push'
+      && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Publish dev prereleases
+        env:
+          # npm decides in silence whether to attempt the OIDC exchange; without verbose a
+          # trusted-publisher mismatch surfaces as a bare ENEEDAUTH indistinguishable from a missing token
+          NPM_CONFIG_LOGLEVEL: verbose
+        run: >-
+          uvx --from release-devkit==0.1.10 publish-dev
+          --config publish-config.json
+          --run-id ${{ github.event.workflow_run.id }}
