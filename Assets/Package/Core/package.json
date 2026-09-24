@@ -23,7 +23,7 @@
   "displayName": "Nessle",
   "unity": "6000.0",
   "dependencies": {
-    "com.fofx.observething": "1.0.0"
+    "com.fofx.observething": "1.1.0"
   },
   "samples": [
     {
