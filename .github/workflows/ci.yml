@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Publish plan dry run
+        run: uvx --from release-devkit==0.1.10 publish-stable --config publish-config.json --dry-run
+
+  ensure-release-pr:
+    needs: [manifest]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Ensure release PR exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uvx --from release-devkit==0.1.10 ensure-release-pr

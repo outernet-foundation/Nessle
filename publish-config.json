@@ -1,0 +1,14 @@
+{
+  "packages": [
+    {
+      "name": "nessle",
+      "path": "Assets/Package/Core",
+      "major_minor": "1.0",
+      "feeds": { "npm": "com.fofx.nessle" }
+    }
+  ],
+  "apps": [],
+  "compose_files": [],
+  "ci_workflow": "ci.yml",
+  "mirror_prefix": "ghcr.io/outernet-foundation/mirror"
+}
