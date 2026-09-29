@@ -16,6 +16,8 @@ namespace Nessle
             _toggle = GetComponent<Toggle>();
             _animator = GetComponent<Animator>();
 
+            _animator.keepAnimatorStateOnDisable = true;
+
             _toggle.onValueChanged.AddListener(x => _animator.SetBool(animatorTrigger, x));
             _animator.SetBool(animatorTrigger, _toggle.isOn);
         }

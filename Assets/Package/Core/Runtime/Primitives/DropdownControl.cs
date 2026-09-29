@@ -35,9 +35,6 @@ namespace Nessle
         {
             _dropdown = GetComponent<TMP_Dropdown>();
 
-            if (props.onValueChanged != null)
-                _dropdown.onValueChanged.AddListener(props.onValueChanged);
-
             _captionText = _dropdown.captionText.gameObject.GetOrAddComponent<Control<TextProps>, TextControl>();
             _itemText = _dropdown.itemText.gameObject.GetOrAddComponent<Control<TextProps>, TextControl>();
 
@@ -65,6 +62,10 @@ namespace Nessle
                 _captionText,
                 _itemText
             );
+
+            // Do this last so the initalization process doesn't generate any events
+            if (props.onValueChanged != null)
+                _dropdown.onValueChanged.AddListener(props.onValueChanged);
         }
     }
 }
