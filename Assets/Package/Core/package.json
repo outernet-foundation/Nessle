@@ -1,6 +1,6 @@
 {
   "name": "com.fofx.nessle",
-  "version": "0.0.0-local",
+  "version": "0.0.0+local",
   "description": "Declarative UI Framework for Unity.",
   "keywords": [
     "unity",

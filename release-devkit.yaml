@@ -1,0 +1,8 @@
+requires: ">=0.1"
+ci_workflow: ci-cd.yml
+packages:
+  nessle:
+    path: Assets/Package/Core
+    major_minor: "1.1"
+    registries:
+      npm: com.fofx.nessle
