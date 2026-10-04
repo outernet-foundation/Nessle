@@ -1,5 +1,4 @@
-requires: ">=0.1"
-ci_workflow: ci-cd.yml
+ci_workflow: release.yml
 packages:
   nessle:
     path: Assets/Package/Core
