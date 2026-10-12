@@ -1,0 +1,37 @@
+name: Integrate
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [dev]
+
+concurrency:
+  group: integrate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    uses: outernet-foundation/github-actions-toolkit/.github/workflows/preflight.yml@ceea95b23fc9f40b9237f5add6dcd746dd2977fc
+    with:
+      consumer-script: false
+
+  compile-check-unity:
+    needs: [preflight]
+    permissions:
+      contents: read
+      packages: write
+    uses: outernet-foundation/github-actions-toolkit/.github/workflows/compile-check-unity.yml@ceea95b23fc9f40b9237f5add6dcd746dd2977fc
+    secrets:
+      unity-email: ${{ secrets.UNITY_EMAIL }}
+      unity-password: ${{ secrets.UNITY_PASSWORD }}
+      unity-serial: ${{ secrets.UNITY_SERIAL }}
+
+  update-pr-draft-release:
+    needs: [compile-check-unity]
+    permissions:
+      contents: write
+      packages: read
+    uses: outernet-foundation/github-actions-toolkit/.github/workflows/update-pr-draft-release.yml@ceea95b23fc9f40b9237f5add6dcd746dd2977fc
