@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "com.fofx.observething": "1.0.0",
+    "com.fofx.observething": "https://github.com/outernet-foundation/ObserveThing.git?path=Assets/Package/Core#957c7b68aefaf70a0ad567fd1edf73931dfbd80e",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.11.2",
     "com.unity.ide.rider": "3.0.38",
