@@ -8,8 +8,6 @@ namespace Nessle
 {
     public struct ScrollRectProps
     {
-        public ElementProps element;
-        public LayoutProps layout;
         public IValueObservable<Vector2> value;
         public IValueObservable<bool> horizontal;
         public IValueObservable<bool> vertical;
@@ -20,13 +18,21 @@ namespace Nessle
         public IValueObservable<float> scrollSensitivity;
         public IValueObservable<ScrollRect.ScrollbarVisibility> verticalScrollbarVisibility;
         public IValueObservable<ScrollRect.ScrollbarVisibility> horizontalScrollbarVisibility;
+        public ImageProps verticalScrollbarHandle;
+        public ImageProps verticalScrollbarBackground;
+        public ImageProps horizontalScrollbarHandle;
+        public ImageProps horizontalScrollbarBackground;
         public IValueObservable<IControl> content;
+
         public UnityAction<Vector2> onValueChanged;
     }
 
     [RequireComponent(typeof(ScrollRect))]
     public class ScrollRectControl : Control<ScrollRectProps>
     {
+        public ScrollbarControl verticalScrollbar;
+        public ScrollbarControl horizontalScrollbar;
+
         private ScrollRect _scrollRect;
 
         private Vector2 _value;
@@ -40,9 +46,15 @@ namespace Nessle
             if (props.onValueChanged != null)
                 _scrollRect.onValueChanged.AddListener(props.onValueChanged);
 
+            if (verticalScrollbar != null)
+                verticalScrollbar.Setup(new() { handle = props.verticalScrollbarHandle, background = props.verticalScrollbarBackground });
+
+            if (horizontalScrollbar != null)
+                horizontalScrollbar.Setup(new() { handle = props.horizontalScrollbarHandle, background = props.horizontalScrollbarBackground });
+
             AddBinding(
-                props.element.Subscribe(this),
-                props.layout.Subscribe(this),
+                verticalScrollbar,
+                horizontalScrollbar,
                 props.movementType?.Subscribe(x => _scrollRect.movementType = x),
                 props.elasticity?.Subscribe(x => _scrollRect.elasticity = x),
                 props.inertia?.Subscribe(x => _scrollRect.inertia = x),

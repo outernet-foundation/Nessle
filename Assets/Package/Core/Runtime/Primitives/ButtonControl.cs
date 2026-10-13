@@ -11,7 +11,7 @@ namespace Nessle
         public ImageProps background;
         public IValueObservable<bool> interactable;
         public UnityAction onClick;
-        public IListObservable<IControl> content;
+        public IValueObservable<IControl> content;
     }
 
     [RequireComponent(typeof(Button))]
@@ -33,7 +33,14 @@ namespace Nessle
             AddBinding(
                 props.interactable?.Subscribe(x => _button.interactable = x),
                 background,
-                props.content?.SubscribeAsChildren(childParent)
+                props.content?.ObservableWithPrevious().Subscribe(x =>
+                {
+                    if (x.previous != null)
+                        x.previous.transform.SetParent(null);
+
+                    if (x.current != null)
+                        x.current.transform.SetParent(transform, false);
+                })
             );
         }
     }

@@ -15,12 +15,19 @@ namespace Nessle
         public IValueObservable<bool> wholeNumbers;
         public IValueObservable<SliderDirection> direction;
         public IValueObservable<bool> interactable;
+
+        public ImageProps fill;
+        public ImageProps background;
+
         public UnityAction<float> onValueChanged;
     }
 
     [RequireComponent(typeof(Slider))]
     public class SliderControl : Control<SliderProps>
     {
+        public ImageControl fill;
+        public ImageControl background;
+
         private Slider _slider;
 
         protected override void SetupInternal()
@@ -30,7 +37,15 @@ namespace Nessle
             if (props.onValueChanged != null)
                 _slider.onValueChanged.AddListener(props.onValueChanged);
 
+            if (background != null)
+                background.Setup(props.background);
+
+            if (fill != null)
+                fill.Setup(props.fill);
+
             AddBinding(
+                background,
+                fill,
                 props.value?.Subscribe(x => _slider.value = x),
                 props.minValue?.Subscribe(x => _slider.minValue = x),
                 props.maxValue?.Subscribe(x => _slider.maxValue = x),

@@ -2,7 +2,7 @@ using UnityEngine;
 
 using NUnit.Framework;
 using ObserveThing;
-using static Nessle.UIBuilder;
+using static Nessle.Primitives;
 using System.Linq;
 using System.Collections.Generic;
 
