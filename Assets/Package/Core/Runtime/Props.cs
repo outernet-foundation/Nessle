@@ -16,5 +16,11 @@ namespace Nessle
 
         public static IListObservable<T> List<T>(params IValueObservable<T>[] values)
             => new ObservableList<IValueObservable<T>>(values).ObservableUnwrap();
+
+        public static IDictionaryObservable<TKey, TValue> Dictionary<TKey, TValue>(params KeyValuePair<TKey, TValue>[] kvps)
+            => new ObservableDictionary<TKey, TValue>(kvps);
+
+        public static ISetObservable<T> Set<T>(params T[] values)
+            => new ObservableSet<T>(values);
     }
 }

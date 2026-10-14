@@ -14,13 +14,19 @@ Controls maintain minimal internal logic and are not aware of the external conte
 
 ## Props
 
-Props are declarative sets of reactive properties controls consume to evaluate their representation. By convention, props in Nessle are `structs`. This ensures that the values passed into a control do not change after the control is generated. Props contain no default values, and any Prop field left empty is **ignored** by the consuming control. Whatever value was **already present** in the control is preserved, it **will not** be reset to a default value. For example, if a control has a `color` prop and the element the color refers to is red, that element will **remain red** if no value is passed into the `color` prop. This nuance is important, because it ensures that adding new props fields does not alter previously-implemented instances of the control.
+Props are declarative sets of reactive properties controls consume to evaluate their representation. By convention, props in Nessle are `structs`. This ensures that the values passed into a control do not change after the control is generated.
+
+### Prop Types
 
 All controls take three props objects. The first is a custom type declared specifically for that specific control. These types are usually named using the convention `{ControlType}Props` (i.e. `ButtonProps`, `ImageProps`, `LayoutProps`, etc). These types typically contain some combination of three main types of fields: `ObserveThing` types for reactive properties, delegates for callbacks, and other props types to allow consuming code to completely override the properties of specific child controls.
 
 Next is `element` (of type `ElementProps`). `Element` contains common fields for all controls: name (the name of the control), active (whether the control is active in the hierarchy) and bindings (a list of additional bindings this control should manage). You may notice that `children` is not part of `ElementProps`. This is because not all controls allow children or manage them- this is one of the key ways in which controls differ from `GameObjects`.
 
 Finally, there is `layout` (of type `LayoutProps`). `Layout` contains fields for positioning and resizing the control, as well as determining how the control behaves if it is being managed by Unity’s layout system. Developers familiar with Unity will notice that several of the fields in `layout` are not part of the `Transform` component, nor do they share a common component between themselves. Instead of requiring developers to add or manage additional layout components, Nessle detects if specific fields have been set in `layout` (such as `fitContentVertical` from `ContentSizeFitter` or `preferredWidth` from `LayoutElement`) and adds the required components dynamically.
+
+### Defaulting
+
+Props contain no default values, and any Prop field left empty is **ignored** by the consuming control. Whatever value was **already present** in the control is preserved, it **will not** be reset to a default value. For example, if a control has a `color` prop and the element the color refers to is red, that element will **remain red** if no value is passed into the `color` prop. It **will not** and **should not** become clear, even though this is Unity's default color value (`Color(0,0,0,0)`). This nuance is important, because it ensures that adding new props fields does not alter previously-implemented instances of the control.
 
 ## Primitives
 
@@ -31,6 +37,95 @@ In Nessle, “primitives” refer to controls which represent a single piece of 
 ## Bindings
 
 Most developers will not interact directly with bindings when using Nessle. A binding in it's most basic form is an object which implements the `IDisposable` interface, and has been passed to a control using `element.bindinds.Add` or `AddBinding` from within a control component. These objects are disposed when the control is disposed. Bindings are almost exclusively used to manage subscriptions to props, but there is no requirements placed on bindings beyond that they implement the `IDisposable` interface.
+
+## Passing Static Prop Values
+
+By convention, nearly all fields in props objects are `Observables` from `ObserveThing`. This allows controls to upate their representation when props values change. However, it is not uncommon for consuming code to set the value of a prop field once and never update it. These static values must still be wrapped in an `Observable` to satisfy the type requirements of the props field:
+
+```csharp
+using Nessle;
+
+public class Foo
+{
+    public void Bar()
+    {
+        var text = Primitives.VerticalLayout(new()
+        {
+            children = new ObservableList(
+                Primitives.Text(new()
+                {
+                    value = new ObservableValue("Item in a list"),
+                    style = new()
+                    {
+                        color = new ObservableValue(Color.red),
+                        overflowMode = new ObservableValue(TMPro.TextOverflowModes.Ellipsis),
+                        fontStyle = new ObservableValue(TMPro.FontStyles.Bold)
+                    }
+                })
+            );
+        });
+    }
+}
+```
+
+This is a bit cumbersome. So for convenience, Nessle provides a `Props` static class with methods for constructing static values, lists, sets and dictionaries. Statically referencing `Props` makes the above code much more legible:
+
+```csharp
+using Nessle;
+using static Nessle.Props;
+
+public class Foo
+{
+    public void Bar()
+    {
+        var text = Primitives.VerticalLayout(new()
+        {
+            children = List(
+                Primitives.Text(new()
+                {
+                    value = Value("Item in a list"),
+                    style = new()
+                    {
+                        color = Value(Color.red),
+                        overflowMode = Value(TMPro.TextOverflowModes.Ellipsis),
+                        fontStyle = Value(TMPro.FontStyles.Bold)
+                    }
+                })
+            );
+        });
+    }
+}
+```
+
+Additionally, we can statically reference `Primitives` to make things even more clear:
+
+```csharp
+using Nessle;
+using static Nessle.Props;
+using static Nessle.Primitives;
+
+public class Foo
+{
+    public void Bar()
+    {
+        var text = VerticalLayout(new()
+        {
+            children = List(
+                Text(new()
+                {
+                    value = Value("Item in a list"),
+                    style = new()
+                    {
+                        color = Value(Color.red),
+                        overflowMode = Value(TMPro.TextOverflowModes.Ellipsis),
+                        fontStyle = Value(TMPro.FontStyles.Bold)
+                    }
+                })
+            );
+        });
+    }
+}
+```
 
 ## Writing Your Own Controls
 
@@ -47,7 +142,7 @@ using UnityEngine;
 using static Nessle.Primitives;
 using static Nessle.Props;
 
-public static class AdditionalControls
+public static class Controls
 {
     public struct ToggleButtonProps
     {
@@ -111,6 +206,14 @@ onClick = () => valueInternal.value = !valueInternal.value
 Once the control is set up, it can be reused depending on the consuming context's needs:
 
 ```csharp
+using System;
+using Nessle;
+using ObserveThing;
+using UnityEngine;
+
+using static Nessle.Primitives;
+using static Nessle.Props;
+
 public class Foo
 {
     public void Bar()
@@ -141,118 +244,104 @@ public class Foo
 }
 ```
 
-## Quick Start
+### Component Controls
 
-Nessle only needs one configuration step in order to function- the value of `Primitives.PrimitiveSet` must be set to an instance of `UIPrimitiveSet`. `UIPrimitiveSet` is a `ScriptableObject` which defines the "primitives" (buttons, toggles, input fields, dropdowns, etc) Nessle will use to construct the UI. If you just want to test Nessle out without setting up your own primitives, the `UI Primitives` sample included with Nessle's Unity package provides a generic set to get you started. Once you have a fully evaluated instance of `UIPrimitiveSet`, simply set `Primitives.PrimitiveSet` to that instance and Nessle will be ready to roll:
+Sometimes it is more convenient for a control to be implemented as a prefab, either because it has visual requirements that can only be expressed directly in-engine (like animation or irregular layouts) or because it is a pre-existing UI element which has not yet been (or may never be) ported to the Nessle framework. In these cases, you can simply extend the `Control` class:
 
 ```csharp
-public class Foo
+public struct DialProps
 {
-    public UIPrimitiveSet primitives;
+    public IValueObservable<float> value;
+    public Action<float> onValueChanged;
+}
 
-    public void Bar()
+public class DialControl : Control<DialProps>, IDragHandler
+{
+    public Transform dialTransform;
+
+    public void OnDrag(PointerEventData eventData)
     {
-        // Nessle is not ready on this line
-        Primitives.PrimitiveSet = primitives;
-        // Nessle is ready on this line!
+        var worldPosition = eventData.pointerCurrentRaycast.worldPosition;
+        var localPosition = transform.InverseTransformPoint(worldPosition);
+
+        var angle = Vector2.Angle(new Vector2(0, 1), localPosition);
+
+        props.onValueChanged?.Invoke(angle);
+    }
+
+    protected override void SetupInternal()
+    {
+        AddBinding(
+            props.value?.Subscribe(x => dialTransform.localRotation = Quaternion.AngleAxis(x, Vector3.forward))
+        );
     }
 }
 ```
 
-You can change the value of `Primitives.PrimitiveSet` at any point. Changing this value **does not** change UI which has already been constructed.
+The `Control<T>` component provides `SetupInternal` and `DisposeInternal` methods for child classes to override. By the time `SetupInternal` is called, `props`, `element`, and `layout` are all evaluated. `Control<T>` automatically binds to `element` and `layout` properties. Within `SetupInternal`, the child class can use `AddBinding` to add additional bindings to the control's lifecycle. They will be automatically cleaned up when the control is disposed.
+
+Once a control prefab is generated, it should be added somewhere it can be easily statically accessed. This could be by adding it directly to a static class, or by mimicking the pattern used by `Nessle.Primitives`:
 
 ```csharp
-public class Foo
-{
-    public UIPrimitiveSet primitives1;
-    public UIPrimitiveSet primitives2;
-
-    public void Bar()
-    {
-        Primitives.PrimitiveSet = primitives1;
-        // UI constructed here will use the values of primitives1
-        Primitives.PrimitiveSet = primitives2;
-        // UI constructed here will use the values of primitives2
-        // UI previously constructed will remain unchanged
-    }
-}
-```
-
-Once `Primitives.PrimitiveSet` is evaluated, you can start generating controls. The easiest way to do this is to statically reference `Nessle.UIBuilder` and `Nessle.Props`. With those static references, you can directly call Nessle's construction methods without qualifying them with a static class:
-
-```csharp
-using UnityEngine.UI;
+// Add directly
 
 using Nessle;
 
 using static Nessle.Primitives;
-using static Nessle.Props;
 
-public class Foo
+public static class Controls
 {
-    public UIPrimitiveSet primitives;
-    public IControl ui;
+    public static Control<DialProps> DialControl;
 
-    public void Bar()
-    {
-        Primitives.PrimitiveSet = primitives;
-        ui = Canvas(new()
-        {
-            children = List(
-                Button(
-                    layout: new()
-                    {
-                        localPosition = Value(new Vector3(100, 100, 0)),
-                        fitContentHorizontal = Value(FitMode.PreferredSize)
-                    }
-                    props: new()
-                    {
-                        content = List(Text(new() { value = Value("Click Me!") })),
-                        onClick = () => Debug.Log("Hello World!")
-                    }
-                )
-            )
-        });
-    }
+    public static IControl Dial(DialProps props = default, ElementProps element = default, LayoutProps layout = default)
+        => Control(DialControl, props, element, layout);
 }
 ```
 
-There are several things at play in the above example, so let's take them one at a time. First, this line:
-
 ```csharp
-ui = Canvas(new()
+// Use Nessle.Primitives pattern
+
+using Nessle;
+
+using static Nessle.Primitives;
+
+public class ControlSet : ScriptableObject
+{
+    public Control<DialProps> dial => _dial;
+
+    [SerializeField]
+    private Control<DialProps> _dial;
+}
+
+public static class Controls
+{
+    public static ControlSet ControlSet;
+
+    public static IControl Dial(DialProps props = default, ElementProps element = default, LayoutProps layout = default)
+        => Control(ControlSet.dial, props, element, layout);
+}
 ```
 
-Here we construct a Unity canvas. Technically, we could pass no arguments and just get an empty Canvas in the scene:
+Regardless of how the new control is referenced, constructing it in client code becomes trivial, and looks just like native Nessle:
 
 ```csharp
-ui = Canvas();
-```
+using Nessle;
+using static Nessle.Primitives;
+using static Controls;
 
-An empty Canvas doesn't do us much good, so instead we pass a `CanvasProps` object so we can define the properties of the Canvas. Since the control-specific props object the first argument in any control construction method, we can let the compiler figure out what it's type is an just use `new()`. `CanvasProps` has many props, but for now we just define `children` so we can add the button:
-
-```csharp
-children = List(
-    Button(
-```
-
-It's worth noting here that `List` in this context is **not** a C# `System.Collections.List` or `System.Collections.List<T>`. Rather, it is an `ObservableList<T>` from `ObserveThing`, supplied through Nessle's `Props` static class: `Nessle.Props.List()`. This method takes a set of values as params (in this case, controls), allowing consuming code to easily declare static lists easily in-line. By convention, _most if not all_ props fields in Nessle controls are Observable types. This allows UIs to be declarative and reactive- controls subscribe to changes in props to update their representations instead of relying on manual updates from external code.
-
-For the button constructor method, we define two arguments: `props`, which we know already, and `layout`:
-
-```csharp
-Button(
-    layout: new()
+public class Foo
+{
+    public void Bar()
     {
-        localPosition = Value(new Vector3(100, 100, 0)),
-        fitContentHorizontal = Value(FitMode.PreferredSize)
+        Canvas(new()
+        {
+            children = List(
+                Dial(
+                    layout: new() { localPosition = Value(new Vector3(300, 300)) }
+                    props: new() { onValueChanged = x => Debug.Log($"Value set to {x}") }
+                )
+            )
+        })
     }
-    props: new()
-    {
-        content = Value(Text(new() { value = Value("Click Me!") })),
-        onClick = () => Debug.Log("Hello World!")
-    }
-)
+}
 ```
-
-Every control has a `layout` property, used to place and resize the control when it's location and size are not being driven by an external layout component (such at `VerticalLayout`). You'll notice that the properties of `layout` are not limited Unity's position/rotation/scale, but also include things like `fitContentHorizontal`. Nessle automatically detects when self-layout properties like this are set and adds the appropriate components to the control.
